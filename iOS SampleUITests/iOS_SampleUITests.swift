@@ -1,6 +1,6 @@
 //
-//  ETNetworkUITests.swift
-//  ETNetworkUITests
+//  iOS_SampleUITests.swift
+//  iOS SampleUITests
 //
 //  Created by ethan on 15/11/4.
 //  Copyright © 2015年 ethan. All rights reserved.
@@ -8,7 +8,7 @@
 
 import XCTest
 
-class ETNetworkUITests: XCTestCase {
+class iOS_SampleUITests: XCTestCase {
         
     override func setUp() {
         super.setUp()
