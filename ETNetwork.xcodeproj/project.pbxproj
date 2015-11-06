@@ -31,6 +31,7 @@
 		AA579BF51BE9F6310018DBCB /* ETBaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF01BE9F6310018DBCB /* ETBaseRequest.swift */; };
 		AA579BF61BE9F6310018DBCB /* ETManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF11BE9F6310018DBCB /* ETManager.swift */; };
 		AA579BF71BE9F6310018DBCB /* ETRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF21BE9F6310018DBCB /* ETRequest.swift */; };
+		AAD212501BEB389A00C870C5 /* ETNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		AA579BF01BE9F6310018DBCB /* ETBaseRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETBaseRequest.swift; sourceTree = "<group>"; };
 		AA579BF11BE9F6310018DBCB /* ETManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETManager.swift; sourceTree = "<group>"; };
 		AA579BF21BE9F6310018DBCB /* ETRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETRequest.swift; sourceTree = "<group>"; };
+		AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETNetworkConfig.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +164,7 @@
 				AA579BF01BE9F6310018DBCB /* ETBaseRequest.swift */,
 				AA579BF11BE9F6310018DBCB /* ETManager.swift */,
 				AA579BF21BE9F6310018DBCB /* ETRequest.swift */,
+				AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */,
 			);
 			name = Source;
 			path = ETNetwork/Source;
@@ -294,6 +297,7 @@
 				AA579BE91BE9F4AF0018DBCB /* Validation.swift in Sources */,
 				AA579BE61BE9F4AF0018DBCB /* ServerTrustPolicy.swift in Sources */,
 				AA579BF31BE9F6310018DBCB /* ETBatchRequest.swift in Sources */,
+				AAD212501BEB389A00C870C5 /* ETNetworkConfig.swift in Sources */,
 				AA579BDC1BE9F4AF0018DBCB /* Download.swift in Sources */,
 				AA579BDF1BE9F4AF0018DBCB /* Manager.swift in Sources */,
 			);
