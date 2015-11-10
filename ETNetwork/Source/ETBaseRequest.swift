@@ -8,55 +8,46 @@
 
 import Foundation
 
-enum ETRequestMethod: Int {
-    case Get
-    case Post
-    case Head
-    case Put
-    case Delete
-    case Patch
+enum ETRequestMethod: String {
+    case Options, Get, Head, Post, Put, Patch, Delete, Trace, Connect
 }
 
-/*
-delegate callback
+enum ETRequestSerializer {
+    case Data, String, Json
+}
+
+/**
+ delegate callback
 */
 @objc protocol ETRequestDelegate {
     optional func requestFinished(request: ETBaseRequest)
     optional func requestFailed(request: ETBaseRequest)
 }
 
-/*
-custom your own request, all custom
+/**
+ custom your own request, all custom
 */
 protocol ETBuildCustomRequest {
     func customUrlRequest() -> NSURLRequest
 }
 
-/*
-allow cache your request response data
+/**
+ allow cache your request response data
 */
 protocol ETCache {
     func cacheSeconds() -> Int
 }
 
-/*
-you detail url to request eg http://www.google.com/api/query | api/query
-*/
 
-
-protocol ETRequestUrl {
-    func requestUrl() -> String
-}
-
-/*
-you detail url to request
+/**
+ you detail url to request
 */
  protocol ETBaseRequestProtocol : class {
     func baseUrl() -> String
     func requestUrl() -> String
     func requestMethod() -> ETRequestMethod
     func requestParams() ->  [String: AnyObject]?
-    
+    func requestSerializer() -> ETRequestSerializer
 }
 
 /**
@@ -69,6 +60,14 @@ extension ETBaseRequestProtocol {
     
     func requestParams() ->  [String: AnyObject]? {
         return nil
+    }
+    
+    func requestSerializer() -> ETRequestSerializer {
+        return .Json
+    }
+    
+    func requestMethod() -> ETRequestMethod {
+        return .Post
     }
 }
 
@@ -83,13 +82,12 @@ class ETBaseRequest: NSObject {
     deinit {
         print("ETBaseRequest  deinit")
     }
-    func start() {
+    func start() -> Void {
         
     }
     
-    func start(completion: () -> ()))
     
-    func stop() {
+    func stop() -> Void {
         
     }
     
