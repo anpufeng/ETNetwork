@@ -8,13 +8,11 @@
 
 import UIKit
 
-class ETNetworkConfig: NSObject {
-    class var sharedInstance : ETNetworkConfig {
-        struct Static {
-            static let instance : ETNetworkConfig = ETNetworkConfig()
-        }
-        return Static.instance
-    }
+public class ETNetworkConfig: NSObject {
+     public static let sharedInstance: ETNetworkConfig = {
+        
+        return ETNetworkConfig()
+    }()
     
     /*use you own base url*/
     var baseUrl: String = "www.baidu.com"
