@@ -56,9 +56,16 @@ public enum ETRequestParameterEncoding {
     }
 }
 
+
 enum ETRequestSerializer {
     case Data, String, Json
 }
+
+//public enum ETResponse {
+//    case Json(AnyObject, NSError)
+//    case Data(NSDate, NSError)
+//    case str(String, NSError)
+//}
 
 /**
  delegate callback
@@ -131,12 +138,10 @@ extension ETBaseRequestProtocol {
 
 class ETBaseRequest: NSObject {
     weak internal var delegate: ETRequestDelegate?
-    private var request: Request?
+    var request: Request?
     var manager: ETManager
     private var tag: Int = 0
-    var responseString: String?
-    var responseData: String?
-    var responseJson: AnyObject?
+    internal var response: (() -> (NSURLRequest?, NSURLResponse?, AnyObject?, AnyObject?, NSError?))?
     
     deinit {
         print("ETBaseRequest  deinit")
@@ -154,8 +159,24 @@ class ETBaseRequest: NSObject {
         
     }
     
-    override init() {
+    func responseJson() -> AnyObject? {
+        return nil
+    }
+    
+    func responseString() -> String? {
+        return self.request?.delegate
+    }
+    
+    func responseData() -> NSData? {
+        return self.request?.delegate.data
+    }
+    
+    func responseAllHeaders() -> [NSObject : AnyObject]? {
+        return self.request?.response?.allHeaderFields
+    }
+    internal init(delegate: ETRequestDelegate?) {
         manager = ETManager.init()
+        self.delegate = delegate
         super.init()
     }
     func isExecuting() -> Bool {

@@ -32,7 +32,6 @@ public class ETManager: NSObject {
             let params = subRequest.requestParams()
             let encoding = subRequest.requestParameterEncoding().encode
             let req = manager.request(method, self.buildRequestUrl(request), parameters: params, encoding: encoding, headers: headers)
-            
 
             switch serializer {
             case .Data:
@@ -73,6 +72,10 @@ public class ETManager: NSObject {
         var succeed = true
         if (response.result.error != nil) {
             succeed = false
+        }
+        
+        request.response =  {() -> (NSURLRequest?, NSURLResponse?, AnyObject?, AnyObject?, NSError?) in
+            return (response.request, response.response, response.data, response.result.value, response.result.error)
         }
         
         if succeed {
