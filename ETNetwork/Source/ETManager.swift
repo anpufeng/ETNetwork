@@ -67,21 +67,19 @@ public class ETManager: NSObject {
     //responseString
     private func handleRequestResult(request: ETBaseRequest, response: Response<String, NSError> ) {
         let req = response.request
-        guard request == req else { return }
+        //guard request == req else { return }
         
         var succeed = true
         if (response.result.error != nil) {
             succeed = false
         }
         
-        request.response =  {() -> (NSURLRequest?, NSURLResponse?, AnyObject?, AnyObject?, NSError?) in
-            return (response.request, response.response, response.data, response.result.value, response.result.error)
-        }
+        
         
         if succeed {
-            request.delegate?.requestFinished!(request)
+            request.delegate?.requestFinished(request)
         } else {
-            request.delegate?.requestFailed!(request)
+            request.delegate?.requestFailed(request)
         }
     }
     

@@ -57,7 +57,7 @@ public enum ETRequestParameterEncoding {
 }
 
 
-enum ETRequestSerializer {
+public enum ETRequestSerializer {
     case Data, String, Json
 }
 
@@ -70,9 +70,18 @@ enum ETRequestSerializer {
 /**
  delegate callback
 */
-@objc protocol ETRequestDelegate {
-    optional func requestFinished(request: ETBaseRequest)
-    optional func requestFailed(request: ETBaseRequest)
+public protocol ETRequestDelegate : class {
+    func requestFinished(request: ETBaseRequest)
+    func requestFailed(request: ETBaseRequest)
+}
+
+public  extension ETRequestDelegate {
+    func requestFinished(request: ETBaseRequest) {
+        
+    }
+    func requestFailed(request: ETBaseRequest) {
+        
+    }
 }
 
 /**
@@ -93,7 +102,7 @@ protocol ETCache {
 /**
  you detail url to request
 */
- protocol ETBaseRequestProtocol : class {
+ public protocol ETBaseRequestProtocol : class {
     func requestUrl() -> String
     
     func baseUrl() -> String
@@ -108,7 +117,7 @@ protocol ETCache {
 /**
  make it optional
 */
-extension ETBaseRequestProtocol {
+public extension ETBaseRequestProtocol {
     func baseUrl() -> String {
         return ETNetworkConfig.sharedInstance.baseUrl
     }
@@ -133,58 +142,71 @@ extension ETBaseRequestProtocol {
     func requestHeaders() -> [String: String]? {
         return nil
     }
+    
+    func requestParameterEncoding() -> ETRequestParameterEncoding {
+        return .Json
+    }
 }
 
 
-class ETBaseRequest: NSObject {
-    weak internal var delegate: ETRequestDelegate?
+public class ETBaseRequest {
+    public weak var delegate: ETRequestDelegate?
     var request: Request?
     var manager: ETManager
-    private var tag: Int = 0
-    internal var response: (() -> (NSURLRequest?, NSURLResponse?, AnyObject?, AnyObject?, NSError?))?
     
     deinit {
         print("ETBaseRequest  deinit")
     }
-    func start() -> Void {
+    public func start() -> Void {
         ETManager.sharedInstance.addRequest(self)
     }
     
-    func startWithManager(manager: ETManager) {
+    public func startWithManager(manager: ETManager) {
         manager.addRequest(self)
     }
     
     
-    func stop() -> Void {
+    public func stop() -> Void {
         
     }
     
-    func responseJson() -> AnyObject? {
-        return nil
-    }
     
-    func responseString() -> String? {
-        return self.request?.delegate
+    public init() {
+         manager = ETManager.init()
     }
-    
-    func responseData() -> NSData? {
-        return self.request?.delegate.data
-    }
-    
-    func responseAllHeaders() -> [NSObject : AnyObject]? {
-        return self.request?.response?.allHeaderFields
-    }
-    internal init(delegate: ETRequestDelegate?) {
-        manager = ETManager.init()
-        self.delegate = delegate
-        super.init()
-    }
-    func isExecuting() -> Bool {
+//     init(delegate: ETRequestDelegate? = nil) {
+//        manager = ETManager.init()
+//        self.delegate = delegate
+//    }
+    public func isExecuting() -> Bool {
         return false;
     }
     
     
-    func requestWithManage(manager: ETManager) -> Void {
+    public func requestWithManage(manager: ETManager) -> Void {
         
     }   
+}
+
+
+public extension ETBaseRequest {
+    public func responseJson() -> AnyObject? {
+        return nil
+    }
+    
+    public func responseString() -> String? {
+        return nil
+    }
+    
+    public func responseData() -> NSData? {
+        return self.request?.delegate.data
+    }
+    
+    public func responseAllHeaders() -> [NSObject : AnyObject]? {
+        return self.request?.response?.allHeaderFields
+    }
+}
+
+public extension ETBaseRequest {
+
 }

@@ -7,12 +7,24 @@
 //
 
 import UIKit
+import ETNetwork
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController, ETRequestDelegate {
+    var getApi: GetApi = GetApi(bar: "bar")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        getApi.delegate = self
+        getApi.start()
+    }
+    
+    func requestFinished(request: ETBaseRequest) {
+        
+    }
+    func requestFailed(request: ETBaseRequest) {
+        
     }
 
     override func didReceiveMemoryWarning() {

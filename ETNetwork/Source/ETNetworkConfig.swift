@@ -8,14 +8,14 @@
 
 import UIKit
 
-public class ETNetworkConfig: NSObject {
+public class ETNetworkConfig {
      public static let sharedInstance: ETNetworkConfig = {
         
         return ETNetworkConfig()
     }()
     
     /*use you own base url*/
-    var baseUrl: String = "www.baidu.com"
+    var baseUrl: String = "https://httpbin.org"
     var urlFilters: Array<String> = []
     var cacheDirPathFilters: Array<String> = []
 }
