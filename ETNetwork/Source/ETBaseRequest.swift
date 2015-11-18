@@ -158,7 +158,7 @@ public class ETBaseRequest {
         print("ETBaseRequest  deinit")
     }
     public func start() -> Void {
-        ETManager.sharedInstance.addRequest(self)
+        self.manager.addRequest(self)
     }
     
     public func startWithManager(manager: ETManager) {
@@ -172,7 +172,7 @@ public class ETBaseRequest {
     
     
     public init() {
-         manager = ETManager.init()
+         manager = ETManager.sharedInstance
     }
 //     init(delegate: ETRequestDelegate? = nil) {
 //        manager = ETManager.init()

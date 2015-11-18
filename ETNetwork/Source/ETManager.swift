@@ -85,7 +85,18 @@ public class ETManager: NSObject {
     
     ///responseJSON|AnyObject
     private func handleRequestResult(request: ETBaseRequest, response: Response<AnyObject, NSError> ) {
+        var succeed = true
+        if (response.result.error != nil) {
+            succeed = false
+        }
         
+        
+        
+        if succeed {
+            request.delegate?.requestFinished(request)
+        } else {
+            request.delegate?.requestFailed(request)
+        }
     }
     
     ///responseData
