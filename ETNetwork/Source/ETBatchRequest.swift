@@ -8,6 +8,6 @@
 
 import Foundation
 
-class ETBatchRequest: NSObject {
+class ETBatchRequest {
 
 }

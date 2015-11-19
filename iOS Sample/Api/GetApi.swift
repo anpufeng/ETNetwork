@@ -17,8 +17,8 @@ class GetApi: ETBaseRequest, ETBaseRequestProtocol {
         super.init()
     }
     
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    func requestMethod() -> ETRequestMethod {
+        return .Get
     }
     
     func requestUrl() -> String {

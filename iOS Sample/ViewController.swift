@@ -21,7 +21,7 @@ class ViewController: UIViewController, ETRequestDelegate {
     }
     
     func requestFinished(request: ETBaseRequest) {
-        
+        print("==========requestFinished res json: \(request.responseJson)")
     }
     func requestFailed(request: ETBaseRequest) {
         

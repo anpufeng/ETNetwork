@@ -9,6 +9,6 @@
 import Foundation
 
 
-class ETRequest: NSObject {
+class ETRequest {
     
 }

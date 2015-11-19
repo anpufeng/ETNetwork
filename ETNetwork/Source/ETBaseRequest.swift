@@ -75,6 +75,9 @@ public protocol ETRequestDelegate : class {
     func requestFailed(request: ETBaseRequest)
 }
 
+/**
+ make it optional
+*/
 public  extension ETRequestDelegate {
     func requestFinished(request: ETBaseRequest) {
         
@@ -115,7 +118,7 @@ protocol ETCache {
 }
 
 /**
- make it optional
+ make it default and optional
 */
 public extension ETBaseRequestProtocol {
     func baseUrl() -> String {
@@ -151,14 +154,20 @@ public extension ETBaseRequestProtocol {
 
 public class ETBaseRequest {
     public weak var delegate: ETRequestDelegate?
+    
     var request: Request?
-    var manager: ETManager
+
+    var resStr: String?
+    var resJson: AnyObject?
+    var resError: NSError?
+    
+    
     
     deinit {
         print("ETBaseRequest  deinit")
     }
     public func start() -> Void {
-        self.manager.addRequest(self)
+        ETManager.sharedInstance.addRequest(self)
     }
     
     public func startWithManager(manager: ETManager) {
@@ -172,12 +181,8 @@ public class ETBaseRequest {
     
     
     public init() {
-         manager = ETManager.sharedInstance
     }
-//     init(delegate: ETRequestDelegate? = nil) {
-//        manager = ETManager.init()
-//        self.delegate = delegate
-//    }
+
     public func isExecuting() -> Bool {
         return false;
     }
@@ -190,19 +195,31 @@ public class ETBaseRequest {
 
 
 public extension ETBaseRequest {
-    public func responseJson() -> AnyObject? {
-        return nil
+    public var responseJson: AnyObject? {
+        if let _ = resError {
+            return nil
+        }
+        
+        return resJson
     }
     
-    public func responseString() -> String? {
-        return nil
+    public var responseStr: AnyObject? {
+        if let _ = resError {
+            return nil
+        }
+        
+        return resStr
     }
     
-    public func responseData() -> NSData? {
+    public var responseData: AnyObject? {
+        if let _ = resError {
+            return nil
+        }
+        
         return self.request?.delegate.data
     }
     
-    public func responseAllHeaders() -> [NSObject : AnyObject]? {
+    public var responseAllHeaders: [NSObject : AnyObject]? {
         return self.request?.response?.allHeaderFields
     }
 }

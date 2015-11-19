@@ -8,17 +8,16 @@
 
 import Foundation
 
-public class ETManager: NSObject {
+public class ETManager {
     
     public static let sharedInstance: ETManager = {
         return ETManager()
     }()
     
     private var manager: Manager
-    private var config: ETNetworkConfig = ETNetworkConfig.sharedInstance
     private var requestDic: Dictionary<String, ETBaseRequest> =  Dictionary<String, ETBaseRequest>()
     
-    internal override init()
+    public init()
     {
         manager = Manager.sharedInstance
         
@@ -32,7 +31,7 @@ public class ETManager: NSObject {
             let params = subRequest.requestParams()
             let encoding = subRequest.requestParameterEncoding().encode
             let req = manager.request(method, self.buildRequestUrl(request), parameters: params, encoding: encoding, headers: headers)
-
+            request.request = req
             switch serializer {
             case .Data:
                 req.responseData({ response in
@@ -68,7 +67,7 @@ public class ETManager: NSObject {
     private func handleRequestResult(request: ETBaseRequest, response: Response<String, NSError> ) {
         let req = response.request
         //guard request == req else { return }
-        
+        debugPrint(request.request)
         var succeed = true
         if (response.result.error != nil) {
             succeed = false
@@ -86,8 +85,11 @@ public class ETManager: NSObject {
     ///responseJSON|AnyObject
     private func handleRequestResult(request: ETBaseRequest, response: Response<AnyObject, NSError> ) {
         var succeed = true
+        debugPrint(request.request)
         if (response.result.error != nil) {
             succeed = false
+        } else {
+            request.resJson = response.result.value
         }
         
         
@@ -101,7 +103,7 @@ public class ETManager: NSObject {
     
     ///responseData
     private func handleRequestResult(request: ETBaseRequest, response: Response<NSData, NSError> ) {
-        
+        debugPrint(request.request)
     }
     
     private func buildRequestUrl(request: ETBaseRequest) -> String {
@@ -119,7 +121,7 @@ public class ETManager: NSObject {
             }
             */
             
-            return "\(subRequest.baseUrl)\(subRequest.requestUrl())"
+            return "\(subRequest.baseUrl())\(subRequest.requestUrl())"
             
         } else {
             fatalError("must implement ETBaseRequestProtocol")
