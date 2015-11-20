@@ -20,11 +20,17 @@ class ViewController: UIViewController, ETRequestDelegate {
         getApi.start()
     }
     
+    ///MARK
     func requestFinished(request: ETBaseRequest) {
-        print("==========requestFinished res json: \(request.responseJson)")
+        if request === getApi {
+             print("==========requestFinished res json: \(request.responseJson)")
+        }
+
     }
     func requestFailed(request: ETBaseRequest) {
-        
+        if request === getApi {
+            
+        }
     }
 
     override func didReceiveMemoryWarning() {

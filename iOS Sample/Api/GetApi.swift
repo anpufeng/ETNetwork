@@ -21,6 +21,10 @@ class GetApi: ETBaseRequest, ETBaseRequestProtocol {
         return .Get
     }
     
+    func requestMethod() -> ETRequestMethod {
+        return .Get
+    }
+    
     func requestUrl() -> String {
         return "/get"
     }
