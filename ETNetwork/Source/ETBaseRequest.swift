@@ -203,7 +203,7 @@ public extension ETBaseRequest {
         return resJson
     }
     
-    public var responseStr: AnyObject? {
+    public var responseStr: String? {
         if let _ = resError {
             return nil
         }
@@ -211,12 +211,16 @@ public extension ETBaseRequest {
         return resStr
     }
     
-    public var responseData: AnyObject? {
+    public var responseData: NSData? {
         if let _ = resError {
             return nil
         }
         
         return self.request?.delegate.data
+    }
+    
+    public var responseError: NSError? {
+        return resError
     }
     
     public var responseAllHeaders: [NSObject : AnyObject]? {
