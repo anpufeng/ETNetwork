@@ -47,6 +47,11 @@ public class ETManager {
                 req.responseJSON(options: .AllowFragments, completionHandler: { response in
                     self.handleRequestResult(request, response: response)
                 })
+            case .PropertyList:
+                req.responseJSON(options: .AllowFragments, completionHandler: { response in
+                    self.handleRequestResult(request, response: response)
+                })
+                
                 
             }
         } else {
@@ -90,7 +95,7 @@ public class ETManager {
         if (response.result.error != nil) {
             succeed = false
         } else {
-            request.resJson = response.result.value
+            //request.resJson = response.result.value
         }
         
         

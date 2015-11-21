@@ -9,16 +9,12 @@
 import UIKit
 import ETNetwork
 
-class GetApi: ETBaseRequest, ETBaseRequestProtocol {
+class GetApi: ETBaseRequest, ETBaseRequestProtocol, ETRequestCacheProtocol {
     
     var bar: String
     init(bar: String) {
         self.bar = bar
         super.init()
-    }
-    
-    func requestMethod() -> ETRequestMethod {
-        return .Get
     }
     
     func requestMethod() -> ETRequestMethod {
@@ -32,6 +28,11 @@ class GetApi: ETBaseRequest, ETBaseRequestProtocol {
     
     func requestParams() ->  [String: AnyObject]? {
         return  ["foo": bar]
+    }
+    
+    
+    func cacheSeconds() -> Int {
+        return 60
     }
 
 }

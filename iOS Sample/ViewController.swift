@@ -23,7 +23,10 @@ class ViewController: UIViewController, ETRequestDelegate {
     ///MARK
     func requestFinished(request: ETBaseRequest) {
         if request === getApi {
-             print("==========requestFinished res json: \(request.responseJson)")
+            
+            request.responseJson({ (json, error) -> Void in
+             print("==========requestFinished res json: \(json)")
+            })
         }
 
     }

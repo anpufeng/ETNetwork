@@ -31,6 +31,8 @@
 		AA579BF51BE9F6310018DBCB /* ETBaseRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF01BE9F6310018DBCB /* ETBaseRequest.swift */; };
 		AA579BF61BE9F6310018DBCB /* ETManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF11BE9F6310018DBCB /* ETManager.swift */; };
 		AA579BF71BE9F6310018DBCB /* ETRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF21BE9F6310018DBCB /* ETRequest.swift */; };
+		AA9163BC1C00B84F0071746D /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9163B31C00B8200071746D /* CryptoSwift.framework */; };
+		AA9163C21C00B9B60071746D /* CryptoSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA9163B31C00B8200071746D /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AAD212501BEB389A00C870C5 /* ETNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +44,55 @@
 			remoteGlobalIDString = AA4FE5AF1BE9B42F00475BF7;
 			remoteInfo = ETNetwork;
 		};
+		AA9163B21C00B8200071746D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 754BE45519693E190098E6F3;
+			remoteInfo = "CryptoSwift iOS";
+		};
+		AA9163B41C00B8200071746D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5596BDBB1BC8F220007E38D5;
+			remoteInfo = "CryptoSwift watchOS";
+		};
+		AA9163B61C00B8200071746D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 75D614BF1BD844F2001358B2;
+			remoteInfo = "CryptoSwift tvOS";
+		};
+		AA9163B81C00B8200071746D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 75DF77721BC8EB59006E9520;
+			remoteInfo = "CryptoSwift OSX";
+		};
+		AA9163BA1C00B8200071746D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 754BE46019693E190098E6F3;
+			remoteInfo = CryptoSwiftTests;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AA9163C11C00B9A40071746D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				AA9163C21C00B9B60071746D /* CryptoSwift.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		AA4FE5B01BE9B42F00475BF7 /* ETNetwork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ETNetwork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +122,7 @@
 		AA579BF01BE9F6310018DBCB /* ETBaseRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETBaseRequest.swift; sourceTree = "<group>"; };
 		AA579BF11BE9F6310018DBCB /* ETManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETManager.swift; sourceTree = "<group>"; };
 		AA579BF21BE9F6310018DBCB /* ETRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETRequest.swift; sourceTree = "<group>"; };
+		AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CryptoSwift.xcodeproj; path = CryptoSwift/CryptoSwift.xcodeproj; sourceTree = "<group>"; };
 		AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETNetworkConfig.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,6 +131,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA9163BC1C00B84F0071746D /* CryptoSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +149,7 @@
 		AA4FE5A61BE9B42F00475BF7 = {
 			isa = PBXGroup;
 			children = (
+				AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */,
 				AA579BED1BE9F6310018DBCB /* Source */,
 				AA579BC91BE9F4950018DBCB /* Alamofire */,
 				AA4FE5B21BE9B42F00475BF7 /* ETNetwork */,
@@ -170,6 +223,18 @@
 			path = ETNetwork/Source;
 			sourceTree = "<group>";
 		};
+		AA9163AB1C00B81F0071746D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AA9163B31C00B8200071746D /* CryptoSwift.framework */,
+				AA9163B51C00B8200071746D /* CryptoSwift.framework */,
+				AA9163B71C00B8200071746D /* CryptoSwift.framework */,
+				AA9163B91C00B8200071746D /* CryptoSwift.framework */,
+				AA9163BB1C00B8200071746D /* CryptoSwiftTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -193,6 +258,7 @@
 				AA4FE5AC1BE9B42F00475BF7 /* Frameworks */,
 				AA4FE5AD1BE9B42F00475BF7 /* Headers */,
 				AA4FE5AE1BE9B42F00475BF7 /* Resources */,
+				AA9163C11C00B9A40071746D /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -249,6 +315,12 @@
 			mainGroup = AA4FE5A61BE9B42F00475BF7;
 			productRefGroup = AA4FE5B11BE9B42F00475BF7 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = AA9163AB1C00B81F0071746D /* Products */;
+					ProjectRef = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				AA4FE5AF1BE9B42F00475BF7 /* ETNetwork */,
@@ -256,6 +328,44 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		AA9163B31C00B8200071746D /* CryptoSwift.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CryptoSwift.framework;
+			remoteRef = AA9163B21C00B8200071746D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AA9163B51C00B8200071746D /* CryptoSwift.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CryptoSwift.framework;
+			remoteRef = AA9163B41C00B8200071746D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AA9163B71C00B8200071746D /* CryptoSwift.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CryptoSwift.framework;
+			remoteRef = AA9163B61C00B8200071746D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AA9163B91C00B8200071746D /* CryptoSwift.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = CryptoSwift.framework;
+			remoteRef = AA9163B81C00B8200071746D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		AA9163BB1C00B8200071746D /* CryptoSwiftTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = CryptoSwiftTests.xctest;
+			remoteRef = AA9163BA1C00B8200071746D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		AA4FE5AE1BE9B42F00475BF7 /* Resources */ = {
@@ -363,6 +473,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -404,6 +515,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -423,6 +535,10 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ethanwhy.ETNetwork;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -442,6 +558,10 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/system",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ethanwhy.ETNetwork;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
