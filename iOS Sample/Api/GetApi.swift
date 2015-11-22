@@ -9,7 +9,7 @@
 import UIKit
 import ETNetwork
 
-class GetApi: ETBaseRequest, ETBaseRequestProtocol, ETRequestCacheProtocol {
+class GetApi: ETRequest, ETRequestProtocol, ETRequestCacheProtocol {
     
     var bar: String
     init(bar: String) {

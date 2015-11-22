@@ -15,7 +15,7 @@ public class ETManager {
     }()
     
     private var manager: Manager
-    private var requestDic: Dictionary<String, ETBaseRequest> =  Dictionary<String, ETBaseRequest>()
+    private var requestDic: Dictionary<String, ETRequest> =  Dictionary<String, ETRequest>()
     
     public init()
     {
@@ -23,8 +23,8 @@ public class ETManager {
         
     }
 
-    func addRequest(request: ETBaseRequest) {
-        if let subRequest = request as? ETBaseRequestProtocol {
+    func addRequest(request: ETRequest) {
+        if let subRequest = request as? ETRequestProtocol {
             let method = subRequest.requestMethod().method
             let headers = subRequest.requestHeaders()
             let serializer = subRequest.requestSerializer()
@@ -55,22 +55,22 @@ public class ETManager {
                 
             }
         } else {
-            fatalError("must implement ETBaseRequestProtocol")
+            fatalError("must implement ETRequestProtocol")
         }
 
     }
     
-    func cancelRequest(request: ETBaseRequest) {
+    func cancelRequest(request: ETRequest) {
         
     }
     
-    func cancelAllRequests(request: ETBaseRequest) {
+    func cancelAllRequests(request: ETRequest) {
         
     }
     
     //MARK: private
     //responseString
-    private func handleRequestResult(request: ETBaseRequest, response: Response<String, NSError> ) {
+    private func handleRequestResult(request: ETRequest, response: Response<String, NSError> ) {
         let req = response.request
         //guard request == req else { return }
         debugPrint(request.request)
@@ -89,7 +89,7 @@ public class ETManager {
     }
     
     ///responseJSON|AnyObject
-    private func handleRequestResult(request: ETBaseRequest, response: Response<AnyObject, NSError> ) {
+    private func handleRequestResult(request: ETRequest, response: Response<AnyObject, NSError> ) {
         var succeed = true
         debugPrint(request.request)
         if (response.result.error != nil) {
@@ -108,12 +108,12 @@ public class ETManager {
     }
     
     ///responseData
-    private func handleRequestResult(request: ETBaseRequest, response: Response<NSData, NSError> ) {
+    private func handleRequestResult(request: ETRequest, response: Response<NSData, NSError> ) {
         debugPrint(request.request)
     }
     
-    private func buildRequestUrl(request: ETBaseRequest) -> String {
-        if let subRequest = request as? ETBaseRequestProtocol  {
+    private func buildRequestUrl(request: ETRequest) -> String {
+        if let subRequest = request as? ETRequestProtocol  {
             if subRequest.requestUrl().hasPrefix("http") {
                 return subRequest.requestUrl()
             }
@@ -130,7 +130,7 @@ public class ETManager {
             return "\(subRequest.baseUrl())\(subRequest.requestUrl())"
             
         } else {
-            fatalError("must implement ETBaseRequestProtocol")
+            fatalError("must implement ETRequestProtocol")
         }
     }
 }

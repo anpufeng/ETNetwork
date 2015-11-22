@@ -21,7 +21,7 @@ class ViewController: UIViewController, ETRequestDelegate {
     }
     
     ///MARK
-    func requestFinished(request: ETBaseRequest) {
+    func requestFinished(request: ETRequest) {
         if request === getApi {
             
             request.responseJson({ (json, error) -> Void in
@@ -30,7 +30,7 @@ class ViewController: UIViewController, ETRequestDelegate {
         }
 
     }
-    func requestFailed(request: ETBaseRequest) {
+    func requestFailed(request: ETRequest) {
         if request === getApi {
             
         }
