@@ -17,22 +17,13 @@ class GetApi: ETRequest, ETRequestProtocol, ETRequestCacheProtocol {
         super.init()
     }
     
-    func requestMethod() -> ETRequestMethod {
-        return .Get
+    var method: ETRequestMethod { return .Get }
+    
+    var requestUrl: String { return "/get" }
+    
+    var parameters:  [String: AnyObject]? {
+        return ["foo": bar]
     }
     
-    func requestUrl() -> String {
-        return "/get"
-    }
-    
-    
-    func requestParams() ->  [String: AnyObject]? {
-        return  ["foo": bar]
-    }
-    
-    
-    func cacheSeconds() -> Int {
-        return 60
-    }
-
+    var cacheSeconds: Int { return 120 }
 }

@@ -62,11 +62,6 @@ public enum ETResponseSerializer {
     case Data, String, Json, PropertyList
 }
 
-//public enum ETResponse {
-//    case Json(AnyObject, NSError)
-//    case Data(NSDate, NSError)
-//    case str(String, NSError)
-//}
 
 /**
  delegate callback
@@ -91,83 +86,58 @@ public  extension ETRequestDelegate {
 /**
  custom your own request, all custom
 */
-protocol ETRequestCustom {
-    func customUrlRequest() -> NSURLRequest
+public protocol ETRequestCustom {
+    var customUrlRequest: NSURLRequest { get}
 }
 
 /**
  allow cache your request response data
 */
 public protocol ETRequestCacheProtocol: class {
-    func cacheSeconds() -> Int
-    func cacheDataType() -> ETResponseSerializer
+    var cacheSeconds: Int { get }
+//    func cacheDataType() -> ETResponseSerializer
 }
 
 public extension ETRequestCacheProtocol {
     
-    func cacheDataType() -> ETResponseSerializer {
-        return .Data
-    }
+//    func cacheDataType() -> ETResponseSerializer {
+//        return .Data
+//    }
 }
 
 /**
  you detail url to request
 */
  public protocol ETRequestProtocol : class {
-    func requestUrl() -> String
+    var requestUrl: String { get }
     
-    func baseUrl() -> String
-    
-    func requestMethod() -> ETRequestMethod
-    func requestParams() ->  [String: AnyObject]?
-    func requestSerializer() -> ETResponseSerializer
-    func requestTimeout() -> NSTimeInterval
-    func requestHeaders() -> [String: String]?
-    func requestParameterEncoding() -> ETRequestParameterEncoding
-    func requestResponseStringEncoding() -> NSStringEncoding?
-    func requestResponseJsonReadingOpion() -> NSJSONReadingOptions
+    var baseUrl: String { get }
+    var method: ETRequestMethod { get }
+    var parameters:  [String: AnyObject]? { get }
+    var timeout: Int { get }
+    var headers: [String: String]? { get }
+    var parameterEncoding: ETRequestParameterEncoding { get }
+    var responseStringEncoding: NSStringEncoding { get }
+    var responseJsonReadingOpion: NSJSONReadingOptions { get }
+    var responseSerializer: ETResponseSerializer { get }
 }
 
 /**
  make ETRequestProtocol default and optional
 */
 public extension ETRequestProtocol {
-    func baseUrl() -> String {
-        return ETNetworkConfig.sharedInstance.baseUrl
-    }
     
-    func requestParams() ->  [String: AnyObject]? {
-        return nil
-    }
+    var baseUrl: String { return ETNetworkConfig.sharedInstance.baseUrl }
     
-    func requestSerializer() -> ETResponseSerializer {
-        return .Json
-    }
+    var method: ETRequestMethod { return .Post }
+    var parameters: [String: AnyObject]? { return nil }
+    var timeout: Int { return 20 }
     
-    func requestMethod() -> ETRequestMethod {
-        return .Post
-    }
-    
-    func requestTimeout() -> NSTimeInterval {
-        //default twenty seconds
-        return 20
-    }
-    
-    func requestHeaders() -> [String: String]? {
-        return nil
-    }
-    
-    func requestParameterEncoding() -> ETRequestParameterEncoding {
-        return .Json
-    }
-    
-    func requestResponseStringEncoding() -> NSStringEncoding? {
-        return nil
-    }
-    
-    func requestResponseJsonReadingOpion() -> NSJSONReadingOptions {
-        return .AllowFragments
-    }
+    var headers: [String: String]? { return nil }
+    var parameterEncoding: ETRequestParameterEncoding { return  .Json }
+    var responseStringEncoding: NSStringEncoding { return NSUTF8StringEncoding }
+    var responseJsonReadingOpion: NSJSONReadingOptions { return .AllowFragments }
+    var responseSerializer: ETResponseSerializer { return .Json }
 }
 
 
@@ -238,7 +208,7 @@ public extension ETRequest {
     public func responseJson(completion: (AnyObject?, NSError?) -> Void ) -> Self {
         var jsonOption: NSJSONReadingOptions = .AllowFragments
         if let subRequest = self as? ETRequestProtocol {
-            jsonOption = subRequest.requestResponseJsonReadingOpion()
+            jsonOption = subRequest.responseJsonReadingOpion
         }
         if let data = self.cacheData {
             let responseSerializer = Request.JSONResponseSerializer(options: jsonOption)
@@ -295,7 +265,7 @@ public extension ETRequest {
         
         guard let cacheProtocol = self as? ETRequestCacheProtocol else { return false }
         
-        let seconds = cacheProtocol.cacheSeconds()
+        let seconds = cacheProtocol.cacheSeconds
         if seconds < 0 {
             return false
         }
@@ -326,7 +296,7 @@ public extension ETRequest {
         }
         
         guard let cacheProtocol = self as? ETRequestCacheProtocol else { return false }
-        if cacheProtocol.cacheSeconds() < 0 {
+        if cacheProtocol.cacheSeconds < 0 {
             return false
         }
         
@@ -340,6 +310,10 @@ public extension ETRequest {
         //only cache data
         guard let data = self.request?.delegate.data else { return }
         
+        let result = data.writeToFile(self.cacheFilePath(), atomically: true)
+        dataCached = true
+         print("write to file: \(self.cacheFilePath()) result: \(result)")
+        /*
         switch cacheProtocol.cacheDataType() {
         default:
             let result = data.writeToFile(self.cacheFilePath(), atomically: true)
@@ -347,6 +321,7 @@ public extension ETRequest {
 //            NSKeyedArchiver.archiveRootObject(data, toFile: self.cacheFilePath())
             print("write to file: \(self.cacheFilePath()) result: \(result)")
         }
+        */
     }
     private func cacheFilePath() -> String {
         let fullPath = "\(self.cacheBasePath())/\(self.cacheFileName())"
@@ -355,11 +330,11 @@ public extension ETRequest {
     
     private func cacheFileName() -> String {
         guard let request = self as? ETRequestProtocol else { fatalError("must implement ETRequestProtocol")}
-        let requestUrl = request.requestUrl()
-        let baseUrl = request.baseUrl()
-        let params = request.requestParams()
+        let requestUrl = request.requestUrl
+        let baseUrl = request.baseUrl
+        let parameters = request.parameters
         
-        let requestInfo = "Method:\(request.requestMethod()) Host:\(baseUrl) Url:\(requestUrl) Param:\(params), AppVersion\(ETRequest.appVersion)"
+        let requestInfo = "Method:\(request.method) Host:\(baseUrl) Url:\(requestUrl) Parameters:\(parameters), AppVersion\(ETRequest.appVersion)"
         let md5 = requestInfo.md5()
         print("filename md5: \(md5)")
         

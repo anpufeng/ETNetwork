@@ -17,20 +17,20 @@ public class ETManager {
     private var manager: Manager
     private var requestDic: Dictionary<String, ETRequest> =  Dictionary<String, ETRequest>()
     
-    public init()
-    {
-        manager = Manager.sharedInstance
-        
+    public init() {
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
+        manager = Manager(configuration: configuration)
     }
 
     func addRequest(request: ETRequest) {
         if let subRequest = request as? ETRequestProtocol {
-            let method = subRequest.requestMethod().method
-            let headers = subRequest.requestHeaders()
-            let serializer = subRequest.requestSerializer()
-            let params = subRequest.requestParams()
-            let encoding = subRequest.requestParameterEncoding().encode
-            let req = manager.request(method, self.buildRequestUrl(request), parameters: params, encoding: encoding, headers: headers)
+            let method = subRequest.method.method
+            let headers = subRequest.headers
+            let serializer = subRequest.responseSerializer
+            let parameters = subRequest.parameters
+            let encoding = subRequest.parameterEncoding.encode
+            let req = manager.request(method, self.buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
             request.request = req
 
             switch serializer {
@@ -114,8 +114,8 @@ public class ETManager {
     
     private func buildRequestUrl(request: ETRequest) -> String {
         if let subRequest = request as? ETRequestProtocol  {
-            if subRequest.requestUrl().hasPrefix("http") {
-                return subRequest.requestUrl()
+            if subRequest.requestUrl.hasPrefix("http") {
+                return subRequest.requestUrl
             }
             
             /*
@@ -127,7 +127,7 @@ public class ETManager {
             }
             */
             
-            return "\(subRequest.baseUrl())\(subRequest.requestUrl())"
+            return "\(subRequest.baseUrl)\(subRequest.requestUrl)"
             
         } else {
             fatalError("must implement ETRequestProtocol")
