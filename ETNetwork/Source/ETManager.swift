@@ -30,7 +30,7 @@ public class ETManager {
             let serializer = subRequest.responseSerializer
             let parameters = subRequest.parameters
             let encoding = subRequest.parameterEncoding.encode
-            let req = manager.request(method, self.buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
+            let req = manager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
             request.request = req
 
             switch serializer {

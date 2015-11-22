@@ -15,9 +15,26 @@ class ViewController: UIViewController, ETRequestDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        if let json = getApi.cachedJson {
+             print("==========requestFinished res json: \(json)")
+        } else {
+            getApi.delegate = self
+            getApi.start()
+        }
         
-        getApi.delegate = self
-        getApi.start()
+        if let json = getApi.cachedData {
+            print("==========requestFinished res json: \(json)")
+        } else {
+            getApi.delegate = self
+            getApi.start()
+        }
+        
+        getApi.start { () -> Void in
+            self.getApi.responseJson({ (json, error) -> Void in
+                print("json: \(json)")
+            })
+        }
+
     }
     
     ///MARK

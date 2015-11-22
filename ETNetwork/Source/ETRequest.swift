@@ -9,6 +9,7 @@
 import Foundation
 import CryptoSwift
 
+///wrap the alamofire method
 public enum ETRequestMethod {
     case Options, Get, Head, Post, Put, Patch, Delete, Trace, Connect
     
@@ -37,6 +38,7 @@ public enum ETRequestMethod {
     }
 }
 
+///wrap the alamofire ParameterEncoding
 public enum ETRequestParameterEncoding {
     case Url
     case UrlEncodedInURL
@@ -58,13 +60,14 @@ public enum ETRequestParameterEncoding {
 }
 
 
+
 public enum ETResponseSerializer {
     case Data, String, Json, PropertyList
 }
 
 
 /**
- delegate callback
+ the request delegate callback
 */
 public protocol ETRequestDelegate : class {
     func requestFinished(request: ETRequest)
@@ -72,7 +75,7 @@ public protocol ETRequestDelegate : class {
 }
 
 /**
- make it optional
+ make ETRequestDelegate callback method optional
 */
 public  extension ETRequestDelegate {
     func requestFinished(request: ETRequest) {
@@ -84,14 +87,14 @@ public  extension ETRequestDelegate {
 }
 
 /**
- custom your own request, all custom
+ conform to custom your own NSURLRequest
 */
 public protocol ETRequestCustom {
     var customUrlRequest: NSURLRequest { get}
 }
 
 /**
- allow cache your request response data
+ conform to custom your own request cache
 */
 public protocol ETRequestCacheProtocol: class {
     var cacheSeconds: Int { get }
@@ -106,7 +109,7 @@ public extension ETRequestCacheProtocol {
 }
 
 /**
- you detail url to request
+ your subclass must conform this protocol
 */
  public protocol ETRequestProtocol : class {
     var requestUrl: String { get }
@@ -118,12 +121,12 @@ public extension ETRequestCacheProtocol {
     var headers: [String: String]? { get }
     var parameterEncoding: ETRequestParameterEncoding { get }
     var responseStringEncoding: NSStringEncoding { get }
-    var responseJsonReadingOpion: NSJSONReadingOptions { get }
+    var responseJsonReadingOption: NSJSONReadingOptions { get }
     var responseSerializer: ETResponseSerializer { get }
 }
 
 /**
- make ETRequestProtocol default and optional
+ make ETRequestProtocol some methed default and optional
 */
 public extension ETRequestProtocol {
     
@@ -136,11 +139,11 @@ public extension ETRequestProtocol {
     var headers: [String: String]? { return nil }
     var parameterEncoding: ETRequestParameterEncoding { return  .Json }
     var responseStringEncoding: NSStringEncoding { return NSUTF8StringEncoding }
-    var responseJsonReadingOpion: NSJSONReadingOptions { return .AllowFragments }
+    var responseJsonReadingOption: NSJSONReadingOptions { return .AllowFragments }
     var responseSerializer: ETResponseSerializer { return .Json }
 }
 
-
+///the requst class
 public class ETRequest {
     public weak var delegate: ETRequestDelegate?
     
@@ -150,48 +153,62 @@ public class ETRequest {
     var dataFromCache: Bool = false
     var dataCached: Bool = false
     var cacheData: NSData?
+    lazy var queue: dispatch_queue_t = {
+        return dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
+    }()
     
     deinit {
         print("ETRequest  deinit")
     }
-    public func start(manager: ETManager = ETManager.sharedInstance, ignoreCache: Bool = false) -> Void {
+    
+    public func start(ignoreCache: Bool = false) {
+        start(ETManager.sharedInstance, ignoreCache: ignoreCache)
+    }
+    
+    public func start(manager: ETManager, ignoreCache: Bool) -> Void {
         self.ignoreCache = ignoreCache
-        if self.shouldUseCache() {
-            self.delegate?.requestFinished(self)
+        if shouldUseCache() {
+            delegate?.requestFinished(self)
             return
         }
         
         manager.addRequest(self)
     }
     
+    public func start(completion: () -> Void) {
+        self.start()
+        completion()
+    }
+    
     public func cancel() -> Void {
-        self.request?.cancel()
+        request?.cancel()
     }
     
     
     public init() {
+
     }
 }
 
-
+//MARK: response
 public extension ETRequest {
-
+///TODO change 6008 error
     public var responseAllHeaders: [NSObject : AnyObject]? {
-        return self.request?.response?.allHeaderFields
+        return request?.response?.allHeaderFields
     }
     
     public func responseStr(completion: (String?, NSError?) -> Void ) -> Self {
-        if let data = self.cacheData {
+        if let data = cacheData  where request == nil {
             let responseSerializer = Request.stringResponseSerializer(encoding: NSUTF8StringEncoding)
             let result = responseSerializer.serializeResponse(
-                self.request?.request,
-                self.request?.response,
+                request?.request,
+                request?.response,
                 data,
                 nil
             )
             completion(result.value, result.error)
         } else {
-            guard let request = self.request else {
+            guard let request = request else {
                 completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
                 return self
             }
@@ -208,19 +225,19 @@ public extension ETRequest {
     public func responseJson(completion: (AnyObject?, NSError?) -> Void ) -> Self {
         var jsonOption: NSJSONReadingOptions = .AllowFragments
         if let subRequest = self as? ETRequestProtocol {
-            jsonOption = subRequest.responseJsonReadingOpion
+            jsonOption = subRequest.responseJsonReadingOption
         }
-        if let data = self.cacheData {
+        if let data = cacheData where request == nil {
             let responseSerializer = Request.JSONResponseSerializer(options: jsonOption)
             let result = responseSerializer.serializeResponse(
-                self.request?.request,
-                self.request?.response,
+                request?.request,
+                request?.response,
                 data,
                 nil
             )
             completion(result.value, result.error)
         } else {
-            guard let request = self.request else {
+            guard let request = request else {
                 completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
                 return self
             }
@@ -236,10 +253,10 @@ public extension ETRequest {
     }
     
     public func responseData(completion: (NSData?, NSError?) -> Void ) -> Self {
-        if let data = self.cacheData {
+        if let data = cacheData  where request == nil {
             completion(data, nil)
         } else {
-            guard let request = self.request else {
+            guard let request = request else {
                 completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
                 return self
             }
@@ -258,6 +275,60 @@ public extension ETRequest {
 
 //MARK: cache
 public extension ETRequest {
+    /// the cached string (maybe out of date)
+    public var cachedString: String? {
+        guard let data = cachedData else { return nil }
+        
+        var encoding = NSUTF8StringEncoding
+        if let subRequest = self as? ETRequestProtocol {
+            encoding = subRequest.responseStringEncoding
+        }
+
+        
+        let responseSerializer = Request.stringResponseSerializer(encoding: encoding)
+        let result = responseSerializer.serializeResponse(
+            request?.request,
+            request?.response,
+            data,
+            nil
+        )
+
+
+        return result.value
+    }
+    
+    /// the cached json (maybe out of date)
+    public var cachedJson: AnyObject? {
+        guard let data = cachedData else { return nil }
+        
+        var jsonOption: NSJSONReadingOptions = .AllowFragments
+        if let subRequest = self as? ETRequestProtocol {
+            jsonOption = subRequest.responseJsonReadingOption
+        }
+     
+        
+        let responseSerializer = Request.JSONResponseSerializer(options: jsonOption)
+        let result = responseSerializer.serializeResponse(
+            request?.request,
+            request?.response,
+            data,
+            nil
+        )
+
+        return result.value
+    }
+    
+    /// the cached data (maybe out of date)
+    public var cachedData: NSData? {
+        let path = cacheFilePath()
+        if !NSFileManager.defaultManager().fileExistsAtPath(path) {
+            return nil
+        }
+        
+        let data = NSData(contentsOfFile: path)
+        return data
+    }
+
     private func shouldUseCache() -> Bool {
         if ignoreCache {
             return false
@@ -270,22 +341,22 @@ public extension ETRequest {
             return false
         }
 
-//        guard let cacheFilePath = self.cacheFilePath() else { return false }
-        let path = self.cacheFilePath()
+//        guard let cacheFilePath = cacheFilePath() else { return false }
+        let path = cacheFilePath()
         if !NSFileManager.defaultManager().fileExistsAtPath(path) {
             return false
         }
         
         //cache life
-        if  seconds < 0 || seconds <  self.cacheFileDuration(path) {
+        if  seconds < 0 || seconds <  cacheFileDuration(path) {
             return false
         }
         
         //cache data
-        self.cacheData = NSData(contentsOfFile: path)
-        guard let _ = self.cacheData else { return false }
+        cacheData = NSData(contentsOfFile: path)
+        guard let _ = cacheData else { return false }
         
-        self.dataFromCache = true
+        dataFromCache = true
         
         return true
     }
@@ -305,26 +376,19 @@ public extension ETRequest {
     }
     
     private func saveResponseToCacheFile() -> Void {
-        //TODO multi thread
-        guard let cacheProtocol = self as? ETRequestCacheProtocol else { return }
-        //only cache data
-        guard let data = self.request?.delegate.data else { return }
-        
-        let result = data.writeToFile(self.cacheFilePath(), atomically: true)
-        dataCached = true
-         print("write to file: \(self.cacheFilePath()) result: \(result)")
-        /*
-        switch cacheProtocol.cacheDataType() {
-        default:
-            let result = data.writeToFile(self.cacheFilePath(), atomically: true)
-            dataCached = true
-//            NSKeyedArchiver.archiveRootObject(data, toFile: self.cacheFilePath())
-            print("write to file: \(self.cacheFilePath()) result: \(result)")
+        if shouldStoreCache() {
+            //only cache data
+            guard let data = request?.delegate.data else { return }
+            
+            dispatch_async(queue) { () -> Void in
+                let result = data.writeToFile(self.cacheFilePath(), atomically: true)
+                self.dataCached = true
+                print("write to file: \(self.cacheFilePath()) result: \(result)")
+            }
         }
-        */
     }
     private func cacheFilePath() -> String {
-        let fullPath = "\(self.cacheBasePath())/\(self.cacheFileName())"
+        let fullPath = "\(cacheBasePath())/\(cacheFileName())"
         return fullPath
     }
     
@@ -345,7 +409,7 @@ public extension ETRequest {
     private func cacheBasePath() -> String {
         let libraryPaths = NSSearchPathForDirectoriesInDomains(.LibraryDirectory, .UserDomainMask, true)
         let basePath = "\(libraryPaths[0])/RequestCache"
-        self.checkDirectory(basePath)
+        checkDirectory(basePath)
         return basePath
     }
     
@@ -363,12 +427,12 @@ public extension ETRequest {
     private func checkDirectory(path: String) {
         var isDir = ObjCBool(false)
         if !NSFileManager.defaultManager().fileExistsAtPath(path, isDirectory: &isDir) {
-            self.createDirectoryAtPath(path)
+            createDirectoryAtPath(path)
         } else {
             if !isDir {
                 do {
                     try NSFileManager.defaultManager().removeItemAtPath(path)
-                    self.createDirectoryAtPath(path)
+                    createDirectoryAtPath(path)
                 } catch {
                     
                 }
