@@ -98,11 +98,13 @@ public protocol ETRequestCustom {
 */
 public protocol ETRequestCacheProtocol: class {
     var cacheSeconds: Int { get }
+    var cacheVersion: UInt64 { get }
 //    func cacheDataType() -> ETResponseSerializer
 }
 
 public extension ETRequestCacheProtocol {
     
+    var cacheVersion: UInt64 { return 0 }
 //    func cacheDataType() -> ETResponseSerializer {
 //        return .Data
 //    }
@@ -118,6 +120,7 @@ public extension ETRequestCacheProtocol {
     var method: ETRequestMethod { get }
     var parameters:  [String: AnyObject]? { get }
     var timeout: Int { get }
+    
     var headers: [String: String]? { get }
     var parameterEncoding: ETRequestParameterEncoding { get }
     var responseStringEncoding: NSStringEncoding { get }
@@ -135,6 +138,7 @@ public extension ETRequestProtocol {
     var method: ETRequestMethod { return .Post }
     var parameters: [String: AnyObject]? { return nil }
     var timeout: Int { return 20 }
+    var cacheVersion: UInt64 { return 0 }
     
     var headers: [String: String]? { return nil }
     var parameterEncoding: ETRequestParameterEncoding { return  .Json }
@@ -273,7 +277,7 @@ public extension ETRequest {
     
 }
 
-//MARK: cache
+//MARK: cache (do not stand for cahcedata)
 public extension ETRequest {
     /// the cached string (maybe out of date)
     public var cachedString: String? {
@@ -320,11 +324,18 @@ public extension ETRequest {
     
     /// the cached data (maybe out of date)
     public var cachedData: NSData? {
+        if (cacheData != nil && dataFromCache) {
+            return self.cacheData
+        }
         let path = cacheFilePath()
         if !NSFileManager.defaultManager().fileExistsAtPath(path) {
             return nil
         }
         
+        guard let cacheProtocol = self as? ETRequestCacheProtocol else { return nil }
+        if cacheProtocol.cacheVersion != cacheVersionFileContent() {
+            return nil
+        }
         let data = NSData(contentsOfFile: path)
         return data
     }
@@ -341,7 +352,14 @@ public extension ETRequest {
             return false
         }
 
+        // check cache version
+        if cacheProtocol.cacheVersion != cacheVersionFileContent() {
+            return false
+        }
+        
+        
 //        guard let cacheFilePath = cacheFilePath() else { return false }
+        //check cache file
         let path = cacheFilePath()
         if !NSFileManager.defaultManager().fileExistsAtPath(path) {
             return false
@@ -379,9 +397,10 @@ public extension ETRequest {
         if shouldStoreCache() {
             //only cache data
             guard let data = request?.delegate.data else { return }
-            
+            guard let cacheProtocol = self as? ETRequestCacheProtocol else { return }
             dispatch_async(queue) { () -> Void in
                 let result = data.writeToFile(self.cacheFilePath(), atomically: true)
+                NSKeyedArchiver.archiveRootObject(NSNumber(unsignedLongLong: cacheProtocol.cacheVersion), toFile: self.cacheVersionFilePath())
                 self.dataCached = true
                 print("write to file: \(self.cacheFilePath()) result: \(result)")
             }
@@ -390,6 +409,23 @@ public extension ETRequest {
     private func cacheFilePath() -> String {
         let fullPath = "\(cacheBasePath())/\(cacheFileName())"
         return fullPath
+    }
+    
+    private func cacheVersionFilePath() -> String {
+        let cacheVersionFileName = "\(cacheFileName()).version"
+        let fullPath = "\(cacheBasePath())/\(cacheVersionFileName)"
+        return fullPath
+        
+    }
+    
+    private func cacheVersionFileContent() -> UInt64 {
+        let path = cacheVersionFilePath()
+        if NSFileManager.defaultManager().fileExistsAtPath(path) {
+            guard let number = NSKeyedUnarchiver.unarchiveObjectWithFile(path) else { return 0}
+            return number.unsignedLongLongValue
+        }
+        
+        return 0
     }
     
     private func cacheFileName() -> String {
