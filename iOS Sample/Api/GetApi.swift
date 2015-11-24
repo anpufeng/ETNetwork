@@ -17,6 +17,7 @@ class GetApi: ETRequest, ETRequestProtocol, ETRequestCacheProtocol {
         super.init()
     }
     
+    
     var method: ETRequestMethod { return .Get }
     
     var requestUrl: String { return "/get" }
@@ -25,5 +26,6 @@ class GetApi: ETRequest, ETRequestProtocol, ETRequestCacheProtocol {
         return ["foo": bar]
     }
     
+    var cacheVersion: UInt64 { return 0 }
     var cacheSeconds: Int { return 120 }
 }

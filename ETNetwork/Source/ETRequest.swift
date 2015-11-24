@@ -103,7 +103,6 @@ public protocol ETRequestCacheProtocol: class {
 }
 
 public extension ETRequestCacheProtocol {
-    
     var cacheVersion: UInt64 { return 0 }
 //    func cacheDataType() -> ETResponseSerializer {
 //        return .Data
@@ -156,7 +155,7 @@ public class ETRequest {
     public var ignoreCache: Bool = false
     var dataFromCache: Bool = false
     var dataCached: Bool = false
-    var cacheData: NSData?
+    var loadedCacheData: NSData?
     lazy var queue: dispatch_queue_t = {
         return dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
     }()
@@ -202,7 +201,7 @@ public extension ETRequest {
     }
     
     public func responseStr(completion: (String?, NSError?) -> Void ) -> Self {
-        if let data = cacheData  where request == nil {
+        if let data = loadedCacheData  where request == nil {
             let responseSerializer = Request.stringResponseSerializer(encoding: NSUTF8StringEncoding)
             let result = responseSerializer.serializeResponse(
                 request?.request,
@@ -231,7 +230,7 @@ public extension ETRequest {
         if let subRequest = self as? ETRequestProtocol {
             jsonOption = subRequest.responseJsonReadingOption
         }
-        if let data = cacheData where request == nil {
+        if let data = loadedCacheData where request == nil {
             let responseSerializer = Request.JSONResponseSerializer(options: jsonOption)
             let result = responseSerializer.serializeResponse(
                 request?.request,
@@ -257,7 +256,7 @@ public extension ETRequest {
     }
     
     public func responseData(completion: (NSData?, NSError?) -> Void ) -> Self {
-        if let data = cacheData  where request == nil {
+        if let data = loadedCacheData  where request == nil {
             completion(data, nil)
         } else {
             guard let request = request else {
@@ -324,8 +323,8 @@ public extension ETRequest {
     
     /// the cached data (maybe out of date)
     public var cachedData: NSData? {
-        if (cacheData != nil && dataFromCache) {
-            return self.cacheData
+        if (loadedCacheData != nil && dataFromCache) {
+            return self.loadedCacheData
         }
         let path = cacheFilePath()
         if !NSFileManager.defaultManager().fileExistsAtPath(path) {
@@ -371,8 +370,8 @@ public extension ETRequest {
         }
         
         //cache data
-        cacheData = NSData(contentsOfFile: path)
-        guard let _ = cacheData else { return false }
+        loadedCacheData = NSData(contentsOfFile: path)
+        guard let _ = loadedCacheData else { return false }
         
         dataFromCache = true
         
