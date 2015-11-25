@@ -163,6 +163,7 @@ public class ETRequest {
     
     deinit {
         print("ETRequest  deinit")
+        request?.cancel()
     }
     
     public func start(ignoreCache: Bool = false) {
@@ -185,7 +186,7 @@ public class ETRequest {
     }
     
     public var requestIdentifier: Int? {
-        //if use cache then no request exist
+        //no request exist if use cache
         guard let request = request else {  return nil }
         return request.task.taskIdentifier
     }

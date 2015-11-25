@@ -41,6 +41,10 @@ public class ETManager {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
         manager = Manager(configuration: configuration)
+        manager.delegate.taskDidComplete = { (session, sessionTask, error) -> Void in
+            //TODO remove the request in subRequest
+        }
+
     }
 
     func addRequest(request: ETRequest) {
@@ -86,10 +90,22 @@ public class ETManager {
     }
     
     func cancelRequest(request: ETRequest) {
+        guard let request = self[request] else { return }
         
+        request.request?.cancel()
+        guard  let requestIdentifier = request.requestIdentifier else { return }
+        subdRequest.removeValueForKey(requestIdentifier)
     }
     
     func cancelAllRequests() {
+        for (_, value) in subdRequest {
+            value.request?.cancel()
+        }
+        
+        subdRequest.removeAll()
+    }
+    
+    func removeRequest(request: ETRequest) {
         
     }
     
