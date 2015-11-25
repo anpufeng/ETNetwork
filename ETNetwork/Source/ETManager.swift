@@ -15,7 +15,27 @@ public class ETManager {
     }()
     
     private var manager: Manager
-    private var requestDic: Dictionary<String, ETRequest> =  Dictionary<String, ETRequest>()
+    private var subdRequest: [Int: ETRequest] = [:]
+    private let subdRequestQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
+    
+    subscript(request: ETRequest) -> ETRequest? {
+        get {
+            var req: ETRequest?
+            guard let identifier = request.requestIdentifier else { return req }
+            dispatch_sync(subdRequestQueue) {
+                req = self.subdRequest[identifier]
+            }
+            
+            return req
+        }
+        
+        set {
+            guard let identifier = request.requestIdentifier else { return }
+            dispatch_barrier_async(subdRequestQueue) {
+                self.subdRequest[identifier] = newValue
+            }
+        }
+    }
     
     public init() {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
@@ -55,6 +75,10 @@ public class ETManager {
                 
                 
             }
+            
+            //add request dictionary
+            self[request] = request
+            
         } else {
             fatalError("must implement ETRequestProtocol")
         }
@@ -65,7 +89,7 @@ public class ETManager {
         
     }
     
-    func cancelAllRequests(request: ETRequest) {
+    func cancelAllRequests() {
         
     }
     

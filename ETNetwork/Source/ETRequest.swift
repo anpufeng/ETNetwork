@@ -151,6 +151,7 @@ public class ETRequest {
     public weak var delegate: ETRequestDelegate?
     
     var request: Request?
+    weak var manager: ETManager?
     
     public var ignoreCache: Bool = false
     var dataFromCache: Bool = false
@@ -178,15 +179,16 @@ public class ETRequest {
         manager.addRequest(self)
     }
     
-    public func start(completion: () -> Void) {
-        self.start()
-        completion()
-    }
-    
     public func cancel() -> Void {
+        manager?.cancelRequest(self)
         request?.cancel()
     }
     
+    public var requestIdentifier: Int? {
+        //if use cache then no request exist
+        guard let request = request else {  return nil }
+        return request.task.taskIdentifier
+    }
     
     public init() {
 
