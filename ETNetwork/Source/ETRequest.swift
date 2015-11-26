@@ -157,7 +157,7 @@ public class ETRequest {
     var dataFromCache: Bool = false
     var dataCached: Bool = false
     var loadedCacheData: NSData?
-    lazy var queue: dispatch_queue_t = {
+    lazy var serialQueue: dispatch_queue_t = {
         return dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
     }()
     
@@ -220,7 +220,7 @@ public extension ETRequest {
             }
             
             request.responseString(completionHandler: { response -> Void in
-                self.saveResponseToCacheFile()
+//                self.saveResponseToCacheFile()
                 completion(response.result.value, response.result.error)
             })
         }
@@ -249,7 +249,7 @@ public extension ETRequest {
             }
             
             request.responseJSON(options: jsonOption, completionHandler: { response -> Void in
-                self.saveResponseToCacheFile()
+//                self.saveResponseToCacheFile()
                 completion(response.result.value, response.result.error)
             })
 
@@ -268,6 +268,7 @@ public extension ETRequest {
             }
             
             request.responseData({ response -> Void in
+//                self.saveResponseToCacheFile()
                 completion(response.result.value, response.result.error)
             })
 
@@ -386,6 +387,10 @@ public extension ETRequest {
             return false
         }
         
+        if dataCached {
+            return false
+        }
+        
         guard let cacheProtocol = self as? ETRequestCacheProtocol else { return false }
         if cacheProtocol.cacheSeconds < 0 {
             return false
@@ -395,12 +400,12 @@ public extension ETRequest {
         return true
     }
     
-    private func saveResponseToCacheFile() -> Void {
+    func saveResponseToCacheFile() -> Void {
         if shouldStoreCache() {
             //only cache data
             guard let data = request?.delegate.data else { return }
             guard let cacheProtocol = self as? ETRequestCacheProtocol else { return }
-            dispatch_async(queue) { () -> Void in
+            dispatch_async(serialQueue) { () -> Void in
                 let result = data.writeToFile(self.cacheFilePath(), atomically: true)
                 NSKeyedArchiver.archiveRootObject(NSNumber(unsignedLongLong: cacheProtocol.cacheVersion), toFile: self.cacheVersionFilePath())
                 self.dataCached = true

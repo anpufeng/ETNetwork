@@ -50,9 +50,15 @@ public class ETManager {
             //TODO remove the request in subRequest
             let request  = objc_getAssociatedObject(sessionTask, &AssociatedKey.inneKey) as? ETRequest
             if let request = request {
-                print("got you \(request)")
+                debugPrint(request.request)
+                if let _ = error {
+                    request.delegate?.requestFailed(request)
+                } else {
+                    request.delegate?.requestFinished(request)
+                    request.saveResponseToCacheFile()
+                }
             } else {
-                print("faile ")
+                print("objc_getAssociatedObject fail ")
             }
         }
 
@@ -66,9 +72,10 @@ public class ETManager {
             let parameters = subRequest.parameters
             let encoding = subRequest.parameterEncoding.encode
             let req = manager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
-            objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
             request.request = req
 
+            /*
             switch serializer {
             case .Data:
                 req.responseData({ response in
@@ -90,6 +97,7 @@ public class ETManager {
                 
                 
             }
+            */
             
             //add request dictionary
             self[request] = request
@@ -121,6 +129,7 @@ public class ETManager {
     }
     
     //MARK: private
+    /*
     //responseString
     private func handleRequestResult(request: ETRequest, response: Response<String, NSError> ) {
         let req = response.request
@@ -164,6 +173,7 @@ public class ETManager {
         debugPrint(request.request)
     }
     
+*/
     private func buildRequestUrl(request: ETRequest) -> String {
         if let subRequest = request as? ETRequestProtocol  {
             if subRequest.requestUrl.hasPrefix("http") {
