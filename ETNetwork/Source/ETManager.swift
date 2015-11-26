@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 public class ETManager {
     
     public static let sharedInstance: ETManager = {
@@ -17,6 +18,10 @@ public class ETManager {
     private var manager: Manager
     private var subdRequest: [Int: ETRequest] = [:]
     private let subdRequestQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
+    
+    private struct AssociatedKey {
+        static var inneKey = "etrequest"
+    }
     
     subscript(request: ETRequest) -> ETRequest? {
         get {
@@ -43,6 +48,12 @@ public class ETManager {
         manager = Manager(configuration: configuration)
         manager.delegate.taskDidComplete = { (session, sessionTask, error) -> Void in
             //TODO remove the request in subRequest
+            let request  = objc_getAssociatedObject(sessionTask, &AssociatedKey.inneKey) as? ETRequest
+            if let request = request {
+                print("got you \(request)")
+            } else {
+                print("faile ")
+            }
         }
 
     }
@@ -55,7 +66,7 @@ public class ETManager {
             let parameters = subRequest.parameters
             let encoding = subRequest.parameterEncoding.encode
             let req = manager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
-            
+            objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             request.request = req
 
             switch serializer {
