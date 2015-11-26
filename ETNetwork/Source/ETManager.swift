@@ -8,6 +8,16 @@
 
 import Foundation
 
+public var etLogEnable = true
+public func ETLog<T>(object: T, _ file: String = __FILE__, _ function: String = __FUNCTION__, _ line: Int = __LINE__) {
+    if etLogEnable {
+        let path = file as NSString
+        let fileNameWithoutPath = path.lastPathComponent
+        let info = "\(NSDate()): \(fileNameWithoutPath).\(function)[\(line)]: \(object)"
+        print(info)
+    }
+}
+
 
 public class ETManager {
     
@@ -17,7 +27,7 @@ public class ETManager {
     
     private var manager: Manager
     private var subdRequest: [Int: ETRequest] = [:]
-    private let subdRequestQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
+    private let subdRequestConcurrentQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
     
     private struct AssociatedKey {
         static var inneKey = "etrequest"
@@ -27,7 +37,7 @@ public class ETManager {
         get {
             var req: ETRequest?
             guard let identifier = request.requestIdentifier else { return req }
-            dispatch_sync(subdRequestQueue) {
+            dispatch_sync(subdRequestConcurrentQueue) {
                 req = self.subdRequest[identifier]
             }
             
@@ -36,7 +46,7 @@ public class ETManager {
         
         set {
             guard let identifier = request.requestIdentifier else { return }
-            dispatch_barrier_async(subdRequestQueue) {
+            dispatch_barrier_async(subdRequestConcurrentQueue) {
                 self.subdRequest[identifier] = newValue
             }
         }
@@ -57,6 +67,8 @@ public class ETManager {
                     request.delegate?.requestFinished(request)
                     request.saveResponseToCacheFile()
                 }
+                
+                self.cancelRequest(request)
             } else {
                 print("objc_getAssociatedObject fail ")
             }
@@ -109,23 +121,18 @@ public class ETManager {
     }
     
     func cancelRequest(request: ETRequest) {
-        guard let request = self[request] else { return }
-        
         request.request?.cancel()
-        guard  let requestIdentifier = request.requestIdentifier else { return }
-        subdRequest.removeValueForKey(requestIdentifier)
+        self[request] = nil
     }
     
     func cancelAllRequests() {
-        for (_, value) in subdRequest {
-            value.request?.cancel()
+        let dic = subdRequest as NSDictionary
+        let copyDic: NSMutableDictionary = dic.mutableCopy() as! NSMutableDictionary
+        
+        for (_, value) in copyDic {
+            let request = value as! ETRequest
+            cancelRequest(request)
         }
-        
-        subdRequest.removeAll()
-    }
-    
-    func removeRequest(request: ETRequest) {
-        
     }
     
     //MARK: private

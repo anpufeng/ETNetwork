@@ -17,7 +17,7 @@ class GetApi: ETRequest, ETRequestProtocol, ETRequestCacheProtocol {
         super.init()
     }
     
-    
+    var timeout: Int { return 10 }
     var method: ETRequestMethod { return .Get }
     
     var requestUrl: String { return "/get" }
