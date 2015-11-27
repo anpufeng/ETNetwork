@@ -8,9 +8,9 @@
 
 import Foundation
 
-public var etLogEnable = true
+
 public func ETLog<T>(object: T, _ file: String = __FILE__, _ function: String = __FUNCTION__, _ line: Int = __LINE__) {
-    if etLogEnable {
+    if ETManager.logEnable {
         let path = file as NSString
         let fileNameWithoutPath = path.lastPathComponent
         let info = "\(NSDate()): \(fileNameWithoutPath).\(function)[\(line)]: \(object)"
@@ -20,6 +20,7 @@ public func ETLog<T>(object: T, _ file: String = __FILE__, _ function: String = 
 
 
 public class ETManager {
+    public static var logEnable = true
     
     public static let sharedInstance: ETManager = {
         return ETManager()
@@ -27,7 +28,7 @@ public class ETManager {
     
     private var manager: Manager
     private var subdRequest: [Int: ETRequest] = [:]
-    private let subdRequestConcurrentQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
+    private let concurrentQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
     
     private struct AssociatedKey {
         static var inneKey = "etrequest"
@@ -37,7 +38,7 @@ public class ETManager {
         get {
             var req: ETRequest?
             guard let identifier = request.requestIdentifier else { return req }
-            dispatch_sync(subdRequestConcurrentQueue) {
+            dispatch_sync(concurrentQueue) {
                 req = self.subdRequest[identifier]
             }
             
@@ -46,7 +47,7 @@ public class ETManager {
         
         set {
             guard let identifier = request.requestIdentifier else { return }
-            dispatch_barrier_async(subdRequestConcurrentQueue) {
+            dispatch_barrier_async(concurrentQueue) {
                 self.subdRequest[identifier] = newValue
             }
         }
@@ -60,7 +61,10 @@ public class ETManager {
             //TODO remove the request in subRequest
             let request  = objc_getAssociatedObject(sessionTask, &AssociatedKey.inneKey) as? ETRequest
             if let request = request {
-                debugPrint(request.request)
+                if ETManager.logEnable {
+                    debugPrint(request.request)
+                }
+
                 if let _ = error {
                     request.delegate?.requestFailed(request)
                 } else {
@@ -70,7 +74,7 @@ public class ETManager {
                 
                 self.cancelRequest(request)
             } else {
-                print("objc_getAssociatedObject fail ")
+                ETLog("objc_getAssociatedObject fail ")
             }
         }
 

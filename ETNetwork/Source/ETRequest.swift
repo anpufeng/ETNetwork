@@ -162,7 +162,7 @@ public class ETRequest {
     }()
     
     deinit {
-        print("ETRequest  deinit")
+        ETLog("ETRequest  deinit")
         request?.cancel()
     }
     
@@ -409,7 +409,7 @@ public extension ETRequest {
                 let result = data.writeToFile(self.cacheFilePath(), atomically: true)
                 NSKeyedArchiver.archiveRootObject(NSNumber(unsignedLongLong: cacheProtocol.cacheVersion), toFile: self.cacheVersionFilePath())
                 self.dataCached = true
-                print("write to file: \(self.cacheFilePath()) result: \(result)")
+                ETLog("write to file: \(self.cacheFilePath()) result: \(result)")
             }
         }
     }
@@ -443,7 +443,7 @@ public extension ETRequest {
         
         let requestInfo = "Method:\(request.method) Host:\(baseUrl) Url:\(requestUrl) Parameters:\(parameters), AppVersion\(ETRequest.appVersion)"
         let md5 = requestInfo.md5()
-        print("filename md5: \(md5)")
+        ETLog("filename md5: \(md5)")
         
         return md5
     }
@@ -489,7 +489,7 @@ public extension ETRequest {
             try NSFileManager.defaultManager().createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
             //TODO addDoNotBackupAttribute
         } catch {
-            print("creat path:\(path) error")
+            ETLog("creat path:\(path) error")
         }
     }
     
