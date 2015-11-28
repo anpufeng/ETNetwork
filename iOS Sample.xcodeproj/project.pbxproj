@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AA141DF31C089D530038CD74 /* RootTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141DF21C089D520038CD74 /* RootTableViewController.swift */; };
+		AA141DF91C0935880038CD74 /* DataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141DF81C0935880038CD74 /* DataTableViewController.swift */; };
 		AA4FE5D71BE9B62A00475BF7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4FE5D61BE9B62A00475BF7 /* AppDelegate.swift */; };
 		AA4FE5D91BE9B62A00475BF7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4FE5D81BE9B62A00475BF7 /* ViewController.swift */; };
 		AA4FE5DC1BE9B62A00475BF7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA4FE5DA1BE9B62A00475BF7 /* Main.storyboard */; };
@@ -66,6 +67,7 @@
 
 /* Begin PBXFileReference section */
 		AA141DF21C089D520038CD74 /* RootTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootTableViewController.swift; sourceTree = "<group>"; };
+		AA141DF81C0935880038CD74 /* DataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTableViewController.swift; sourceTree = "<group>"; };
 		AA4FE5D31BE9B62A00475BF7 /* iOS Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4FE5D61BE9B62A00475BF7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA4FE5D81BE9B62A00475BF7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				AA4FE5DF1BE9B62A00475BF7 /* LaunchScreen.storyboard */,
 				AA4FE5E21BE9B62A00475BF7 /* Info.plist */,
 				AA141DF21C089D520038CD74 /* RootTableViewController.swift */,
+				AA141DF81C0935880038CD74 /* DataTableViewController.swift */,
 			);
 			path = "iOS Sample";
 			sourceTree = "<group>";
@@ -338,6 +341,7 @@
 				AA4FE5D91BE9B62A00475BF7 /* ViewController.swift in Sources */,
 				AA4FE5D71BE9B62A00475BF7 /* AppDelegate.swift in Sources */,
 				AA9163681BFC92EE0071746D /* GetApi.swift in Sources */,
+				AA141DF91C0935880038CD74 /* DataTableViewController.swift in Sources */,
 				AA141DF31C089D530038CD74 /* RootTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

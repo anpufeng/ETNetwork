@@ -26,6 +26,6 @@ class GetApi: ETRequest, ETRequestProtocol, ETRequestCacheProtocol {
         return ["foo": bar]
     }
     
-    var cacheVersion: UInt64 { return 0 }
+//    var cacheVersion: UInt64 { return 0 }
     var cacheSeconds: Int { return 120 }
 }

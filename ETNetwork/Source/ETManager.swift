@@ -61,10 +61,7 @@ public class ETManager {
             //TODO remove the request in subRequest
             let request  = objc_getAssociatedObject(sessionTask, &AssociatedKey.inneKey) as? ETRequest
             if let request = request {
-                if ETManager.logEnable {
-                    debugPrint(request.request)
-                }
-
+                ETLog(request.request.debugDescription)
                 if let _ = error {
                     request.delegate?.requestFailed(request)
                 } else {

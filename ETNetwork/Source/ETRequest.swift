@@ -103,7 +103,13 @@ public protocol ETRequestCacheProtocol: class {
 }
 
 public extension ETRequestCacheProtocol {
-    var cacheVersion: UInt64 { return 0 }
+    var cacheSeconds: Int { return 20 }
+    //var cacheVersion: UInt64 { return UInt64(0) }
+    /** 
+    FIX ME the framework always convert UInt64->Int
+    so, using Int in return instead of UInt64
+    */
+    var cacheVersion: Int { return 0 }
 //    func cacheDataType() -> ETResponseSerializer {
 //        return .Data
 //    }
@@ -148,6 +154,9 @@ public extension ETRequestProtocol {
 
 ///the requst class
 public class ETRequest {
+    //TODO  转PROTOL 改为计算属性
+    //TODO typealies request -> jobRequest
+    
     public weak var delegate: ETRequestDelegate?
     
     var request: Request?
@@ -182,7 +191,6 @@ public class ETRequest {
     
     public func cancel() -> Void {
         manager?.cancelRequest(self)
-        request?.cancel()
     }
     
     public var requestIdentifier: Int? {
@@ -337,6 +345,7 @@ public extension ETRequest {
         
         guard let cacheProtocol = self as? ETRequestCacheProtocol else { return nil }
         if cacheProtocol.cacheVersion != cacheVersionFileContent() {
+            //FIX ME remove cache file
             return nil
         }
         let data = NSData(contentsOfFile: path)
