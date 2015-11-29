@@ -26,7 +26,17 @@ public class ETManager {
         return ETManager()
     }()
     
-    private var manager: Manager
+    public var timeoutIntervalForResource: NSTimeInterval = 25 {
+        didSet {
+            manager.session.configuration.timeoutIntervalForResource = timeoutIntervalForResource
+        }
+    }
+    public var timeoutIntervalForRequest: NSTimeInterval = 15 {
+        didSet {
+           manager.session.configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
+        }
+    }
+    private let manager: Manager
     private var subdRequest: [Int: ETRequest] = [:]
     private let concurrentQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
     
@@ -56,10 +66,17 @@ public class ETManager {
     public init() {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
+        configuration.timeoutIntervalForResource = timeoutIntervalForResource
+        configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
         manager = Manager(configuration: configuration)
-        manager.delegate.taskDidComplete = { (session, sessionTask, error) -> Void in
-            //TODO remove the request in subRequest
-            let request  = objc_getAssociatedObject(sessionTask, &AssociatedKey.inneKey) as? ETRequest
+        manager.delegate.taskDidComplete = { (session, task, error) -> Void in
+            //use the default process before our job
+            if let delegate = self.manager.delegate[task] {
+                delegate.URLSession(session, task: task, didCompleteWithError: error)
+            }
+
+            //addition job
+            let request  = objc_getAssociatedObject(task, &AssociatedKey.inneKey) as? ETRequest
             if let request = request {
                 ETLog(request.request.debugDescription)
                 if let _ = error {

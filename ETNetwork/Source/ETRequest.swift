@@ -99,20 +99,11 @@ public protocol ETRequestCustom {
 public protocol ETRequestCacheProtocol: class {
     var cacheSeconds: Int { get }
     var cacheVersion: UInt64 { get }
-//    func cacheDataType() -> ETResponseSerializer
 }
 
 public extension ETRequestCacheProtocol {
-    var cacheSeconds: Int { return 20 }
-    //var cacheVersion: UInt64 { return UInt64(0) }
-    /** 
-    FIX ME the framework always convert UInt64->Int
-    so, using Int in return instead of UInt64
-    */
-    var cacheVersion: Int { return 0 }
-//    func cacheDataType() -> ETResponseSerializer {
-//        return .Data
-//    }
+    ///default value 0
+    var cacheVersion: UInt64 { return 0 }
 }
 
 /**
@@ -124,7 +115,6 @@ public extension ETRequestCacheProtocol {
     var baseUrl: String { get }
     var method: ETRequestMethod { get }
     var parameters:  [String: AnyObject]? { get }
-    var timeout: Int { get }
     
     var headers: [String: String]? { get }
     var parameterEncoding: ETRequestParameterEncoding { get }
@@ -142,9 +132,8 @@ public extension ETRequestProtocol {
     
     var method: ETRequestMethod { return .Post }
     var parameters: [String: AnyObject]? { return nil }
-    var timeout: Int { return 20 }
-    var cacheVersion: UInt64 { return 0 }
-    
+    //FIX ME strange error if comment next ine
+    //var cacheVersion: UInt64 { return 0 }
     var headers: [String: String]? { return nil }
     var parameterEncoding: ETRequestParameterEncoding { return  .Json }
     var responseStringEncoding: NSStringEncoding { return NSUTF8StringEncoding }
@@ -171,7 +160,7 @@ public class ETRequest {
     }()
     
     deinit {
-        ETLog("ETRequest  deinit")
+        ETLog("\(self)  deinit")
         request?.cancel()
     }
     
@@ -507,5 +496,25 @@ public extension ETRequest {
         let nsObject: AnyObject? = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"]
         let version = nsObject as! String
         return version
+    }
+}
+
+extension ETRequest: CustomDebugStringConvertible {
+    public var debugDescription: String {
+        var str = ""
+        guard let subRequest = self as? ETRequestProtocol else { fatalError("must implement ETRequestProtocol") }
+        str.appendContentsOf("method: \(subRequest.method.method.rawValue)\n")
+        str.appendContentsOf("paramters: \(subRequest.parameters)\n")
+        str.appendContentsOf("headers: \(subRequest.headers)\n")
+        str.appendContentsOf("parameterEncoding: \(subRequest.parameterEncoding)\n")
+        str.appendContentsOf("responseStringEncoding: \(subRequest.responseStringEncoding)\n")
+        str.appendContentsOf("responseJsonReadingOption: \(subRequest.responseJsonReadingOption)\n")
+        str.appendContentsOf("responseSerializer: \(subRequest.responseSerializer)\n")
+        if let cacheProtocol = self as? ETRequestCacheProtocol {
+            str.appendContentsOf(" cache seconds: \(cacheProtocol.cacheSeconds), cache version: \(cacheProtocol.cacheVersion)\n")
+        } else {
+            str.appendContentsOf(" without using cache\n")
+        }
+        return str
     }
 }
