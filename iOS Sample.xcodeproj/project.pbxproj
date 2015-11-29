@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		AA141DF31C089D530038CD74 /* RootTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141DF21C089D520038CD74 /* RootTableViewController.swift */; };
 		AA141DF91C0935880038CD74 /* DataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141DF81C0935880038CD74 /* DataTableViewController.swift */; };
+		AA141E011C0A88140038CD74 /* GetApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141E001C0A88140038CD74 /* GetApi.swift */; };
+		AA141E041C0A8DD70038CD74 /* PostApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141E031C0A8DD70038CD74 /* PostApi.swift */; };
 		AA4FE5D71BE9B62A00475BF7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4FE5D61BE9B62A00475BF7 /* AppDelegate.swift */; };
 		AA4FE5D91BE9B62A00475BF7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4FE5D81BE9B62A00475BF7 /* ViewController.swift */; };
 		AA4FE5DC1BE9B62A00475BF7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA4FE5DA1BE9B62A00475BF7 /* Main.storyboard */; };
@@ -17,7 +19,6 @@
 		AA4FE5EC1BE9B62B00475BF7 /* iOS_SampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4FE5EB1BE9B62B00475BF7 /* iOS_SampleTests.swift */; };
 		AA4FE5F71BE9B62B00475BF7 /* iOS_SampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4FE5F61BE9B62B00475BF7 /* iOS_SampleUITests.swift */; };
 		AA9163661BFC92620071746D /* ETNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4FE60A1BE9B66B00475BF7 /* ETNetwork.framework */; };
-		AA9163681BFC92EE0071746D /* GetApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA9163671BFC92EE0071746D /* GetApi.swift */; };
 		AA91636A1BFC96B60071746D /* ETNetwork.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA4FE60A1BE9B66B00475BF7 /* ETNetwork.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -68,6 +69,8 @@
 /* Begin PBXFileReference section */
 		AA141DF21C089D520038CD74 /* RootTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootTableViewController.swift; sourceTree = "<group>"; };
 		AA141DF81C0935880038CD74 /* DataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTableViewController.swift; sourceTree = "<group>"; };
+		AA141E001C0A88140038CD74 /* GetApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetApi.swift; sourceTree = "<group>"; };
+		AA141E031C0A8DD70038CD74 /* PostApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostApi.swift; sourceTree = "<group>"; };
 		AA4FE5D31BE9B62A00475BF7 /* iOS Sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4FE5D61BE9B62A00475BF7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA4FE5D81BE9B62A00475BF7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -82,7 +85,6 @@
 		AA4FE5F61BE9B62B00475BF7 /* iOS_SampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOS_SampleUITests.swift; sourceTree = "<group>"; };
 		AA4FE5F81BE9B62B00475BF7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA4FE6041BE9B66B00475BF7 /* ETNetwork.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ETNetwork.xcodeproj; sourceTree = "<group>"; };
-		AA9163671BFC92EE0071746D /* GetApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetApi.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AA141DFD1C0A88020038CD74 /* Download */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Download;
+			sourceTree = "<group>";
+		};
+		AA141DFE1C0A880D0038CD74 /* Upload */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Upload;
+			sourceTree = "<group>";
+		};
+		AA141DFF1C0A88140038CD74 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				AA141E001C0A88140038CD74 /* GetApi.swift */,
+				AA141E031C0A8DD70038CD74 /* PostApi.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		AA141E021C0A881A0038CD74 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
 		AA4FE5CA1BE9B62A00475BF7 = {
 			isa = PBXGroup;
 			children = (
@@ -178,7 +210,10 @@
 		AA9163631BFC92400071746D /* Api */ = {
 			isa = PBXGroup;
 			children = (
-				AA9163671BFC92EE0071746D /* GetApi.swift */,
+				AA141E021C0A881A0038CD74 /* Auth */,
+				AA141DFF1C0A88140038CD74 /* Data */,
+				AA141DFE1C0A880D0038CD74 /* Upload */,
+				AA141DFD1C0A88020038CD74 /* Download */,
 			);
 			path = Api;
 			sourceTree = "<group>";
@@ -340,8 +375,9 @@
 			files = (
 				AA4FE5D91BE9B62A00475BF7 /* ViewController.swift in Sources */,
 				AA4FE5D71BE9B62A00475BF7 /* AppDelegate.swift in Sources */,
-				AA9163681BFC92EE0071746D /* GetApi.swift in Sources */,
 				AA141DF91C0935880038CD74 /* DataTableViewController.swift in Sources */,
+				AA141E011C0A88140038CD74 /* GetApi.swift in Sources */,
+				AA141E041C0A8DD70038CD74 /* PostApi.swift in Sources */,
 				AA141DF31C089D530038CD74 /* RootTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

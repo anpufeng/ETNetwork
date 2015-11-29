@@ -12,7 +12,7 @@ import ETNetwork
 enum Sections: Int {
     case Data, Download, Upload, Credit
     
-    var identifer: String {
+    var segueIdentifer: String {
         switch self {
         case .Data:
             return "Data"
@@ -67,7 +67,7 @@ class RootTableViewController: UITableViewController {
    //MARK: - Table view delegate
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let section = Sections(rawValue: indexPath.section)!
-        self.performSegueWithIdentifier(section.identifer, sender: indexPath)
+        self.performSegueWithIdentifier(section.segueIdentifer, sender: indexPath)
     }
 
     // MARK: - Navigation
@@ -78,8 +78,9 @@ class RootTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
         
         let dest = segue.destinationViewController
-        if  dest is DataTableViewController {
-            
+        if let dest = dest as? DataTableViewController {
+            let indexPath = sender as! NSIndexPath
+            dest.dataRows = DataRows(rawValue: indexPath.row)
         }
     }
 

@@ -7,9 +7,12 @@
 //
 
 import UIKit
+import ETNetwork
 
 class DataTableViewController: UITableViewController {
 
+    var dataRows: DataRows?
+    var dataApi: ETRequest?
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -18,6 +21,25 @@ class DataTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        guard let dataRows = dataRows else { fatalError("not set rows") }
+        switch dataRows {
+        case .Get:
+            dataApi = GetApi(bar: "bar")
+            
+        case .Post, .Put, .Delete:
+            dataApi = PostApi(bar: "bar")
+        }
+
+        
+        dataApi?.start()
+        dataApi?.responseJson({ (json, error) -> Void in
+            if (error != nil) {
+                print("==========error: \(error)")
+            }
+            print(self.dataApi.debugDescription)
+            print("==========json: \(json)")
+        })
     }
 
     override func didReceiveMemoryWarning() {

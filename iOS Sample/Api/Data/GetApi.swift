@@ -9,23 +9,27 @@
 import UIKit
 import ETNetwork
 
-class GetApi: ETRequest, ETRequestProtocol, ETRequestCacheProtocol {
+class GetApi: ETRequest {
     
     var bar: String
     init(bar: String) {
         self.bar = bar
         super.init()
     }
-    
-    var timeout: Int { return 10 }
+}
+
+extension GetApi: ETRequestProtocol {
     var method: ETRequestMethod { return .Get }
-    
     var requestUrl: String { return "/get" }
-    
     var parameters:  [String: AnyObject]? {
         return ["foo": bar]
     }
-    
-//    var cacheVersion: UInt64 { return 0 }
-    var cacheSeconds: Int { return 120 }
 }
+
+
+extension GetApi: ETRequestCacheProtocol {
+    
+    //cache
+    var cacheSeconds: Int { return 0 }
+}
+
