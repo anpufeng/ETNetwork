@@ -106,6 +106,10 @@ public extension ETRequestCacheProtocol {
     var cacheVersion: UInt64 { return 0 }
 }
 
+public protocol ETRequestDownloadProtocol {
+    var destination: String { get }
+}
+
 /**
  your subclass must conform this protocol
 */
@@ -274,6 +278,7 @@ public extension ETRequest {
         
         return self
     }
+    
     
 }
 

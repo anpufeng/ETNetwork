@@ -101,9 +101,17 @@ public class ETManager {
             let serializer = subRequest.responseSerializer
             let parameters = subRequest.parameters
             let encoding = subRequest.parameterEncoding.encode
-            let req = manager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
-            objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
-            request.request = req
+            if let downloadRequest = request as? ETRequestDownloadProtocol {
+                let destination = Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask)
+                let req = manager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
+                objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
+                request.request = req
+            } else {
+                let req = manager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
+                objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
+                request.request = req
+            }
+            
 
             /*
             switch serializer {
