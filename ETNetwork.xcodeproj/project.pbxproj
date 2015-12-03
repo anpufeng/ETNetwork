@@ -32,6 +32,7 @@
 		AA579BF61BE9F6310018DBCB /* ETManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF11BE9F6310018DBCB /* ETManager.swift */; };
 		AA9163BC1C00B84F0071746D /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9163B31C00B8200071746D /* CryptoSwift.framework */; };
 		AA9163C21C00B9B60071746D /* CryptoSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA9163B31C00B8200071746D /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AA94C4A81C0BDEAB00BD071C /* ETNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */; };
 		AAD212501BEB389A00C870C5 /* ETNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */; };
 /* End PBXBuildFile section */
 
@@ -121,6 +122,7 @@
 		AA579BF01BE9F6310018DBCB /* ETRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETRequest.swift; sourceTree = "<group>"; };
 		AA579BF11BE9F6310018DBCB /* ETManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETManager.swift; sourceTree = "<group>"; };
 		AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CryptoSwift.xcodeproj; path = CryptoSwift/CryptoSwift.xcodeproj; sourceTree = "<group>"; };
+		AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETNetwork.swift; sourceTree = "<group>"; };
 		AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETNetworkConfig.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -215,6 +217,7 @@
 				AA579BF01BE9F6310018DBCB /* ETRequest.swift */,
 				AA579BF11BE9F6310018DBCB /* ETManager.swift */,
 				AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */,
+				AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */,
 			);
 			name = Source;
 			path = ETNetwork/Source;
@@ -404,6 +407,7 @@
 				AA579BE61BE9F4AF0018DBCB /* ServerTrustPolicy.swift in Sources */,
 				AA579BF31BE9F6310018DBCB /* ETBatchRequest.swift in Sources */,
 				AAD212501BEB389A00C870C5 /* ETNetworkConfig.swift in Sources */,
+				AA94C4A81C0BDEAB00BD071C /* ETNetwork.swift in Sources */,
 				AA579BDC1BE9F4AF0018DBCB /* Download.swift in Sources */,
 				AA579BDF1BE9F4AF0018DBCB /* Manager.swift in Sources */,
 			);
