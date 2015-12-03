@@ -28,15 +28,15 @@ public class ETManager {
     
     public var timeoutIntervalForResource: NSTimeInterval = 25 {
         didSet {
-            manager.session.configuration.timeoutIntervalForResource = timeoutIntervalForResource
+            jobManager.session.configuration.timeoutIntervalForResource = timeoutIntervalForResource
         }
     }
     public var timeoutIntervalForRequest: NSTimeInterval = 15 {
         didSet {
-           manager.session.configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
+           jobManager.session.configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
         }
     }
-    private let manager: Manager
+    private let jobManager: JobManager
     private var subdRequest: [Int: ETRequest] = [:]
     private let concurrentQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
     
@@ -68,17 +68,17 @@ public class ETManager {
         configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
         configuration.timeoutIntervalForResource = timeoutIntervalForResource
         configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
-        manager = Manager(configuration: configuration)
-        manager.delegate.taskDidComplete = { (session, task, error) -> Void in
+        jobManager = JobManager(configuration: configuration)
+        jobManager.delegate.taskDidComplete = { (session, task, error) -> Void in
             //use the default process before our job
-            if let delegate = self.manager.delegate[task] {
+            if let delegate = self.jobManager.delegate[task] {
                 delegate.URLSession(session, task: task, didCompleteWithError: error)
             }
 
             //addition job
             let request  = objc_getAssociatedObject(task, &AssociatedKey.inneKey) as? ETRequest
             if let request = request {
-                ETLog(request.request.debugDescription)
+                ETLog(request.jobRequest.debugDescription)
                 if let _ = error {
                     request.delegate?.requestFailed(request)
                 } else {
@@ -103,13 +103,13 @@ public class ETManager {
             let encoding = subRequest.parameterEncoding.encode
             if let downloadRequest = request as? ETRequestDownloadProtocol {
                 let destination = Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask)
-                let req = manager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
+                let req = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
                 objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
-                request.request = req
+                request.jobRequest = req
             } else {
-                let req = manager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
+                let req = jobManager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
                 objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
-                request.request = req
+                request.jobRequest = req
             }
             
 
@@ -147,7 +147,7 @@ public class ETManager {
     }
     
     func cancelRequest(request: ETRequest) {
-        request.request?.cancel()
+        request.jobRequest?.cancel()
         self[request] = nil
     }
     

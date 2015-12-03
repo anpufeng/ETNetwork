@@ -143,6 +143,11 @@ public extension ETRequestProtocol {
     var responseSerializer: ETResponseSerializer { return .Json }
 }
 
+
+public enum TaskType {
+    case Data, Download, Upload
+}
+
 //name easily
 typealias JobRequest = Request
 typealias JobManager = Manager
