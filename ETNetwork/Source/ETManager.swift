@@ -101,16 +101,28 @@ public class ETManager {
             let serializer = requestProtocol.responseSerializer
             let parameters = requestProtocol.parameters
             let encoding = requestProtocol.parameterEncoding.encode
-            if let downloadRequest = request as? ETRequestDownloadProtocol {
-                let destination = Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask)
-                let req = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
-                objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
-                request.jobRequest = req
-            } else {
-                let req = jobManager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
-                objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
-                request.jobRequest = req
+            
+            var req: Request?
+            switch requestProtocol.taskType {
+            case .Data:
+                req = jobManager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
+            case .Download:
+                {
+                    guard let downloadRequest = request as? ETRequestDownloadProtocol else { fatalError("not implement downloadRequest") }
+                        let destination = Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask)
+                        req = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
+                }
+                
+            case .Upload:
+                    {
+                        guard let downloadRequest = request as? ETRequestDownloadProtocol else { fatalError("not implement downloadRequest") }
+                        req = jobManager.upload(method, buildRequestUrl(request), headers: headers, file: nil)
+                    }
+                    
             }
+                    
+                    objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
+                    request.jobRequest = req
             
 
             /*
@@ -152,7 +164,7 @@ public class ETManager {
     }
     
     func cancelAllRequests() {
-        let dic = subdRequest as NSDictionary
+        let dic = sudRequests as NSDictionary
         let copyDic: NSMutableDictionary = dic.mutableCopy() as! NSMutableDictionary
         
         for (_, value) in copyDic {

@@ -117,6 +117,7 @@ public protocol ETRequestDownloadProtocol: class {
 public protocol ETRequestProtocol : class {
     var requestUrl: String { get }
     
+    var taskType: TaskType { get }
     var baseUrl: String { get }
     var method: ETRequestMethod { get }
     var parameters:  [String: AnyObject]? { get }
@@ -132,6 +133,7 @@ public protocol ETRequestProtocol : class {
  make ETRequestProtocol some methed default and optional
  */
 public extension ETRequestProtocol {
+        var taskType: TaskType { return .Data }
     var baseUrl: String { return ETNetworkConfig.sharedInstance.baseUrl }
     
     var method: ETRequestMethod { return .Post }
