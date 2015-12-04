@@ -37,7 +37,7 @@ public class ETManager {
         }
     }
     private let jobManager: JobManager
-    private var subdRequest: [Int: ETRequest] = [:]
+    private var sudRequests: [Int: ETRequest] = [:]
     private let concurrentQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
     
     private struct AssociatedKey {
@@ -49,7 +49,7 @@ public class ETManager {
             var req: ETRequest?
             guard let identifier = request.requestIdentifier else { return req }
             dispatch_sync(concurrentQueue) {
-                req = self.subdRequest[identifier]
+                req = self.sudRequests[identifier]
             }
             
             return req
@@ -58,7 +58,7 @@ public class ETManager {
         set {
             guard let identifier = request.requestIdentifier else { return }
             dispatch_barrier_async(concurrentQueue) {
-                self.subdRequest[identifier] = newValue
+                self.sudRequests[identifier] = newValue
             }
         }
     }
@@ -95,12 +95,12 @@ public class ETManager {
     }
 
     func addRequest(request: ETRequest) {
-        if let subRequest = request as? ETRequestProtocol {
-            let method = subRequest.method.method
-            let headers = subRequest.headers
-            let serializer = subRequest.responseSerializer
-            let parameters = subRequest.parameters
-            let encoding = subRequest.parameterEncoding.encode
+        if let requestProtocol = request as? ETRequestProtocol {
+            let method = requestProtocol.method.method
+            let headers = requestProtocol.headers
+            let serializer = requestProtocol.responseSerializer
+            let parameters = requestProtocol.parameters
+            let encoding = requestProtocol.parameterEncoding.encode
             if let downloadRequest = request as? ETRequestDownloadProtocol {
                 let destination = Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask)
                 let req = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
@@ -208,21 +208,21 @@ public class ETManager {
     
 */
     private func buildRequestUrl(request: ETRequest) -> String {
-        if let subRequest = request as? ETRequestProtocol  {
-            if subRequest.requestUrl.hasPrefix("http") {
-                return subRequest.requestUrl
+        if let requestProtocol = request as? ETRequestProtocol  {
+            if requestProtocol.requestUrl.hasPrefix("http") {
+                return requestProtocol.requestUrl
             }
             
             /*
             var baseUrl: String
-            if let url  = subRequest.baseUrl?() {
+            if let url  = requestProtocol.baseUrl?() {
                 baseUrl = url
             } else {
                 baseUrl = config.baseUrl
             }
             */
             
-            return "\(subRequest.baseUrl)\(subRequest.requestUrl)"
+            return "\(requestProtocol.baseUrl)\(requestProtocol.requestUrl)"
             
         } else {
             fatalError("must implement ETRequestProtocol")

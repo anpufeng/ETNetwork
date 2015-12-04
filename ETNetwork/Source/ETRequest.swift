@@ -94,8 +94,8 @@ public extension ETRequest {
     
     public func responseJson(completion: (AnyObject?, NSError?) -> Void ) -> Self {
         var jsonOption: NSJSONReadingOptions = .AllowFragments
-        if let subRequest = self as? ETRequestProtocol {
-            jsonOption = subRequest.responseJsonReadingOption
+        if let requestProtocol = self as? ETRequestProtocol {
+            jsonOption = requestProtocol.responseJsonReadingOption
         }
         if let data = loadedCacheData where jobRequest == nil {
             let responseSerializer = Request.JSONResponseSerializer(options: jsonOption)
@@ -152,8 +152,8 @@ public extension ETRequest {
         guard let data = cachedData else { return nil }
         
         var encoding = NSUTF8StringEncoding
-        if let subRequest = self as? ETRequestProtocol {
-            encoding = subRequest.responseStringEncoding
+        if let requestProtocol = self as? ETRequestProtocol {
+            encoding = requestProtocol.responseStringEncoding
         }
 
         
@@ -174,8 +174,8 @@ public extension ETRequest {
         guard let data = cachedData else { return nil }
         
         var jsonOption: NSJSONReadingOptions = .AllowFragments
-        if let subRequest = self as? ETRequestProtocol {
-            jsonOption = subRequest.responseJsonReadingOption
+        if let requestProtocol = self as? ETRequestProtocol {
+            jsonOption = requestProtocol.responseJsonReadingOption
         }
      
         
