@@ -107,13 +107,13 @@ public class ETManager {
             case .Data:
                 req = jobManager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
             case .Download:
-                guard let downloadRequest = request as? ETRequestDownloadProtocol else { fatalError("not implement downloadRequest") }
+                guard let _ = request as? ETRequestDownloadProtocol else { fatalError("not implement ETRequestDownloadProtocol") }
                 let destination = Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask)
                 req = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
 
                 
             case .Upload:
-                guard let uploadRequest = request as? ETRequestDownloadProtocol else { fatalError("not implement downloadRequest") }
+                guard let _ = request as? ETREquestUploadProtocol else { fatalError("not implement ETREquestUploadProtocol") }
                 req = jobManager.upload(method, buildRequestUrl(request), headers: headers, file: NSURL(fileURLWithPath: ""))
                 
             }

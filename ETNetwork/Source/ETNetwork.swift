@@ -111,6 +111,10 @@ public protocol ETRequestDownloadProtocol: class {
     var downloadPath: String { get }
 }
 
+public protocol ETREquestUploadProtocol: class {
+    
+}
+
 /**
  your subclass must conform this protocol
  */
