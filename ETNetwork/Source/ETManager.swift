@@ -107,22 +107,19 @@ public class ETManager {
             case .Data:
                 req = jobManager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
             case .Download:
-                {
-                    guard let downloadRequest = request as? ETRequestDownloadProtocol else { fatalError("not implement downloadRequest") }
-                        let destination = Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask)
-                        req = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
-                }
+                guard let downloadRequest = request as? ETRequestDownloadProtocol else { fatalError("not implement downloadRequest") }
+                let destination = Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask)
+                req = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
+
                 
             case .Upload:
-                    {
-                        guard let downloadRequest = request as? ETRequestDownloadProtocol else { fatalError("not implement downloadRequest") }
-                        req = jobManager.upload(method, buildRequestUrl(request), headers: headers, file: nil)
-                    }
-                    
+                guard let uploadRequest = request as? ETRequestDownloadProtocol else { fatalError("not implement downloadRequest") }
+                req = jobManager.upload(method, buildRequestUrl(request), headers: headers, file: NSURL(fileURLWithPath: ""))
+                
             }
                     
-                    objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
-                    request.jobRequest = req
+            objc_setAssociatedObject(req!.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
+            request.jobRequest = req
             
 
             /*
