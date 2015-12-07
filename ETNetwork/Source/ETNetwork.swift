@@ -108,11 +108,20 @@ public extension ETRequestCacheProtocol {
 }
 
 public protocol ETRequestDownloadProtocol: class {
-    var downloadPath: String { get }
+//    var destinationURL: DownloadFileDestination { get }
+    var resumeData: NSData? { get }
+}
+
+public extension ETRequestDownloadProtocol {
+//    var destinationURL: DownloadFileDestination { return Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask) }
+    var resumeData: NSData? { return nil }
 }
 
 public protocol ETREquestUploadProtocol: class {
-    
+    var uploadType: UploadType { get }
+    var fileURL: NSURL? { get }
+    var fileData: NSData? { get }
+    var formData: [UploadWrap]? { get }
 }
 
 /**
@@ -154,6 +163,61 @@ public enum TaskType {
     case Data, Download, Upload
 }
 
+
+struct UploadTypeKey {
+    static let fileName = "UploadTypeKeyFileName"
+    static let name = "UploadTypeKeyName"
+    static let data = "UploadTypeKeyData"
+    static let mimeType = "UploadTypeMimeType"
+}
+
+public class UploadWrap {
+    var name: String
+    var fileName: String?
+    var mimeType: String?
+
+    init(name: String, fileName: String? = nil, mimeType: String? = nil) {
+        self.name = name
+        self.fileName = fileName
+        self.mimeType = mimeType
+    }
+}
+
+ public final class UploadWrapData: UploadWrap {
+    var data: NSData
+    init(name: String, fileName: String?, mimeType: String?, data: NSData) {
+        self.data = data
+        super.init(name: name, fileName: fileName, mimeType: mimeType)
+    }
+}
+
+public final class UploadWrapFileURL: UploadWrap {
+    var fileURL: NSURL
+
+    init(name: String, fileName: String?, mimeType: String?, fileURL: NSURL) {
+        self.fileURL = fileURL
+        super.init(name: name, fileName: fileName, mimeType: mimeType)
+    }
+}
+
+public final class UploadWrapStream: UploadWrap {
+    var stream: NSInputStream
+    init(name: String, fileName: String?, mimeType: String?, stream: NSInputStream) {
+        self.stream = stream
+        super.init(name: name, fileName: fileName, mimeType: mimeType)
+    }
+}
+
+struct UploadData {
+    var data: NSData
+    var name: String
+    var fileName: String
+    var mimeType: String
+}
+
+public enum UploadType {
+    case FileData, FileURL, FormData
+}
 //name easily
 typealias JobRequest = Request
 typealias JobManager = Manager

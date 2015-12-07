@@ -367,6 +367,18 @@ public extension ETRequest {
     }
 }
 
+extension ETRequest {
+    public func progress(closure: ((Int64, Int64, Int64) -> Void)? = nil) -> Self {
+        jobRequest?.progress({ (readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite) -> Void in
+            if let closure = closure {
+                closure(readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite)
+            }
+
+        })
+
+        return self
+    }
+}
 extension ETRequest: CustomDebugStringConvertible {
     public var debugDescription: String {
         var str = ""
@@ -386,3 +398,4 @@ extension ETRequest: CustomDebugStringConvertible {
         return str
     }
 }
+

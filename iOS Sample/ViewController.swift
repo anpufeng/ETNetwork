@@ -18,6 +18,7 @@ class ViewController: UIViewController, ETRequestDelegate {
         if let _ = getApi.cachedJson {
             // print("==========requestFinished res json: \(json)")
         }
+
         
         getApi.delegate = self
         getApi.start()
