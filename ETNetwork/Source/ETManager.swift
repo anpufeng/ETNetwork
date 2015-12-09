@@ -147,8 +147,7 @@ public class ETManager {
                             } else if wrapped is UploadWrapStream {
                                 let wrapStream = wrapped as! UploadWrapStream
                                 if let mimeType = wrapStream.mimeType, fileName = wrapStream.fileName {
-                                    //FIX ME stream length
-                                    multipart.appendBodyPart(stream: wrapStream.stream, length: 0, name: wrapStream.name, fileName: fileName, mimeType: mimeType)
+                                    multipart.appendBodyPart(stream: wrapStream.stream, length: wrapStream.length, name: wrapStream.name, fileName: fileName, mimeType: mimeType)
                                 } else {
                                     fatalError("must have fileName & mimeType")
                                 }

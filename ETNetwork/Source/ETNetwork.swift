@@ -202,8 +202,10 @@ public final class UploadWrapFileURL: UploadWrap {
 
 public final class UploadWrapStream: UploadWrap {
     var stream: NSInputStream
-    init(name: String, fileName: String?, mimeType: String?, stream: NSInputStream) {
+    var length: UInt64
+    init(name: String, fileName: String?, mimeType: String?, stream: NSInputStream, length: UInt64) {
         self.stream = stream
+        self.length = length
         super.init(name: name, fileName: fileName, mimeType: mimeType)
     }
 }
