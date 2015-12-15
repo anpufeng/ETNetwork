@@ -21,7 +21,7 @@ enum Sections: Int {
         case .Upload:
             return "Upload"
         case .Credit:
-            return "Credit"
+            return "Auth"
         }
     }
 }
@@ -78,9 +78,15 @@ class RootTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
         
         let dest = segue.destinationViewController
+         let indexPath = sender as! NSIndexPath
         if let dest = dest as? DataTableViewController {
-            let indexPath = sender as! NSIndexPath
             dest.dataRows = DataRows(rawValue: indexPath.row)
+        } else if let dest = dest as? DownloadTableViewController {
+            dest.downloadRows = DownloadRows(rawValue: indexPath.row)
+        } else if let dest = dest as? UploadTableViewController {
+            dest.uploadRows = UploadRows(rawValue: indexPath.row)
+        } else if let dest = dest as? AuthTableViewController {
+            dest.authRows = AuthRows(rawValue: indexPath.row)
         }
     }
 

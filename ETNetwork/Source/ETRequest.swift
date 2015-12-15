@@ -381,7 +381,7 @@ extension ETRequest {
 }
 extension ETRequest: CustomDebugStringConvertible {
     public var debugDescription: String {
-        var str = ""
+        var str = "debugDescription ***"
         guard let requestProtocol = self as? ETRequestProtocol else { fatalError("must implement ETRequestProtocol") }
         str.appendContentsOf("method: \(requestProtocol.method.method.rawValue)\n")
         str.appendContentsOf("paramters: \(requestProtocol.parameters)\n")

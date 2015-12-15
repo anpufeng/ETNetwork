@@ -94,6 +94,36 @@ public class ETManager {
 
     }
 
+    public init(configuration: NSURLSessionConfiguration) {
+        jobManager = JobManager(configuration: configuration)
+        jobManager.delegate.taskDidComplete = { (session, task, error) -> Void in
+            //use the default process before our job
+            if let delegate = self.jobManager.delegate[task] {
+                delegate.URLSession(session, task: task, didCompleteWithError: error)
+            }
+
+            //addition job
+            let request  = objc_getAssociatedObject(task, &AssociatedKey.inneKey) as? ETRequest
+            if let request = request {
+                ETLog(request.jobRequest.debugDescription)
+                if let _ = error {
+                    request.delegate?.requestFailed(request)
+                } else {
+                    request.delegate?.requestFinished(request)
+                    request.saveResponseToCacheFile()
+                }
+
+                self.cancelRequest(request)
+            } else {
+                ETLog("objc_getAssociatedObject fail ")
+            }
+        }
+    }
+
+    private func commonInit(configuration: NSURLSessionConfiguration) {
+
+    }
+
     func addRequest(request: ETRequest) {
         if let requestProtocol = request as? ETRequestProtocol {
             let method = requestProtocol.method.method
