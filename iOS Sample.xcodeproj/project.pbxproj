@@ -10,6 +10,9 @@
 		2A2417FA1C204B5700609D15 /* DownloadTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A2417F91C204B5700609D15 /* DownloadTableViewController.swift */; };
 		2A2417FE1C204BC900609D15 /* UploadTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A2417FD1C204BC900609D15 /* UploadTableViewController.swift */; };
 		2A2418001C204BDF00609D15 /* AuthTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A2417FF1C204BDF00609D15 /* AuthTableViewController.swift */; };
+		2A6661A51C2121F400D8B110 /* PutApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661A41C2121F400D8B110 /* PutApi.swift */; };
+		2A6661A91C2122E300D8B110 /* DeleteApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661A81C2122E300D8B110 /* DeleteApi.swift */; };
+		2A6661AF1C21264E00D8B110 /* GetDownloadApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661AD1C21264E00D8B110 /* GetDownloadApi.swift */; };
 		AA141DF31C089D530038CD74 /* RootTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141DF21C089D520038CD74 /* RootTableViewController.swift */; };
 		AA141DF91C0935880038CD74 /* DataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141DF81C0935880038CD74 /* DataTableViewController.swift */; };
 		AA141E011C0A88140038CD74 /* GetApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141E001C0A88140038CD74 /* GetApi.swift */; };
@@ -73,6 +76,9 @@
 		2A2417F91C204B5700609D15 /* DownloadTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadTableViewController.swift; sourceTree = "<group>"; };
 		2A2417FD1C204BC900609D15 /* UploadTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadTableViewController.swift; sourceTree = "<group>"; };
 		2A2417FF1C204BDF00609D15 /* AuthTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthTableViewController.swift; sourceTree = "<group>"; };
+		2A6661A41C2121F400D8B110 /* PutApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PutApi.swift; sourceTree = "<group>"; };
+		2A6661A81C2122E300D8B110 /* DeleteApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteApi.swift; sourceTree = "<group>"; };
+		2A6661AD1C21264E00D8B110 /* GetDownloadApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetDownloadApi.swift; sourceTree = "<group>"; };
 		AA141DF21C089D520038CD74 /* RootTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootTableViewController.swift; sourceTree = "<group>"; };
 		AA141DF81C0935880038CD74 /* DataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTableViewController.swift; sourceTree = "<group>"; };
 		AA141E001C0A88140038CD74 /* GetApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetApi.swift; sourceTree = "<group>"; };
@@ -119,14 +125,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		AA141DFD1C0A88020038CD74 /* Download */ = {
+		2A6661AB1C21264E00D8B110 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		2A6661AC1C21264E00D8B110 /* Download */ = {
+			isa = PBXGroup;
+			children = (
+				2A6661AD1C21264E00D8B110 /* GetDownloadApi.swift */,
 			);
 			path = Download;
 			sourceTree = "<group>";
 		};
-		AA141DFE1C0A880D0038CD74 /* Upload */ = {
+		2A6661AE1C21264E00D8B110 /* Upload */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -136,17 +150,12 @@
 		AA141DFF1C0A88140038CD74 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				2A6661A81C2122E300D8B110 /* DeleteApi.swift */,
 				AA141E001C0A88140038CD74 /* GetApi.swift */,
 				AA141E031C0A8DD70038CD74 /* PostApi.swift */,
+				2A6661A41C2121F400D8B110 /* PutApi.swift */,
 			);
 			path = Data;
-			sourceTree = "<group>";
-		};
-		AA141E021C0A881A0038CD74 /* Auth */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Auth;
 			sourceTree = "<group>";
 		};
 		AA4FE5CA1BE9B62A00475BF7 = {
@@ -219,10 +228,10 @@
 		AA9163631BFC92400071746D /* Api */ = {
 			isa = PBXGroup;
 			children = (
-				AA141E021C0A881A0038CD74 /* Auth */,
+				2A6661AB1C21264E00D8B110 /* Auth */,
+				2A6661AC1C21264E00D8B110 /* Download */,
+				2A6661AE1C21264E00D8B110 /* Upload */,
 				AA141DFF1C0A88140038CD74 /* Data */,
-				AA141DFE1C0A880D0038CD74 /* Upload */,
-				AA141DFD1C0A88020038CD74 /* Download */,
 			);
 			path = Api;
 			sourceTree = "<group>";
@@ -384,7 +393,10 @@
 			files = (
 				AA4FE5D91BE9B62A00475BF7 /* ViewController.swift in Sources */,
 				2A2417FA1C204B5700609D15 /* DownloadTableViewController.swift in Sources */,
+				2A6661A51C2121F400D8B110 /* PutApi.swift in Sources */,
 				AA4FE5D71BE9B62A00475BF7 /* AppDelegate.swift in Sources */,
+				2A6661A91C2122E300D8B110 /* DeleteApi.swift in Sources */,
+				2A6661AF1C21264E00D8B110 /* GetDownloadApi.swift in Sources */,
 				AA141DF91C0935880038CD74 /* DataTableViewController.swift in Sources */,
 				AA141E011C0A88140038CD74 /* GetApi.swift in Sources */,
 				2A2418001C204BDF00609D15 /* AuthTableViewController.swift in Sources */,

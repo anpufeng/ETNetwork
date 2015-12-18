@@ -26,7 +26,7 @@ public class ETManager {
         return ETManager()
     }()
     
-    public var timeoutIntervalForResource: NSTimeInterval = 25 {
+    public var timeoutIntervalForResource: NSTimeInterval = 125 {
         didSet {
             jobManager.session.configuration.timeoutIntervalForResource = timeoutIntervalForResource
         }

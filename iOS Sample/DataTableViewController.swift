@@ -25,10 +25,15 @@ class DataTableViewController: UITableViewController {
         guard let dataRows = dataRows else { fatalError("not set rows") }
         switch dataRows {
         case .Get:
-            dataApi = GetApi(bar: "bar")
+            dataApi = GetApi(bar: "GetApi")
             
-        case .Post, .Put, .Delete:
-            dataApi = PostApi(bar: "bar")
+        case .Post:
+            dataApi = PostApi(bar: "PostApi")
+        case .Put:
+            dataApi = PutApi(bar: "PutApi")
+        case .Delete:
+            dataApi = DeleteApi(bar: "DeleteApi")
+
         }
 
         

@@ -381,19 +381,19 @@ extension ETRequest {
 }
 extension ETRequest: CustomDebugStringConvertible {
     public var debugDescription: String {
-        var str = "debugDescription ***"
+        var str = "\n"
         guard let requestProtocol = self as? ETRequestProtocol else { fatalError("must implement ETRequestProtocol") }
-        str.appendContentsOf("method: \(requestProtocol.method.method.rawValue)\n")
-        str.appendContentsOf("paramters: \(requestProtocol.parameters)\n")
-        str.appendContentsOf("headers: \(requestProtocol.headers)\n")
-        str.appendContentsOf("parameterEncoding: \(requestProtocol.parameterEncoding)\n")
-        str.appendContentsOf("responseStringEncoding: \(requestProtocol.responseStringEncoding)\n")
-        str.appendContentsOf("responseJsonReadingOption: \(requestProtocol.responseJsonReadingOption)\n")
-        str.appendContentsOf("responseSerializer: \(requestProtocol.responseSerializer)\n")
+        str.appendContentsOf("      method: \(requestProtocol.method.method.rawValue)\n")
+        str.appendContentsOf("      paramters: \(requestProtocol.parameters)\n")
+        str.appendContentsOf("      headers: \(requestProtocol.headers)\n")
+        str.appendContentsOf("      parameterEncoding: \(requestProtocol.parameterEncoding)\n")
+        str.appendContentsOf("      responseStringEncoding: \(requestProtocol.responseStringEncoding)\n")
+        str.appendContentsOf("      responseJsonReadingOption: \(requestProtocol.responseJsonReadingOption)\n")
+        str.appendContentsOf("      responseSerializer: \(requestProtocol.responseSerializer)\n")
         if let cacheProtocol = self as? ETRequestCacheProtocol {
-            str.appendContentsOf(" cache seconds: \(cacheProtocol.cacheSeconds), cache version: \(cacheProtocol.cacheVersion)\n")
+            str.appendContentsOf("      cache seconds: \(cacheProtocol.cacheSeconds), cache version: \(cacheProtocol.cacheVersion)\n")
         } else {
-            str.appendContentsOf(" without using cache\n")
+            str.appendContentsOf("      without using cache\n")
         }
         return str
     }

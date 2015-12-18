@@ -12,8 +12,7 @@ import ETNetwork
 class DownloadTableViewController: UITableViewController {
 
     var downloadRows: DownloadRows?
-    var dataApi: ETRequest?
-
+    var downloadApi: ETRequest?
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,7 +21,28 @@ class DownloadTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+
+        guard let downloadRows = downloadRows else { fatalError("not set rows") }
+        switch downloadRows {
+        case .Download, .DownloadWithResumeData:
+            downloadApi = GetDownloadApi(bar: "GetDownloadApi")
+        }
+
+
+        downloadApi?.start()
+        downloadApi?.progress({ (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
+            print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
+            print("percent: \(totalBytesRead/totalBytesExpectedToRead)")
+        }).responseJson({ (json, error) -> Void in
+            if (error != nil) {
+                print("==========error: \(error)")
+            } else {
+                print(self.downloadApi.debugDescription)
+                print("==========json: \(json)")
+            }
+        })
     }
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
