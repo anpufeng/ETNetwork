@@ -1,0 +1,866 @@
+({
+  "weightBeforePregnancy" : 0,
+  "history" : [
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1449571850526,
+          "weight" : 69800,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1447147438000,
+          "weight" : 70050,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1447146240612,
+          "weight" : 70450,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1447139500480,
+          "weight" : 70350,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1447138105800,
+          "weight" : 70450,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1447138015458,
+          "weight" : 70450,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1447053326126,
+          "weight" : 69950,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1447033923725,
+          "weight" : 69600,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1446690427579,
+          "weight" : 69650,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1446023248018,
+          "weight" : 69950,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1446023163039,
+          "weight" : 69950,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1442392084193,
+          "weight" : 68150,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1442392082475,
+          "weight" : 68150,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1441009889892,
+          "weight" : 69150,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009854188,
+          "weight" : 69150,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009844908,
+          "weight" : 69150,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009514472,
+          "weight" : 68750,
+          "bfp" : 17.1612411134667
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009505979,
+          "weight" : 68750,
+          "bfp" : 17.1612411134667
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009489950,
+          "weight" : 68750,
+          "bfp" : 17.3945484019621
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009379910,
+          "weight" : 68650,
+          "bfp" : 18.27192708551319
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009361382,
+          "weight" : 68650,
+          "bfp" : 17.37312863483663
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009353074,
+          "weight" : 68650,
+          "bfp" : 17.37312863483663
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009130202,
+          "weight" : 68950,
+          "bfp" : 17.97221073883383
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009121042,
+          "weight" : 68950,
+          "bfp" : 17.97221073883383
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009101907,
+          "weight" : 68950,
+          "bfp" : 17.71547316143531
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009058025,
+          "weight" : 68950,
+          "bfp" : 17.70466634105988
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009045608,
+          "weight" : 68750,
+          "bfp" : 18.02379035710258
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009036939,
+          "weight" : 68750,
+          "bfp" : 18.02379035710258
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008997249,
+          "weight" : 68900,
+          "bfp" : 17.10578849467658
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008985176,
+          "weight" : 68900,
+          "bfp" : 17.1114307331234
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008978292,
+          "weight" : 68900,
+          "bfp" : 17.1114307331234
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008976548,
+          "weight" : 68900,
+          "bfp" : 17.1114307331234
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008884181,
+          "weight" : 68900,
+          "bfp" : 17.45130132583921
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008875953,
+          "weight" : 68900,
+          "bfp" : 17.45130132583921
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008864372,
+          "weight" : 68550,
+          "bfp" : 17.3736050082742
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008855883,
+          "weight" : 68550,
+          "bfp" : 17.3736050082742
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008303037,
+          "weight" : 68700,
+          "bfp" : 17.33144341247791
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008294855,
+          "weight" : 68700,
+          "bfp" : 17.33144341247791
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441007212073,
+          "weight" : 68800,
+          "bfp" : 17.506764543191
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006923678,
+          "weight" : 68900,
+          "bfp" : 17.59361759602377
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006709543,
+          "weight" : 69050,
+          "bfp" : 18.12030097325542
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006703068,
+          "weight" : 69050,
+          "bfp" : 18.12030097325542
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006701042,
+          "weight" : 69050,
+          "bfp" : 18.12030097325542
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006684891,
+          "weight" : 68100,
+          "bfp" : 17.00188111259263
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006502663,
+          "weight" : 68950,
+          "bfp" : 17.64507111431177
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006494001,
+          "weight" : 68950,
+          "bfp" : 17.64507111431177
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006420988,
+          "weight" : 68950,
+          "bfp" : 17.65592649055326
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441005975101,
+          "weight" : 68750,
+          "bfp" : 17.57507915868847
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441005975076,
+          "weight" : 68750,
+          "bfp" : 17.57507915868847
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1440663227558,
+          "weight" : 67850,
+          "bfp" : 19.79780610824335
+        },
+        {
+          "abnormal" : false,
+          "time" : 1440662845611,
+          "weight" : 67850,
+          "bfp" : 18.90743922068287
+        },
+        {
+          "abnormal" : false,
+          "time" : 1440643668618,
+          "weight" : 67050,
+          "bfp" : 20.02353866178674
+        },
+        {
+          "abnormal" : false,
+          "time" : 1440643404010,
+          "weight" : 66900,
+          "bfp" : 19.73230237979103
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1440579663368,
+          "weight" : 68600,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1439787025112,
+          "weight" : 67200,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1439198811326,
+          "weight" : 67600,
+          "bfp" : 17.1509822334311
+        },
+        {
+          "abnormal" : true,
+          "time" : 1439198287050,
+          "weight" : 62950,
+          "bfp" : 20.0306064286794
+        },
+        {
+          "abnormal" : false,
+          "time" : 1439198243981,
+          "weight" : 67550,
+          "bfp" : 17.16974993779154
+        },
+        {
+          "abnormal" : false,
+          "time" : 1439198200228,
+          "weight" : 69750,
+          "bfp" : 19.1645859988443
+        },
+        {
+          "abnormal" : false,
+          "time" : 1439198178196,
+          "weight" : 66750,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1438834208000,
+          "weight" : 66000,
+          "bfp" : 18.06213832003201
+        },
+        {
+          "abnormal" : true,
+          "time" : 1438825456542,
+          "weight" : 61000,
+          "bfp" : 0
+        }
+      ]
+    }
+  ],
+  "weightReference" : [
+    55368.65,
+    71829.60000000001,
+    83801.2
+  ],
+  "goalWeight" : 70000,
+  "weightStatus" : "BMI_NORMAL",
+  "hasMore" : false
+})
+jsonOptional({
+  "weightBeforePregnancy" : 0,
+  "history" : [
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1449571850526,
+          "weight" : 69800,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1447147438000,
+          "weight" : 70050,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1447146240612,
+          "weight" : 70450,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1447139500480,
+          "weight" : 70350,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1447138105800,
+          "weight" : 70450,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1447138015458,
+          "weight" : 70450,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1447053326126,
+          "weight" : 69950,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1447033923725,
+          "weight" : 69600,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1446690427579,
+          "weight" : 69650,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1446023248018,
+          "weight" : 69950,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1446023163039,
+          "weight" : 69950,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1442392084193,
+          "weight" : 68150,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1442392082475,
+          "weight" : 68150,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1441009889892,
+          "weight" : 69150,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009854188,
+          "weight" : 69150,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009844908,
+          "weight" : 69150,
+          "bfp" : 0
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009514472,
+          "weight" : 68750,
+          "bfp" : 17.1612411134667
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009505979,
+          "weight" : 68750,
+          "bfp" : 17.1612411134667
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009489950,
+          "weight" : 68750,
+          "bfp" : 17.3945484019621
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009379910,
+          "weight" : 68650,
+          "bfp" : 18.27192708551319
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009361382,
+          "weight" : 68650,
+          "bfp" : 17.37312863483663
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009353074,
+          "weight" : 68650,
+          "bfp" : 17.37312863483663
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009130202,
+          "weight" : 68950,
+          "bfp" : 17.97221073883383
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009121042,
+          "weight" : 68950,
+          "bfp" : 17.97221073883383
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009101907,
+          "weight" : 68950,
+          "bfp" : 17.71547316143531
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009058025,
+          "weight" : 68950,
+          "bfp" : 17.70466634105988
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009045608,
+          "weight" : 68750,
+          "bfp" : 18.02379035710258
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441009036939,
+          "weight" : 68750,
+          "bfp" : 18.02379035710258
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008997249,
+          "weight" : 68900,
+          "bfp" : 17.10578849467658
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008985176,
+          "weight" : 68900,
+          "bfp" : 17.1114307331234
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008978292,
+          "weight" : 68900,
+          "bfp" : 17.1114307331234
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008976548,
+          "weight" : 68900,
+          "bfp" : 17.1114307331234
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008884181,
+          "weight" : 68900,
+          "bfp" : 17.45130132583921
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008875953,
+          "weight" : 68900,
+          "bfp" : 17.45130132583921
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008864372,
+          "weight" : 68550,
+          "bfp" : 17.3736050082742
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008855883,
+          "weight" : 68550,
+          "bfp" : 17.3736050082742
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008303037,
+          "weight" : 68700,
+          "bfp" : 17.33144341247791
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441008294855,
+          "weight" : 68700,
+          "bfp" : 17.33144341247791
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441007212073,
+          "weight" : 68800,
+          "bfp" : 17.506764543191
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006923678,
+          "weight" : 68900,
+          "bfp" : 17.59361759602377
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006709543,
+          "weight" : 69050,
+          "bfp" : 18.12030097325542
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006703068,
+          "weight" : 69050,
+          "bfp" : 18.12030097325542
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006701042,
+          "weight" : 69050,
+          "bfp" : 18.12030097325542
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006684891,
+          "weight" : 68100,
+          "bfp" : 17.00188111259263
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006502663,
+          "weight" : 68950,
+          "bfp" : 17.64507111431177
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006494001,
+          "weight" : 68950,
+          "bfp" : 17.64507111431177
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441006420988,
+          "weight" : 68950,
+          "bfp" : 17.65592649055326
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441005975101,
+          "weight" : 68750,
+          "bfp" : 17.57507915868847
+        },
+        {
+          "abnormal" : false,
+          "time" : 1441005975076,
+          "weight" : 68750,
+          "bfp" : 17.57507915868847
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1440663227558,
+          "weight" : 67850,
+          "bfp" : 19.79780610824335
+        },
+        {
+          "abnormal" : false,
+          "time" : 1440662845611,
+          "weight" : 67850,
+          "bfp" : 18.90743922068287
+        },
+        {
+          "abnormal" : false,
+          "time" : 1440643668618,
+          "weight" : 67050,
+          "bfp" : 20.02353866178674
+        },
+        {
+          "abnormal" : false,
+          "time" : 1440643404010,
+          "weight" : 66900,
+          "bfp" : 19.73230237979103
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1440579663368,
+          "weight" : 68600,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1439787025112,
+          "weight" : 67200,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1439198811326,
+          "weight" : 67600,
+          "bfp" : 17.1509822334311
+        },
+        {
+          "abnormal" : true,
+          "time" : 1439198287050,
+          "weight" : 62950,
+          "bfp" : 20.0306064286794
+        },
+        {
+          "abnormal" : false,
+          "time" : 1439198243981,
+          "weight" : 67550,
+          "bfp" : 17.16974993779154
+        },
+        {
+          "abnormal" : false,
+          "time" : 1439198200228,
+          "weight" : 69750,
+          "bfp" : 19.1645859988443
+        },
+        {
+          "abnormal" : false,
+          "time" : 1439198178196,
+          "weight" : 66750,
+          "bfp" : 0
+        }
+      ]
+    },
+    {
+      "records" : [
+        {
+          "abnormal" : false,
+          "time" : 1438834208000,
+          "weight" : 66000,
+          "bfp" : 18.06213832003201
+        },
+        {
+          "abnormal" : true,
+          "time" : 1438825456542,
+          "weight" : 61000,
+          "bfp" : 0
+        }
+      ]
+    }
+  ],
+  "weightReference" : [
+    55368.65,
+    71829.60000000001,
+    83801.2
+  ],
+  "goalWeight" : 70000,
+  "weightStatus" : "BMI_NORMAL",
+  "hasMore" : false
+})

@@ -13,6 +13,10 @@
 		2A6661A51C2121F400D8B110 /* PutApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661A41C2121F400D8B110 /* PutApi.swift */; };
 		2A6661A91C2122E300D8B110 /* DeleteApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661A81C2122E300D8B110 /* DeleteApi.swift */; };
 		2A6661AF1C21264E00D8B110 /* GetDownloadApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661AD1C21264E00D8B110 /* GetDownloadApi.swift */; };
+		2AFC4D801C2432C200E105FF /* upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AFC4D7F1C2432C200E105FF /* upload.png */; };
+		2AFC4D841C2432F500E105FF /* UploadFileApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFC4D831C2432F500E105FF /* UploadFileApi.swift */; };
+		2AFC4D861C252AA400E105FF /* UploadDataApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFC4D851C252AA400E105FF /* UploadDataApi.swift */; };
+		2AFC4D881C252C7C00E105FF /* sample.json in Resources */ = {isa = PBXBuildFile; fileRef = 2AFC4D871C252C7C00E105FF /* sample.json */; };
 		AA141DF31C089D530038CD74 /* RootTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141DF21C089D520038CD74 /* RootTableViewController.swift */; };
 		AA141DF91C0935880038CD74 /* DataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141DF81C0935880038CD74 /* DataTableViewController.swift */; };
 		AA141E011C0A88140038CD74 /* GetApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA141E001C0A88140038CD74 /* GetApi.swift */; };
@@ -79,6 +83,10 @@
 		2A6661A41C2121F400D8B110 /* PutApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PutApi.swift; sourceTree = "<group>"; };
 		2A6661A81C2122E300D8B110 /* DeleteApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteApi.swift; sourceTree = "<group>"; };
 		2A6661AD1C21264E00D8B110 /* GetDownloadApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetDownloadApi.swift; sourceTree = "<group>"; };
+		2AFC4D7F1C2432C200E105FF /* upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upload.png; sourceTree = "<group>"; };
+		2AFC4D831C2432F500E105FF /* UploadFileApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadFileApi.swift; sourceTree = "<group>"; };
+		2AFC4D851C252AA400E105FF /* UploadDataApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadDataApi.swift; sourceTree = "<group>"; };
+		2AFC4D871C252C7C00E105FF /* sample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample.json; sourceTree = "<group>"; };
 		AA141DF21C089D520038CD74 /* RootTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootTableViewController.swift; sourceTree = "<group>"; };
 		AA141DF81C0935880038CD74 /* DataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTableViewController.swift; sourceTree = "<group>"; };
 		AA141E001C0A88140038CD74 /* GetApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetApi.swift; sourceTree = "<group>"; };
@@ -143,6 +151,10 @@
 		2A6661AE1C21264E00D8B110 /* Upload */ = {
 			isa = PBXGroup;
 			children = (
+				2AFC4D851C252AA400E105FF /* UploadDataApi.swift */,
+				2AFC4D7F1C2432C200E105FF /* upload.png */,
+				2AFC4D871C252C7C00E105FF /* sample.json */,
+				2AFC4D831C2432F500E105FF /* UploadFileApi.swift */,
 			);
 			path = Upload;
 			sourceTree = "<group>";
@@ -364,8 +376,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AFC4D881C252C7C00E105FF /* sample.json in Resources */,
 				AA4FE5E11BE9B62A00475BF7 /* LaunchScreen.storyboard in Resources */,
 				AA4FE5DE1BE9B62A00475BF7 /* Assets.xcassets in Resources */,
+				2AFC4D801C2432C200E105FF /* upload.png in Resources */,
 				AA4FE5DC1BE9B62A00475BF7 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -396,6 +410,8 @@
 				2A6661A51C2121F400D8B110 /* PutApi.swift in Sources */,
 				AA4FE5D71BE9B62A00475BF7 /* AppDelegate.swift in Sources */,
 				2A6661A91C2122E300D8B110 /* DeleteApi.swift in Sources */,
+				2AFC4D861C252AA400E105FF /* UploadDataApi.swift in Sources */,
+				2AFC4D841C2432F500E105FF /* UploadFileApi.swift in Sources */,
 				2A6661AF1C21264E00D8B110 /* GetDownloadApi.swift in Sources */,
 				AA141DF91C0935880038CD74 /* DataTableViewController.swift in Sources */,
 				AA141E011C0A88140038CD74 /* GetApi.swift in Sources */,

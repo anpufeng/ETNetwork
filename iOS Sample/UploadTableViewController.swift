@@ -12,7 +12,7 @@ import ETNetwork
 class UploadTableViewController: UITableViewController {
 
     var uploadRows: UploadRows?
-    var dataApi: ETRequest?
+    var uploadApi: ETRequest?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +22,37 @@ class UploadTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+
+
+        guard let uploadRows = uploadRows else { fatalError("not set rows") }
+        switch uploadRows {
+        case .UploadFile, .UploadStream:
+            let fileURL = NSBundle.mainBundle().URLForResource("upload", withExtension: "png")
+            uploadApi = UploadFileApi(fileURL: fileURL!)
+        case .UploadData:
+            if let path = NSBundle.mainBundle().pathForResource("sample", ofType: "json") {
+                if let data = NSData(contentsOfFile: path) {
+                    uploadApi = UploadDataApi(data: data)
+                }
+
+            }
+        }
+
+
+        guard let uploadApi = uploadApi else { fatalError("request nil") }
+
+        uploadApi.start()
+        uploadApi.progress({ (bytesWrite, totalBytesWrite, totalBytesExpectedToWrite) -> Void in
+            print("bytesWrite: \(bytesWrite), totalBytesWrite: \(totalBytesWrite), totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)")
+            print("percent: \(100 * Double(totalBytesWrite)/Double(totalBytesExpectedToWrite))")
+        }).responseJson({ (json, error) -> Void in
+            if (error != nil) {
+                print("==========error: \(error)")
+            } else {
+                print(self.uploadApi.debugDescription)
+                print("==========json: \(json)")
+            }
+        })
     }
 
     override func didReceiveMemoryWarning() {
