@@ -185,14 +185,25 @@ public class ETManager {
                                 fatalError("do not use UploadWrap")
                             }
                         }
-                        }, encodingCompletion: { (multipartFormDataEncodingResult) -> Void in
-
+                        }, encodingCompletion: { encodingResult in
+                            switch encodingResult {
+                            case .Success(let upload, _, _):
+                                req = upload
+                            case .Failure(let encodingError):
+                                //TODO: fix callback
+                                
+                                print(encodingError)
+                            }
                     })
                 }
             }
-                    
-            objc_setAssociatedObject(req!.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
-            request.jobRequest = req
+
+            guard let jobReq = req else { return }
+
+            objc_setAssociatedObject(jobReq.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
+            request.jobRequest = jobReq
+
+
             
 
             /*

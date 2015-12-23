@@ -13,6 +13,7 @@
 		2A6661A51C2121F400D8B110 /* PutApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661A41C2121F400D8B110 /* PutApi.swift */; };
 		2A6661A91C2122E300D8B110 /* DeleteApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661A81C2122E300D8B110 /* DeleteApi.swift */; };
 		2A6661AF1C21264E00D8B110 /* GetDownloadApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661AD1C21264E00D8B110 /* GetDownloadApi.swift */; };
+		2A7306031C27C2BC002D4BE7 /* UploadStreamApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7306021C27C2BC002D4BE7 /* UploadStreamApi.swift */; };
 		2AFC4D801C2432C200E105FF /* upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AFC4D7F1C2432C200E105FF /* upload.png */; };
 		2AFC4D841C2432F500E105FF /* UploadFileApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFC4D831C2432F500E105FF /* UploadFileApi.swift */; };
 		2AFC4D861C252AA400E105FF /* UploadDataApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFC4D851C252AA400E105FF /* UploadDataApi.swift */; };
@@ -83,6 +84,7 @@
 		2A6661A41C2121F400D8B110 /* PutApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PutApi.swift; sourceTree = "<group>"; };
 		2A6661A81C2122E300D8B110 /* DeleteApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteApi.swift; sourceTree = "<group>"; };
 		2A6661AD1C21264E00D8B110 /* GetDownloadApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetDownloadApi.swift; sourceTree = "<group>"; };
+		2A7306021C27C2BC002D4BE7 /* UploadStreamApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadStreamApi.swift; sourceTree = "<group>"; };
 		2AFC4D7F1C2432C200E105FF /* upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upload.png; sourceTree = "<group>"; };
 		2AFC4D831C2432F500E105FF /* UploadFileApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadFileApi.swift; sourceTree = "<group>"; };
 		2AFC4D851C252AA400E105FF /* UploadDataApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadDataApi.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				2AFC4D7F1C2432C200E105FF /* upload.png */,
 				2AFC4D871C252C7C00E105FF /* sample.json */,
 				2AFC4D831C2432F500E105FF /* UploadFileApi.swift */,
+				2A7306021C27C2BC002D4BE7 /* UploadStreamApi.swift */,
 			);
 			path = Upload;
 			sourceTree = "<group>";
@@ -416,6 +419,7 @@
 				AA141DF91C0935880038CD74 /* DataTableViewController.swift in Sources */,
 				AA141E011C0A88140038CD74 /* GetApi.swift in Sources */,
 				2A2418001C204BDF00609D15 /* AuthTableViewController.swift in Sources */,
+				2A7306031C27C2BC002D4BE7 /* UploadStreamApi.swift in Sources */,
 				AA141E041C0A8DD70038CD74 /* PostApi.swift in Sources */,
 				2A2417FE1C204BC900609D15 /* UploadTableViewController.swift in Sources */,
 				AA141DF31C089D530038CD74 /* RootTableViewController.swift in Sources */,

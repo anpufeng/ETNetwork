@@ -146,7 +146,7 @@ public protocol ETRequestProtocol : class {
  make ETRequestProtocol some methed default and optional
  */
 public extension ETRequestProtocol {
-        var taskType: TaskType { return .Data }
+    var taskType: TaskType { return .Data }
     var baseUrl: String { return ETNetworkConfig.sharedInstance.baseUrl }
     
     var method: ETRequestMethod { return .Post }
@@ -183,9 +183,21 @@ public class UploadWrap {
     }
 }
 
+public protocol UploadWrapProtocol {
+    var name: String { get }
+    var fileName: String? { get }
+    var mimeType: String? { get }
+}
+
+public class UPloadWrapData2: UploadWrapProtocol {
+    public var name: String { return "ddd" }
+    public var fileName: String? { return "ddd" }
+    public var mimeType: String? { return "ddd" }
+}
+
  public final class UploadWrapData: UploadWrap {
     var data: NSData
-    init(name: String, fileName: String?, mimeType: String?, data: NSData) {
+    public init(name: String, fileName: String?, mimeType: String?, data: NSData) {
         self.data = data
         super.init(name: name, fileName: fileName, mimeType: mimeType)
     }
@@ -194,7 +206,7 @@ public class UploadWrap {
 public final class UploadWrapFileURL: UploadWrap {
     var fileURL: NSURL
 
-    init(name: String, fileName: String?, mimeType: String?, fileURL: NSURL) {
+    public init(name: String, fileName: String?, mimeType: String?, fileURL: NSURL) {
         self.fileURL = fileURL
         super.init(name: name, fileName: fileName, mimeType: mimeType)
     }
@@ -203,7 +215,7 @@ public final class UploadWrapFileURL: UploadWrap {
 public final class UploadWrapStream: UploadWrap {
     var stream: NSInputStream
     var length: UInt64
-    init(name: String, fileName: String?, mimeType: String?, stream: NSInputStream, length: UInt64) {
+    public init(name: String, fileName: String?, mimeType: String?, stream: NSInputStream, length: UInt64) {
         self.stream = stream
         self.length = length
         super.init(name: name, fileName: fileName, mimeType: mimeType)

@@ -26,7 +26,7 @@ class UploadTableViewController: UITableViewController {
 
         guard let uploadRows = uploadRows else { fatalError("not set rows") }
         switch uploadRows {
-        case .UploadFile, .UploadStream:
+        case .UploadFile:
             let fileURL = NSBundle.mainBundle().URLForResource("upload", withExtension: "png")
             uploadApi = UploadFileApi(fileURL: fileURL!)
         case .UploadData:
@@ -36,6 +36,15 @@ class UploadTableViewController: UITableViewController {
                 }
 
             }
+
+        case .UploadStream:
+            if let path = NSBundle.mainBundle().pathForResource("sample", ofType: "json") {
+                if let data = NSData(contentsOfFile: path) {
+                    uploadApi = UploadStreamApi(data: data)
+                }
+
+            }
+
         }
 
 
