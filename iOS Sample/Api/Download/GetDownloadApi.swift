@@ -20,7 +20,7 @@ class GetDownloadApi: ETRequest {
 
 extension GetDownloadApi: ETRequestProtocol {
     var method: ETRequestMethod { return .Get }
-    var requestUrl: String { return "http://download.thinkbroadband.com/10MB.zip" }
+    var requestUrl: String { return "http://dldir1.qq.com/qqfile/QQforMac/QQ_V4.0.6.dmg" }
     var parameters:  [String: AnyObject]? {
         return nil
     }

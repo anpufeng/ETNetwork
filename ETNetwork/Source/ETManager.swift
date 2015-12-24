@@ -31,7 +31,7 @@ public class ETManager {
             jobManager.session.configuration.timeoutIntervalForResource = timeoutIntervalForResource
         }
     }
-    public var timeoutIntervalForRequest: NSTimeInterval = 15 {
+    public var timeoutIntervalForRequest: NSTimeInterval = 150 {
         didSet {
            jobManager.session.configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
         }
@@ -132,18 +132,18 @@ public class ETManager {
             let parameters = requestProtocol.parameters
             let encoding = requestProtocol.parameterEncoding.encode
             
-            var req: Request?
+            var jobReq: Request?
             switch requestProtocol.taskType {
             case .Data:
-                req = jobManager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
+                jobReq = jobManager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
             case .Download:
                 //TOFO destination
                 guard let downloadProtocol = request as? ETRequestDownloadProtocol else { fatalError("not implement ETRequestDownloadProtocol") }
                  let destination = Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask)
                 if let resumeData = downloadProtocol.resumeData {
-                    req = jobManager.download(resumeData, destination: destination)
+                    jobReq = jobManager.download(resumeData, destination: destination)
                 } else {
-                    req = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
+                    jobReq = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
                 }
 
             case .Upload:
@@ -151,10 +151,10 @@ public class ETManager {
                 switch uploadProtocol.uploadType {
                 case .FileURL:
                     guard let fileURL = uploadProtocol.fileURL else { fatalError("must return fileURL") }
-                    req = jobManager.upload(method, buildRequestUrl(request), headers:headers, file: fileURL)
+                    jobReq = jobManager.upload(method, buildRequestUrl(request), headers:headers, file: fileURL)
                 case .FileData:
                     guard let fileData = uploadProtocol.fileData else { fatalError("must return fileData") }
-                    req = jobManager.upload(method, buildRequestUrl(request), headers:headers, data: fileData)
+                    jobReq = jobManager.upload(method, buildRequestUrl(request), headers:headers, data: fileData)
                 case .FormData:
                     guard let formData = uploadProtocol.formData else { fatalError("must return formdata") }
                     jobManager.upload(method, buildRequestUrl(request), multipartFormData: { multipart in
@@ -188,23 +188,20 @@ public class ETManager {
                         }, encodingCompletion: { encodingResult in
                             switch encodingResult {
                             case .Success(let upload, _, _):
-                                req = upload
+                                jobReq = upload
                             case .Failure(let encodingError):
-                                //TODO: fix callback
-                                
-                                print(encodingError)
+                                request.formDataEncodingErrorCompletion?(encodingError)
                             }
                     })
                 }
             }
 
-            guard let jobReq = req else { return }
+            guard let req = jobReq else { return }
 
-            objc_setAssociatedObject(jobReq.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
-            request.jobRequest = jobReq
-
-
-            
+            objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+            request.jobRequest = req
+            self[request] = request
+            request.manager = self
 
             /*
             switch serializer {
@@ -229,9 +226,6 @@ public class ETManager {
                 
             }
             */
-            
-            //add request dictionary
-            self[request] = request
             
         } else {
             fatalError("must implement ETRequestProtocol")

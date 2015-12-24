@@ -25,6 +25,8 @@ public class ETRequest {
     lazy var serialQueue: dispatch_queue_t = {
         return dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
     }()
+
+    var formDataEncodingErrorCompletion: ((ErrorType) -> Void)?
     
     deinit {
         ETLog("\(self)  deinit")
@@ -66,7 +68,11 @@ public extension ETRequest {
     public var responseAllHeaders: [NSObject : AnyObject]? {
         return jobRequest?.response?.allHeaderFields
     }
-    
+
+    public func formDataencodingError(completion: ((ErrorType) -> Void)) {
+        self.formDataEncodingErrorCompletion = completion
+    }
+
     public func responseStr(completion: (String?, NSError?) -> Void ) -> Self {
         if let data = loadedCacheData  where jobRequest == nil {
             let responseSerializer = Request.stringResponseSerializer(encoding: NSUTF8StringEncoding)

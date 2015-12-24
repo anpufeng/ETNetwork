@@ -197,7 +197,7 @@ public class UPloadWrapData2: UploadWrapProtocol {
 
  public final class UploadWrapData: UploadWrap {
     var data: NSData
-    public init(name: String, fileName: String?, mimeType: String?, data: NSData) {
+    public init(name: String, data: NSData, fileName: String? = nil, mimeType: String? = nil) {
         self.data = data
         super.init(name: name, fileName: fileName, mimeType: mimeType)
     }
@@ -206,7 +206,7 @@ public class UPloadWrapData2: UploadWrapProtocol {
 public final class UploadWrapFileURL: UploadWrap {
     var fileURL: NSURL
 
-    public init(name: String, fileName: String?, mimeType: String?, fileURL: NSURL) {
+    public init(name: String,  fileURL: NSURL, fileName: String? = nil, mimeType: String? = nil) {
         self.fileURL = fileURL
         super.init(name: name, fileName: fileName, mimeType: mimeType)
     }
@@ -215,7 +215,7 @@ public final class UploadWrapFileURL: UploadWrap {
 public final class UploadWrapStream: UploadWrap {
     var stream: NSInputStream
     var length: UInt64
-    public init(name: String, fileName: String?, mimeType: String?, stream: NSInputStream, length: UInt64) {
+    public init(name: String, stream: NSInputStream, length: UInt64, fileName: String? = nil, mimeType: String? = nil) {
         self.stream = stream
         self.length = length
         super.init(name: name, fileName: fileName, mimeType: mimeType)

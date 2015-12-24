@@ -13,6 +13,11 @@ class DownloadTableViewController: UITableViewController {
 
     var downloadRows: DownloadRows?
     var downloadApi: ETRequest?
+
+    deinit {
+        downloadApi?.cancel()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -29,16 +34,21 @@ class DownloadTableViewController: UITableViewController {
         }
 
 
+
+
         downloadApi?.start()
+//        if let data = downloadApi?.cachedData {
+//            print("cached data: \(data)")
+//        }
         downloadApi?.progress({ (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
             print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
-            print("percent: \(totalBytesRead/totalBytesExpectedToRead)")
-        }).responseJson({ (json, error) -> Void in
+            print("percent: \(Float(totalBytesRead)/Float(totalBytesExpectedToRead))")
+        }).responseData({ (data, error) -> Void in
             if (error != nil) {
                 print("==========error: \(error)")
             } else {
-                print(self.downloadApi.debugDescription)
-                print("==========json: \(json)")
+                print("successful debugDescription: ")
+//                print("==========data: \(data)")
             }
         })
     }

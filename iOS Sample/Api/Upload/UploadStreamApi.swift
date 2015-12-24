@@ -42,7 +42,7 @@ extension UploadStreamApi: ETREquestUploadProtocol {
     var fileData: NSData? { return nil }
     var formData: [UploadWrap]? {
         let inputStream = NSInputStream(data: data)
-        let stream = UploadWrapStream(name: "streamName", fileName: "streamFilename", mimeType: "", stream: inputStream, length: UInt64(data.length))
+        let stream = UploadWrapStream(name: "streamName", stream: inputStream, length: UInt64(data.length), fileName: "streamFileName", mimeType: nil)
 
         return [stream]
     }
