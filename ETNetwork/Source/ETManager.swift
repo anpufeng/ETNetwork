@@ -26,18 +26,18 @@ public class ETManager {
         return ETManager()
     }()
     
-    public var timeoutIntervalForResource: NSTimeInterval = 125 {
+    public var timeoutIntervalForResource: NSTimeInterval = 10 {
         didSet {
             jobManager.session.configuration.timeoutIntervalForResource = timeoutIntervalForResource
         }
     }
-    public var timeoutIntervalForRequest: NSTimeInterval = 150 {
+    public var timeoutIntervalForRequest: NSTimeInterval = 20 {
         didSet {
            jobManager.session.configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
         }
     }
     private let jobManager: JobManager
-    private var sudRequests: [Int: ETRequest] = [:]
+    private var subRequests: [Int: ETRequest] = [:]
     private let concurrentQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
     
     private struct AssociatedKey {
@@ -49,7 +49,7 @@ public class ETManager {
             var req: ETRequest?
             guard let identifier = request.requestIdentifier else { return req }
             dispatch_sync(concurrentQueue) {
-                req = self.sudRequests[identifier]
+                req = self.subRequests[identifier]
             }
             
             return req
@@ -58,7 +58,7 @@ public class ETManager {
         set {
             guard let identifier = request.requestIdentifier else { return }
             dispatch_barrier_async(concurrentQueue) {
-                self.sudRequests[identifier] = newValue
+                self.subRequests[identifier] = newValue
             }
         }
     }
@@ -87,6 +87,7 @@ public class ETManager {
                 }
                 
                 self.cancelRequest(request)
+                self[request] = nil
             } else {
                 ETLog("objc_getAssociatedObject fail ")
             }
@@ -198,7 +199,7 @@ public class ETManager {
 
             guard let req = jobReq else { return }
 
-            objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+            objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
             request.jobRequest = req
             self[request] = request
             request.manager = self
@@ -235,11 +236,10 @@ public class ETManager {
     
     func cancelRequest(request: ETRequest) {
         request.jobRequest?.cancel()
-        self[request] = nil
     }
     
-    func cancelAllRequests() {
-        let dic = sudRequests as NSDictionary
+    public func cancelAllRequests() {
+        let dic = subRequests as NSDictionary
         let copyDic: NSMutableDictionary = dic.mutableCopy() as! NSMutableDictionary
         
         for (_, value) in copyDic {

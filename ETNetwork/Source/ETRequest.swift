@@ -29,7 +29,7 @@ public class ETRequest {
     var formDataEncodingErrorCompletion: ((ErrorType) -> Void)?
     
     deinit {
-        ETLog("\(self)  deinit")
+        ETLog("\(self.dynamicType ) deinit")
         jobRequest?.cancel()
     }
     
@@ -389,6 +389,7 @@ extension ETRequest: CustomDebugStringConvertible {
     public var debugDescription: String {
         var str = "\n"
         guard let requestProtocol = self as? ETRequestProtocol else { fatalError("must implement ETRequestProtocol") }
+        str.appendContentsOf("      url: \(requestProtocol.requestUrl)\n")
         str.appendContentsOf("      method: \(requestProtocol.method.method.rawValue)\n")
         str.appendContentsOf("      paramters: \(requestProtocol.parameters)\n")
         str.appendContentsOf("      headers: \(requestProtocol.headers)\n")

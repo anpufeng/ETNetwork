@@ -15,7 +15,9 @@ class DownloadTableViewController: UITableViewController {
     var downloadApi: ETRequest?
 
     deinit {
-        downloadApi?.cancel()
+        ETManager.sharedInstance.cancelAllRequests()
+
+        print("\(self.dynamicType)  deinit")
     }
     
     override func viewDidLoad() {
@@ -47,10 +49,27 @@ class DownloadTableViewController: UITableViewController {
             if (error != nil) {
                 print("==========error: \(error)")
             } else {
-                print("successful debugDescription: ")
+                print("download successful")
 //                print("==========data: \(data)")
             }
         })
+
+
+        let tmpApi = GetDownloadApi(bar: "GetDownloadApi")
+        tmpApi.start()
+
+        tmpApi.progress({ (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
+            print("tmpApi bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
+            print("tmpApi percent: \(Float(totalBytesRead)/Float(totalBytesExpectedToRead))")
+        }).responseData({ (data, error) -> Void in
+            if (error != nil) {
+                print("tmpApi ==========error: \(error)")
+            } else {
+                print("tmpApi download successful")
+                //                print("==========data: \(data)")
+            }
+        })
+
     }
 
 
