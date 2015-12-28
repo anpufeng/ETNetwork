@@ -36,6 +36,7 @@ class DataTableViewController: UITableViewController {
 
         }
 
+            self.title = "\(dataRows.description)"
         
         dataApi?.start()
         dataApi?.responseJson({ (json, error) -> Void in

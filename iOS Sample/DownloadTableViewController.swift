@@ -15,7 +15,7 @@ class DownloadTableViewController: UITableViewController {
     var downloadApi: ETRequest?
 
     deinit {
-        ETManager.sharedInstance.cancelAllRequests()
+        downloadApi?.cancel()
 
         print("\(self.dynamicType)  deinit")
     }
@@ -36,7 +36,7 @@ class DownloadTableViewController: UITableViewController {
         }
 
 
-
+        self.title = "\(downloadRows.description)"
 
         downloadApi?.start()
 //        if let data = downloadApi?.cachedData {

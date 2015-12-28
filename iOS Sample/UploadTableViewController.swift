@@ -47,6 +47,8 @@ class UploadTableViewController: UITableViewController {
 
         }
 
+        self.title = "\(uploadRows.description)"
+
 
         guard let uploadApi = uploadApi else { fatalError("request nil") }
 

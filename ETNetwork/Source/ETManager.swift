@@ -26,12 +26,12 @@ public class ETManager {
         return ETManager()
     }()
     
-    public var timeoutIntervalForResource: NSTimeInterval = 10 {
+    public var timeoutIntervalForResource: NSTimeInterval = 100 {
         didSet {
             jobManager.session.configuration.timeoutIntervalForResource = timeoutIntervalForResource
         }
     }
-    public var timeoutIntervalForRequest: NSTimeInterval = 20 {
+    public var timeoutIntervalForRequest: NSTimeInterval = 200 {
         didSet {
            jobManager.session.configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
         }
@@ -89,7 +89,7 @@ public class ETManager {
                 self.cancelRequest(request)
                 self[request] = nil
             } else {
-                ETLog("objc_getAssociatedObject fail ")
+                ETLog("warning: objc_getAssociatedObject fail ")
             }
         }
 

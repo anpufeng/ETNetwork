@@ -29,15 +29,47 @@ enum Sections: Int {
 enum DataRows: Int {
     case Get, Post, Put, Delete
     
-    
+    var description: String {
+        switch self {
+        case .Get:
+            return "GET"
+        case .Post:
+            return "POST"
+        case .Put:
+            return "PUT"
+        case .Delete:
+            return "DELETE"
+        }
+    }
 }
 
 enum DownloadRows: Int {
     case Download, DownloadWithResumeData
+
+    var description: String {
+        switch self {
+        case .Download:
+            return "Download"
+        case .DownloadWithResumeData:
+            return "DownloadWithResumeData"
+        }
+    }
 }
 
 enum UploadRows: Int {
     case UploadData, UploadFile, UploadStream
+
+    var description: String {
+        switch self {
+        case .UploadData:
+            return "UploadData"
+        case .UploadFile:
+            return "UploadFile"
+            case .UploadStream:
+            return "UploadStream"
+
+        }
+    }
 }
 
 enum AuthRows: Int {
