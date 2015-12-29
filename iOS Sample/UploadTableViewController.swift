@@ -38,9 +38,9 @@ class UploadTableViewController: UITableViewController {
             }
 
         case .UploadStream:
-            if let path = NSBundle.mainBundle().pathForResource("sample", ofType: "json") {
-                if let data = NSData(contentsOfFile: path) {
-                    uploadApi = UploadStreamApi(data: data)
+            if let jsonPath = NSBundle.mainBundle().pathForResource("sample", ofType: "json"), imgPath = NSBundle.mainBundle().pathForResource("upload", ofType: "png"){
+                if let jsonData = NSData(contentsOfFile: jsonPath), imgData = NSData(contentsOfFile: imgPath) {
+                    uploadApi = UploadStreamApi(jsonData: jsonData, imgData: imgData)
                 }
 
             }

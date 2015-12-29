@@ -189,7 +189,11 @@ public class ETManager {
                         }, encodingCompletion: { encodingResult in
                             switch encodingResult {
                             case .Success(let upload, _, _):
-                                jobReq = upload
+                                objc_setAssociatedObject(upload.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
+                                request.jobRequest = upload
+                                self[request] = request
+                                request.manager = self
+
                             case .Failure(let encodingError):
                                 request.formDataEncodingErrorCompletion?(encodingError)
                             }
