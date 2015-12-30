@@ -255,7 +255,8 @@ public extension ETRequest {
         }
         
         //cache life
-        if  seconds < 0 || seconds <  cacheFileDuration(path) {
+        let passed = cacheFileDuration(path)
+        if  passed < 0 || seconds < passed {
             return false
         }
         
