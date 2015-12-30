@@ -26,10 +26,19 @@ public class ETRequest {
         return dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
     }()
 
+    lazy var operationQueue: NSOperationQueue = {
+        let operationQueue = NSOperationQueue()
+        operationQueue.maxConcurrentOperationCount = 1
+        operationQueue.suspended = true
+        return operationQueue
+    }()
+
     var formDataEncodingErrorCompletion: ((ErrorType) -> Void)?
     
     deinit {
         ETLog("\(self.dynamicType ) deinit")
+        operationQueue.cancelAllOperations()
+        operationQueue.suspended = false
         jobRequest?.cancel()
     }
     
@@ -74,77 +83,82 @@ public extension ETRequest {
     }
 
     public func responseStr(completion: (String?, NSError?) -> Void ) -> Self {
-        if let data = loadedCacheData  where jobRequest == nil {
-            let responseSerializer = Request.stringResponseSerializer(encoding: NSUTF8StringEncoding)
-            let result = responseSerializer.serializeResponse(
-                jobRequest?.request,
-                jobRequest?.response,
-                data,
-                nil
-            )
-            completion(result.value, result.error)
-        } else {
-            guard let jobRequest = jobRequest else {
-                completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
-                return self
+        operationQueue.addOperationWithBlock { () -> Void in
+            if let data = self.loadedCacheData  where self.jobRequest == nil {
+                let responseSerializer = Request.stringResponseSerializer(encoding: NSUTF8StringEncoding)
+                let result = responseSerializer.serializeResponse(
+                    self.jobRequest?.request,
+                    self.jobRequest?.response,
+                    data,
+                    nil
+                )
+                completion(result.value, result.error)
+            } else {
+                guard let jobRequest = self.jobRequest else {
+                    completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
+                    return
+                }
+
+                jobRequest.responseString(completionHandler: { response -> Void in
+                    //                self.saveResponseToCacheFile()
+                    completion(response.result.value, response.result.error)
+                })
             }
-            
-            jobRequest.responseString(completionHandler: { response -> Void in
-//                self.saveResponseToCacheFile()
-                completion(response.result.value, response.result.error)
-            })
+
         }
-        
+
         return self
     }
     
     public func responseJson(completion: (AnyObject?, NSError?) -> Void ) -> Self {
-        var jsonOption: NSJSONReadingOptions = .AllowFragments
-        if let requestProtocol = self as? ETRequestProtocol {
-            jsonOption = requestProtocol.responseJsonReadingOption
-        }
-        if let data = loadedCacheData where jobRequest == nil {
-            let responseSerializer = Request.JSONResponseSerializer(options: jsonOption)
-            let result = responseSerializer.serializeResponse(
-                jobRequest?.request,
-                jobRequest?.response,
-                data,
-                nil
-            )
-            completion(result.value, result.error)
-        } else {
-            guard let jobRequest = jobRequest else {
-                completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
-                return self
+        operationQueue.addOperationWithBlock { () -> Void in
+            var jsonOption: NSJSONReadingOptions = .AllowFragments
+            if let requestProtocol = self as? ETRequestProtocol {
+                jsonOption = requestProtocol.responseJsonReadingOption
             }
-            
-            jobRequest.responseJSON(options: jsonOption, completionHandler: { response -> Void in
-//                self.saveResponseToCacheFile()
-                completion(response.result.value, response.result.error)
-            })
+            if let data = self.loadedCacheData where self.jobRequest == nil {
+                let responseSerializer = Request.JSONResponseSerializer(options: jsonOption)
+                let result = responseSerializer.serializeResponse(
+                    self.jobRequest?.request,
+                    self.jobRequest?.response,
+                    data,
+                    nil
+                )
+                completion(result.value, result.error)
+            } else {
+                guard let jobRequest = self.jobRequest else {
+                    completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
+                    return
+                }
 
+                jobRequest.responseJSON(options: jsonOption, completionHandler: { response -> Void in
+                    //                self.saveResponseToCacheFile()
+                    completion(response.result.value, response.result.error)
+                })
+                
+            }
         }
-        
+
         return self
     }
     
     public func responseData(completion: (NSData?, NSError?) -> Void ) -> Self {
-        if let data = loadedCacheData  where jobRequest == nil {
-            completion(data, nil)
-        } else {
-            guard let jobRequest = jobRequest else {
-                completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
-                return self
-            }
-            
-            jobRequest.responseData({ response -> Void in
-//                self.saveResponseToCacheFile()
-                completion(response.result.value, response.result.error)
-            })
+        operationQueue.addOperationWithBlock { () -> Void in
+            if let data = self.loadedCacheData  where self.jobRequest == nil {
+                completion(data, nil)
+            } else {
+                guard let jobRequest = self.jobRequest else {
+                    completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
+                    return
+                }
 
-            
+                jobRequest.responseData({ response -> Void in
+                    //                self.saveResponseToCacheFile()
+                    completion(response.result.value, response.result.error)
+                })
+            }
         }
-        
+
         return self
     }
     

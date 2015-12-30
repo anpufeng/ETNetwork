@@ -14,6 +14,8 @@
 		2A6661A91C2122E300D8B110 /* DeleteApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661A81C2122E300D8B110 /* DeleteApi.swift */; };
 		2A6661AF1C21264E00D8B110 /* GetDownloadApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661AD1C21264E00D8B110 /* GetDownloadApi.swift */; };
 		2A7306031C27C2BC002D4BE7 /* UploadStreamApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7306021C27C2BC002D4BE7 /* UploadStreamApi.swift */; };
+		2AE4F8AE1C3298E500A3F215 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2AE4F8AD1C3298E500A3F215 /* test.txt */; };
+		2AE4F8B21C329B9200A3F215 /* upload2.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE4F8B11C329B9200A3F215 /* upload2.png */; };
 		2AFC4D801C2432C200E105FF /* upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AFC4D7F1C2432C200E105FF /* upload.png */; };
 		2AFC4D841C2432F500E105FF /* UploadFileApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFC4D831C2432F500E105FF /* UploadFileApi.swift */; };
 		2AFC4D861C252AA400E105FF /* UploadDataApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFC4D851C252AA400E105FF /* UploadDataApi.swift */; };
@@ -85,6 +87,8 @@
 		2A6661A81C2122E300D8B110 /* DeleteApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteApi.swift; sourceTree = "<group>"; };
 		2A6661AD1C21264E00D8B110 /* GetDownloadApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetDownloadApi.swift; sourceTree = "<group>"; };
 		2A7306021C27C2BC002D4BE7 /* UploadStreamApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadStreamApi.swift; sourceTree = "<group>"; };
+		2AE4F8AD1C3298E500A3F215 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
+		2AE4F8B11C329B9200A3F215 /* upload2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upload2.png; sourceTree = "<group>"; };
 		2AFC4D7F1C2432C200E105FF /* upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upload.png; sourceTree = "<group>"; };
 		2AFC4D831C2432F500E105FF /* UploadFileApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadFileApi.swift; sourceTree = "<group>"; };
 		2AFC4D851C252AA400E105FF /* UploadDataApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadDataApi.swift; sourceTree = "<group>"; };
@@ -154,7 +158,9 @@
 			isa = PBXGroup;
 			children = (
 				2AFC4D851C252AA400E105FF /* UploadDataApi.swift */,
+				2AE4F8B11C329B9200A3F215 /* upload2.png */,
 				2AFC4D7F1C2432C200E105FF /* upload.png */,
+				2AE4F8AD1C3298E500A3F215 /* test.txt */,
 				2AFC4D871C252C7C00E105FF /* sample.json */,
 				2AFC4D831C2432F500E105FF /* UploadFileApi.swift */,
 				2A7306021C27C2BC002D4BE7 /* UploadStreamApi.swift */,
@@ -383,7 +389,9 @@
 				AA4FE5E11BE9B62A00475BF7 /* LaunchScreen.storyboard in Resources */,
 				AA4FE5DE1BE9B62A00475BF7 /* Assets.xcassets in Resources */,
 				2AFC4D801C2432C200E105FF /* upload.png in Resources */,
+				2AE4F8AE1C3298E500A3F215 /* test.txt in Resources */,
 				AA4FE5DC1BE9B62A00475BF7 /* Main.storyboard in Resources */,
+				2AE4F8B21C329B9200A3F215 /* upload2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

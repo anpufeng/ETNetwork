@@ -193,6 +193,7 @@ public class ETManager {
                                 request.jobRequest = upload
                                 self[request] = request
                                 request.manager = self
+                                request.operationQueue.suspended = false;
 
                             case .Failure(let encodingError):
                                 request.formDataEncodingErrorCompletion?(encodingError)
@@ -207,6 +208,7 @@ public class ETManager {
             request.jobRequest = req
             self[request] = request
             request.manager = self
+            request.operationQueue.suspended = false;
 
             /*
             switch serializer {

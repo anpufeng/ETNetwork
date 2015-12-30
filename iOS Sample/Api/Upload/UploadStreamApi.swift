@@ -43,14 +43,31 @@ extension UploadStreamApi: ETREquestUploadProtocol {
     var fileURL: NSURL? { return nil }
     var fileData: NSData? { return nil }
     var formData: [UploadWrap]? {
+        var forms: [UploadWrap] = []
         let jsonInputStream = NSInputStream(data: jsonData)
-        let jsonStream = UploadWrapStream(name: "streamName", stream: jsonInputStream, length: UInt64(jsonData.length), fileName: "streamFileName", mimeType: "text/plain")
+        let jsonStreamWrap = UploadWrapStream(name: "streamJson", stream: jsonInputStream, length: UInt64(jsonData.length), fileName: "streamJsonFileName", mimeType: "text/plain")
 
         let imgInputStream = NSInputStream(data: imgData)
-        let imgStream = UploadWrapStream(name: "streamName", stream: imgInputStream, length: UInt64(jsonData.length), fileName: "streamFileName", mimeType: "image/png")
+        let imgStreamWrap = UploadWrapStream(name: "streamImg", stream: imgInputStream, length: UInt64(jsonData.length), fileName: "steamImgFileName", mimeType: "image/png")
 
+        forms.append(jsonStreamWrap)
+        forms.append(imgStreamWrap)
 
-        return [jsonStream, imgStream]
+        let dataPath = NSBundle.mainBundle().pathForResource("test", ofType: "txt")
+        if let dataPath = dataPath {
+            if let data = NSData(contentsOfFile: dataPath) {
+                let dataForm = UploadWrapData(name: "testtxt", data: data)
+                forms.append(dataForm)
+            }
+        }
+
+        let fileURL = NSBundle.mainBundle().URLForResource("upload2", withExtension: "png")
+        if let fileURL = fileURL {
+            let fileWrap = UploadWrapFileURL(name: "upload2png", fileURL: fileURL)
+            forms.append(fileWrap)
+        }
+
+        return forms
     }
 }
 
