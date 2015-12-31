@@ -78,8 +78,24 @@ public extension ETRequest {
         return jobRequest?.response?.allHeaderFields
     }
 
-    public func formDataencodingError(completion: ((ErrorType) -> Void)) {
+    public func formDataencodingError(completion: ((ErrorType) -> Void)) -> Self {
         self.formDataEncodingErrorCompletion = completion
+        
+        return self
+    }
+    
+    public func progress(closure: ((Int64, Int64, Int64) -> Void)? = nil) -> Self {
+        operationQueue.addOperationWithBlock { () -> Void in
+            self.jobRequest?.progress({ (readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite) -> Void in
+                if let closure = closure {
+                    closure(readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite)
+                }
+                
+            })
+        }
+        
+        
+        return self
     }
 
     public func responseStr(completion: (String?, NSError?) -> Void ) -> Self {
@@ -388,18 +404,6 @@ public extension ETRequest {
     }
 }
 
-extension ETRequest {
-    public func progress(closure: ((Int64, Int64, Int64) -> Void)? = nil) -> Self {
-        jobRequest?.progress({ (readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite) -> Void in
-            if let closure = closure {
-                closure(readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite)
-            }
-
-        })
-
-        return self
-    }
-}
 extension ETRequest: CustomDebugStringConvertible {
     public var debugDescription: String {
         var str = "\n"

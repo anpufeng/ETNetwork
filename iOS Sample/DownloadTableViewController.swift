@@ -54,6 +54,7 @@ class DownloadTableViewController: UITableViewController {
             }
         })
 
+        /*
 
         let tmpApi = GetDownloadApi(bar: "GetDownloadApi")
         tmpApi.start()
@@ -69,6 +70,8 @@ class DownloadTableViewController: UITableViewController {
                 //                print("==========data: \(data)")
             }
         })
+
+        */
 
     }
 

@@ -53,8 +53,10 @@ class UploadTableViewController: UITableViewController {
         guard let uploadApi = uploadApi else { fatalError("request nil") }
 
         uploadApi.start()
-        uploadApi.progress({ (bytesWrite, totalBytesWrite, totalBytesExpectedToWrite) -> Void in
-            print("bytesWrite: \(bytesWrite), totalBytesWrite: \(totalBytesWrite), totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)")
+        uploadApi.formDataencodingError { (error) -> Void in
+            print("encoding error: \(error)")
+        }.progress({ (bytesWrite, totalBytesWrite, totalBytesExpectedToWrite) -> Void in
+            //print("bytesWrite: \(bytesWrite), totalBytesWrite: \(totalBytesWrite), totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)")
             print("percent: \(100 * Double(totalBytesWrite)/Double(totalBytesExpectedToWrite))")
         }).responseJson({ (json, error) -> Void in
             if (error != nil) {
