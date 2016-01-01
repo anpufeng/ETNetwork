@@ -31,5 +31,5 @@ extension PutApi: ETRequestProtocol {
 extension PutApi: ETRequestCacheProtocol {
 
     //cache
-    var cacheSeconds: Int { return 0 }
+    var cacheSeconds: Int { return 10 }
 }

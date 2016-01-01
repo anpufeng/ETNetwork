@@ -12,7 +12,7 @@ import ETNetwork
 class AuthTableViewController: UITableViewController {
 
     var authRows: AuthRows?
-    var dataApi: ETRequest?
+    var authApi: ETRequest?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +22,27 @@ class AuthTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        
+        guard let authRows = authRows else { fatalError("not set rows") }
+        switch authRows {
+        case .HttpBasic:
+            authApi = HttpBasicAuthApi(bar: "HttpBasicAuthApi")
+        }
+        
+        self.title = "\(authRows.description)"
+        
+        
+        guard let authApi = authApi else { fatalError("request nil") }
+        
+        authApi.start()
+        authApi.responseJson({ (json, error) -> Void in
+            if (error != nil) {
+                print("==========error: \(error)")
+            } else {
+                print("\(self.authApi!.debugDescription)")
+                print("==========json: \(json)")
+            }
+        })
     }
 
     override func didReceiveMemoryWarning() {

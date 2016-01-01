@@ -189,6 +189,9 @@ public class ETManager {
                         }, encodingCompletion: { encodingResult in
                             switch encodingResult {
                             case .Success(let upload, _, _):
+                                if let authProtocol = request as? ETRequestAuthProtocol {
+                                    upload.delegate.credential = authProtocol.credential
+                                }
                                 objc_setAssociatedObject(upload.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
                                 request.jobRequest = upload
                                 self[request] = request
@@ -203,7 +206,11 @@ public class ETManager {
             }
 
             guard let req = jobReq else { return }
-
+            
+            if let authProtocol = request as? ETRequestAuthProtocol {
+                req.delegate.credential = authProtocol.credential
+            }
+            
             objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
             request.jobRequest = req
             self[request] = request

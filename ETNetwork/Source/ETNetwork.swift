@@ -65,6 +65,10 @@ public enum TaskType {
     case Data, Download, Upload
 }
 
+public enum UploadType {
+    case FileData, FileURL, FormData
+}
+
 public enum ETResponseSerializer {
     case Data, String, Json, PropertyList
 }
@@ -172,27 +176,30 @@ public extension ETRequestUploadProtocol {
 }
 
 
-struct UploadTypeKey {
-    static let fileName = "UploadTypeKeyFileName"
-    static let name = "UploadTypeKeyName"
-    static let data = "UploadTypeKeyData"
-    static let mimeType = "UploadTypeMimeType"
+public protocol ETRequestAuthProtocol : class {
+    var credential: NSURLCredential? { get }
 }
 
+extension ETRequestAuthProtocol {
+    var credential: NSURLCredential? {
+        return nil
+    }
+}
 
 public protocol UploadFormProtocol : class {
     
 }
 
+
 public final class UploadFormData: UploadFormProtocol {
     var name: String
+    var data: NSData
     var fileName: String?
     var mimeType: String?
-    var data: NSData
     
     public init(name: String, data: NSData, fileName: String? = nil, mimeType: String? = nil) {
-        self.data = data
         self.name = name
+        self.data = data
         self.fileName = fileName
         self.mimeType = mimeType
     }
@@ -201,39 +208,36 @@ public final class UploadFormData: UploadFormProtocol {
 
 public final class UploadFormFileURL: UploadFormProtocol {
     var name: String
+    var fileURL: NSURL
     var fileName: String?
     var mimeType: String?
-    var fileURL: NSURL
     
     public init(name: String,  fileURL: NSURL, fileName: String? = nil, mimeType: String? = nil) {
         self.name = name
+        self.fileURL = fileURL
         self.fileName = fileName
         self.mimeType = mimeType
-        self.fileURL = fileURL
     }
     
 }
 
 public final class UploadFormStream: UploadFormProtocol {
     var name: String
-    var fileName: String?
-    var mimeType: String?
     var stream: NSInputStream
     var length: UInt64
-    
+    var fileName: String?
+    var mimeType: String?
+ 
     public init(name: String, stream: NSInputStream, length: UInt64, fileName: String? = nil, mimeType: String? = nil) {
         self.name = name
-        self.fileName = fileName
-        self.mimeType = mimeType
         self.stream = stream
         self.length = length
+        self.fileName = fileName
+        self.mimeType = mimeType
     }
-    
 }
 
-public enum UploadType {
-    case FileData, FileURL, FormData
-}
+
 //name easily
 typealias JobRequest = Request
 typealias JobManager = Manager

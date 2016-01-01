@@ -74,6 +74,13 @@ enum UploadRows: Int {
 
 enum AuthRows: Int {
     case HttpBasic
+    
+    var description: String {
+        switch self {
+        case .HttpBasic:
+            return "HttpBasic"
+        }
+    }
 }
 
 

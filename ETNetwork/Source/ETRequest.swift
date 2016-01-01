@@ -11,8 +11,6 @@ import CryptoSwift
 
 ///the requst class
 public class ETRequest {
-    //TODO  转PROTOL 改为计算属性
-    
     public weak var delegate: ETRequestDelegate?
     
     var jobRequest: JobRequest?
@@ -116,7 +114,6 @@ public extension ETRequest {
                 }
                 
                 jobRequest.responseString(completionHandler: { response -> Void in
-                    //                self.saveResponseToCacheFile()
                     completion(response.result.value, response.result.error)
                 })
             }
@@ -149,7 +146,6 @@ public extension ETRequest {
                 }
                 
                 jobRequest.responseJSON(options: jsonOption, completionHandler: { response -> Void in
-                    //                self.saveResponseToCacheFile()
                     completion(response.result.value, response.result.error)
                 })
             }
@@ -169,7 +165,6 @@ public extension ETRequest {
                 }
                 
                 jobRequest.responseData({ response -> Void in
-                    //                self.saveResponseToCacheFile()
                     completion(response.result.value, response.result.error)
                 })
             }
@@ -180,7 +175,7 @@ public extension ETRequest {
     }
 }
 
-//MARK: cache (do not stand for cahcedata)
+//MARK: cache
 public extension ETRequest {
     /// the cached string (maybe out of date)
     public var cachedString: String? {
@@ -237,7 +232,7 @@ public extension ETRequest {
         
         guard let cacheProtocol = self as? ETRequestCacheProtocol else { return nil }
         if cacheProtocol.cacheVersion != cacheVersionFileContent() {
-            //FIX ME remove cache file
+            //FIXME: remove cache file?
             return nil
         }
         let data = NSData(contentsOfFile: path)
@@ -405,8 +400,11 @@ public extension ETRequest {
 
 extension ETRequest: CustomDebugStringConvertible {
     public var debugDescription: String {
-        var str = "\n"
+        var str = "      \(self.dynamicType)\n"
         guard let requestProtocol = self as? ETRequestProtocol else { fatalError("must implement ETRequestProtocol") }
+        if  let authProtocol = self as? ETRequestAuthProtocol {
+            str.appendContentsOf("      authenticate: \(authProtocol.credential)\n")
+        }
         str.appendContentsOf("      url: \(requestProtocol.requestUrl)\n")
         str.appendContentsOf("      method: \(requestProtocol.method.method.rawValue)\n")
         str.appendContentsOf("      paramters: \(requestProtocol.parameters)\n")
