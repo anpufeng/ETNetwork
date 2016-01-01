@@ -61,11 +61,16 @@ public enum ETRequestParameterEncoding {
 
 
 
+public enum TaskType {
+    case Data, Download, Upload
+}
+
 public enum ETResponseSerializer {
     case Data, String, Json, PropertyList
 }
 
 
+//MARK: protocol
 /**
  the request delegate callback
  */
@@ -107,23 +112,6 @@ public extension ETRequestCacheProtocol {
     var cacheVersion: UInt64 { return 0 }
 }
 
-public protocol ETRequestDownloadProtocol: class {
-//    var destinationURL: DownloadFileDestination { get }
-    var resumeData: NSData? { get }
-}
-
-public extension ETRequestDownloadProtocol {
-//    var destinationURL: DownloadFileDestination { return Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask) }
-    var resumeData: NSData? { return nil }
-}
-
-public protocol ETREquestUploadProtocol: class {
-    var uploadType: UploadType { get }
-    var fileURL: NSURL? { get }
-    var fileData: NSData? { get }
-    var formData: [UploadWrap]? { get }
-}
-
 /**
  your subclass must conform this protocol
  */
@@ -159,8 +147,28 @@ public extension ETRequestProtocol {
 }
 
 
-public enum TaskType {
-    case Data, Download, Upload
+public protocol ETRequestDownloadProtocol: class {
+//    var destinationURL: DownloadFileDestination { get }
+    var resumeData: NSData? { get }
+}
+
+public extension ETRequestDownloadProtocol {
+//    var destinationURL: DownloadFileDestination { return Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask) }
+    var resumeData: NSData? { return nil }
+}
+
+public protocol ETRequestUploadProtocol: class {
+    var uploadType: UploadType { get }
+    var fileURL: NSURL? { get }
+    var fileData: NSData? { get }
+    var formData: [UploadFormProtocol]? { get }
+}
+
+
+public extension ETRequestUploadProtocol {
+    var fileURL: NSURL? { return nil }
+    var fileData: NSData? { return nil }
+    var formData: [UploadFormProtocol]? { return nil }
 }
 
 
@@ -171,62 +179,56 @@ struct UploadTypeKey {
     static let mimeType = "UploadTypeMimeType"
 }
 
-public class UploadWrap {
+
+public protocol UploadFormProtocol : class {
+    
+}
+
+public final class UploadFormData: UploadFormProtocol {
     var name: String
     var fileName: String?
     var mimeType: String?
-
-    init(name: String, fileName: String? = nil, mimeType: String? = nil) {
+    var data: NSData
+    
+    public init(name: String, data: NSData, fileName: String? = nil, mimeType: String? = nil) {
+        self.data = data
         self.name = name
         self.fileName = fileName
         self.mimeType = mimeType
     }
+    
 }
 
-public protocol UploadWrapProtocol {
-    var name: String { get }
-    var fileName: String? { get }
-    var mimeType: String? { get }
-}
-
-public class UPloadWrapData2: UploadWrapProtocol {
-    public var name: String { return "ddd" }
-    public var fileName: String? { return "ddd" }
-    public var mimeType: String? { return "ddd" }
-}
-
- public final class UploadWrapData: UploadWrap {
-    var data: NSData
-    public init(name: String, data: NSData, fileName: String? = nil, mimeType: String? = nil) {
-        self.data = data
-        super.init(name: name, fileName: fileName, mimeType: mimeType)
-    }
-}
-
-public final class UploadWrapFileURL: UploadWrap {
+public final class UploadFormFileURL: UploadFormProtocol {
+    var name: String
+    var fileName: String?
+    var mimeType: String?
     var fileURL: NSURL
-
+    
     public init(name: String,  fileURL: NSURL, fileName: String? = nil, mimeType: String? = nil) {
+        self.name = name
+        self.fileName = fileName
+        self.mimeType = mimeType
         self.fileURL = fileURL
-        super.init(name: name, fileName: fileName, mimeType: mimeType)
     }
+    
 }
 
-public final class UploadWrapStream: UploadWrap {
+public final class UploadFormStream: UploadFormProtocol {
+    var name: String
+    var fileName: String?
+    var mimeType: String?
     var stream: NSInputStream
     var length: UInt64
+    
     public init(name: String, stream: NSInputStream, length: UInt64, fileName: String? = nil, mimeType: String? = nil) {
+        self.name = name
+        self.fileName = fileName
+        self.mimeType = mimeType
         self.stream = stream
         self.length = length
-        super.init(name: name, fileName: fileName, mimeType: mimeType)
     }
-}
-
-struct UploadData {
-    var data: NSData
-    var name: String
-    var fileName: String
-    var mimeType: String
+    
 }
 
 public enum UploadType {

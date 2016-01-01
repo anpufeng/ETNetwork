@@ -36,10 +36,10 @@ extension UploadDataApi: ETRequestCacheProtocol {
     var cacheSeconds: Int { return 0 }
 }
 
-extension UploadDataApi: ETREquestUploadProtocol {
+extension UploadDataApi: ETRequestUploadProtocol {
     var uploadType: UploadType { return .FileData }
     var fileURL: NSURL? { return nil }
     var fileData: NSData? { return data }
-    var formData: [UploadWrap]? { return nil }
+    var formData: [UploadFormProtocol]? { return nil }
 }
 

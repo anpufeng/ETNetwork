@@ -38,17 +38,15 @@ extension UploadStreamApi: ETRequestCacheProtocol {
     var cacheSeconds: Int { return 0 }
 }
 
-extension UploadStreamApi: ETREquestUploadProtocol {
+extension UploadStreamApi: ETRequestUploadProtocol {
     var uploadType: UploadType { return .FormData }
-    var fileURL: NSURL? { return nil }
-    var fileData: NSData? { return nil }
-    var formData: [UploadWrap]? {
-        var forms: [UploadWrap] = []
+    var formData: [UploadFormProtocol]? {
+        var forms: [UploadFormProtocol] = []
         let jsonInputStream = NSInputStream(data: jsonData)
-        let jsonStreamWrap = UploadWrapStream(name: "streamJson", stream: jsonInputStream, length: UInt64(jsonData.length), fileName: "streamJsonFileName", mimeType: "text/plain")
+        let jsonStreamWrap = UploadFormStream(name: "streamJson", stream: jsonInputStream, length: UInt64(jsonData.length), fileName: "streamJsonFileName", mimeType: "text/plain")
 
         let imgInputStream = NSInputStream(data: imgData)
-        let imgStreamWrap = UploadWrapStream(name: "streamImg", stream: imgInputStream, length: UInt64(jsonData.length), fileName: "steamImgFileName", mimeType: "image/png")
+        let imgStreamWrap = UploadFormStream(name: "streamImg", stream: imgInputStream, length: UInt64(jsonData.length), fileName: "steamImgFileName", mimeType: "image/png")
 
         forms.append(jsonStreamWrap)
         forms.append(imgStreamWrap)
@@ -56,14 +54,14 @@ extension UploadStreamApi: ETREquestUploadProtocol {
         let dataPath = NSBundle.mainBundle().pathForResource("test", ofType: "txt")
         if let dataPath = dataPath {
             if let data = NSData(contentsOfFile: dataPath) {
-                let dataForm = UploadWrapData(name: "testtxt", data: data)
+                let dataForm = UploadFormData(name: "testtxt", data: data)
                 forms.append(dataForm)
             }
         }
 
         let fileURL = NSBundle.mainBundle().URLForResource("upload2", withExtension: "png")
         if let fileURL = fileURL {
-            let fileWrap = UploadWrapFileURL(name: "upload2png", fileURL: fileURL)
+            let fileWrap = UploadFormFileURL(name: "upload2png", fileURL: fileURL)
             forms.append(fileWrap)
         }
 
