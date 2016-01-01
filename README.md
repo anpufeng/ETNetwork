@@ -15,7 +15,7 @@ because using md5 in swift is complicated. http://iosdeveloperzone.com/2014/10/0
 ```bash
 $ git clone https://github.com/anpufeng/ETNetwork/
 ```
-open iOS Sample.xcodeproj, you will see the sample api
+open iOS Sample.xcodeproj, run the sample project
 ##every request, implement `ETRequestProtocol` 
 ```swift
 class GetApi: ETRequest {
