@@ -35,5 +35,5 @@ extension PostApi: ETRequestCacheProtocol {
     
     //cache
     var cacheVersion: UInt64 { return 1 }
-    var cacheSeconds: Int { return 6 }
+    var cacheSeconds: Int { return 60 }
 }

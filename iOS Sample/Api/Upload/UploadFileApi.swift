@@ -29,13 +29,6 @@ extension UploadFileApi: ETRequestProtocol {
     var headers: [String: String]? { return ["UploadFileApi": "UploadFileApiHeader"]  }
 }
 
-
-extension UploadFileApi: ETRequestCacheProtocol {
-
-    //cache
-    var cacheSeconds: Int { return 0 }
-}
-
 extension UploadFileApi: ETRequestUploadProtocol {
     var uploadType: UploadType { return .FileURL }
     var fileURL: NSURL? { return self.ImgURL }

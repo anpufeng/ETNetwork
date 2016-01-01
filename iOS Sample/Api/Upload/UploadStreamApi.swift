@@ -31,13 +31,6 @@ extension UploadStreamApi: ETRequestProtocol {
     var headers: [String: String]? { return ["UploadDataApi": "UploadDataApiHeader"]  }
 }
 
-
-extension UploadStreamApi: ETRequestCacheProtocol {
-
-    //cache
-    var cacheSeconds: Int { return 0 }
-}
-
 extension UploadStreamApi: ETRequestUploadProtocol {
     var uploadType: UploadType { return .FormData }
     var formData: [UploadFormProtocol]? {

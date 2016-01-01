@@ -30,7 +30,7 @@ extension GetDownloadApi: ETRequestProtocol {
 extension GetDownloadApi: ETRequestCacheProtocol {
     
     //cache
-    var cacheSeconds: Int { return 0 }
+    var cacheSeconds: Int { return 200 }
 }
 
 extension GetDownloadApi: ETRequestDownloadProtocol {
