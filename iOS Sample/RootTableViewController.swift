@@ -21,7 +21,7 @@ enum Sections: Int {
         case .Upload:
             return "Upload"
         case .Credit:
-            return "Credit"
+            return "Auth"
         }
     }
 }
@@ -29,19 +29,58 @@ enum Sections: Int {
 enum DataRows: Int {
     case Get, Post, Put, Delete
     
-    
+    var description: String {
+        switch self {
+        case .Get:
+            return "GET"
+        case .Post:
+            return "POST"
+        case .Put:
+            return "PUT"
+        case .Delete:
+            return "DELETE"
+        }
+    }
 }
 
 enum DownloadRows: Int {
     case Download, DownloadWithResumeData
+
+    var description: String {
+        switch self {
+        case .Download:
+            return "Download"
+        case .DownloadWithResumeData:
+            return "DownloadWithResumeData"
+        }
+    }
 }
 
 enum UploadRows: Int {
     case UploadData, UploadFile, UploadStream
+
+    var description: String {
+        switch self {
+        case .UploadData:
+            return "UploadData"
+        case .UploadFile:
+            return "UploadFile"
+            case .UploadStream:
+            return "UploadStream"
+
+        }
+    }
 }
 
 enum AuthRows: Int {
     case HttpBasic
+    
+    var description: String {
+        switch self {
+        case .HttpBasic:
+            return "HttpBasic"
+        }
+    }
 }
 
 
@@ -78,9 +117,15 @@ class RootTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
         
         let dest = segue.destinationViewController
+         let indexPath = sender as! NSIndexPath
         if let dest = dest as? DataTableViewController {
-            let indexPath = sender as! NSIndexPath
             dest.dataRows = DataRows(rawValue: indexPath.row)
+        } else if let dest = dest as? DownloadTableViewController {
+            dest.downloadRows = DownloadRows(rawValue: indexPath.row)
+        } else if let dest = dest as? UploadTableViewController {
+            dest.uploadRows = UploadRows(rawValue: indexPath.row)
+        } else if let dest = dest as? AuthTableViewController {
+            dest.authRows = AuthRows(rawValue: indexPath.row)
         }
     }
 

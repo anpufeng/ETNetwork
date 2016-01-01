@@ -1,18 +1,19 @@
 //
-//  BasicDataTableViewController.swift
+//  UploadTableViewController.swift
 //  iOS Sample
 //
-//  Created by ethan on 15/11/28.
+//  Created by gengduo on 15/12/15.
 //  Copyright © 2015年 ethan. All rights reserved.
 //
 
 import UIKit
 import ETNetwork
 
-class DataTableViewController: UITableViewController {
+class UploadTableViewController: UITableViewController {
 
-    var dataRows: DataRows?
-    var dataApi: ETRequest?
+    var uploadRows: UploadRows?
+    var uploadApi: ETRequest?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -21,30 +22,49 @@ class DataTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        
-        guard let dataRows = dataRows else { fatalError("not set rows") }
-        switch dataRows {
-        case .Get:
-            dataApi = GetApi(bar: "GetApi")
-            
-        case .Post:
-            dataApi = PostApi(bar: "PostApi")
-        case .Put:
-            dataApi = PutApi(bar: "PutApi")
-        case .Delete:
-            dataApi = DeleteApi(bar: "DeleteApi")
+
+
+        guard let uploadRows = uploadRows else { fatalError("not set rows") }
+        switch uploadRows {
+        case .UploadFile:
+            let fileURL = NSBundle.mainBundle().URLForResource("upload", withExtension: "png")
+            uploadApi = UploadFileApi(fileURL: fileURL!)
+        case .UploadData:
+            if let path = NSBundle.mainBundle().pathForResource("sample", ofType: "json") {
+                if let data = NSData(contentsOfFile: path) {
+                    uploadApi = UploadDataApi(data: data)
+                }
+
+            }
+
+        case .UploadStream:
+            if let jsonPath = NSBundle.mainBundle().pathForResource("sample", ofType: "json"), imgPath = NSBundle.mainBundle().pathForResource("upload", ofType: "png"){
+                if let jsonData = NSData(contentsOfFile: jsonPath), imgData = NSData(contentsOfFile: imgPath) {
+                    uploadApi = UploadStreamApi(jsonData: jsonData, imgData: imgData)
+                }
+
+            }
 
         }
 
-            self.title = "\(dataRows.description)"
-        
-        dataApi?.start()
-        dataApi?.responseJson({ (json, error) -> Void in
+        self.title = "\(uploadRows.description)"
+
+
+        guard let uploadApi = uploadApi else { fatalError("request nil") }
+
+        uploadApi.start()
+        uploadApi.formDataencodingError { (error) -> Void in
+            print("encoding error: \(error)")
+        }.progress({ (bytesWrite, totalBytesWrite, totalBytesExpectedToWrite) -> Void in
+            //print("bytesWrite: \(bytesWrite), totalBytesWrite: \(totalBytesWrite), totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)")
+            print("percent: \(100 * Double(totalBytesWrite)/Double(totalBytesExpectedToWrite))")
+        }).responseJson({ (json, error) -> Void in
             if (error != nil) {
                 print("==========error: \(error)")
+            } else {
+                print(self.uploadApi.debugDescription)
+                print("==========json: \(json)")
             }
-            print(self.dataApi.debugDescription)
-            print("==========json: \(json)")
         })
     }
 
@@ -55,7 +75,6 @@ class DataTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    /*
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 0
@@ -65,7 +84,6 @@ class DataTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return 0
     }
-*/
 
     /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

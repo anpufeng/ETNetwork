@@ -1,18 +1,19 @@
 //
-//  BasicDataTableViewController.swift
+//  AuthTableViewController.swift
 //  iOS Sample
 //
-//  Created by ethan on 15/11/28.
+//  Created by gengduo on 15/12/15.
 //  Copyright © 2015年 ethan. All rights reserved.
 //
 
 import UIKit
 import ETNetwork
 
-class DataTableViewController: UITableViewController {
+class AuthTableViewController: UITableViewController {
 
-    var dataRows: DataRows?
-    var dataApi: ETRequest?
+    var authRows: AuthRows?
+    var authApi: ETRequest?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,29 +23,25 @@ class DataTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-        guard let dataRows = dataRows else { fatalError("not set rows") }
-        switch dataRows {
-        case .Get:
-            dataApi = GetApi(bar: "GetApi")
-            
-        case .Post:
-            dataApi = PostApi(bar: "PostApi")
-        case .Put:
-            dataApi = PutApi(bar: "PutApi")
-        case .Delete:
-            dataApi = DeleteApi(bar: "DeleteApi")
-
+        guard let authRows = authRows else { fatalError("not set rows") }
+        switch authRows {
+        case .HttpBasic:
+            authApi = HttpBasicAuthApi(bar: "HttpBasicAuthApi")
         }
-
-            self.title = "\(dataRows.description)"
         
-        dataApi?.start()
-        dataApi?.responseJson({ (json, error) -> Void in
+        self.title = "\(authRows.description)"
+        
+        
+        guard let authApi = authApi else { fatalError("request nil") }
+        
+        authApi.start()
+        authApi.responseJson({ (json, error) -> Void in
             if (error != nil) {
                 print("==========error: \(error)")
+            } else {
+                print("\(self.authApi!.debugDescription)")
+                print("==========json: \(json)")
             }
-            print(self.dataApi.debugDescription)
-            print("==========json: \(json)")
         })
     }
 
@@ -55,7 +52,6 @@ class DataTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    /*
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 0
@@ -65,7 +61,6 @@ class DataTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return 0
     }
-*/
 
     /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

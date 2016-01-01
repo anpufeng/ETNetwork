@@ -169,6 +169,7 @@ public class Manager {
     }
 
     deinit {
+        ETLog("\(self.dynamicType ) deinit")
         session.invalidateAndCancel()
     }
 
