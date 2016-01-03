@@ -61,12 +61,8 @@ public enum ETRequestParameterEncoding {
 
 
 
-public enum TaskType {
-    case Data, Download, Upload
-}
-
-public enum UploadType {
-    case FileData, FileURL, FormData
+public enum ETTaskType {
+    case Data, Download, UploadFileData, UploadFileURL, UploadFormData
 }
 
 public enum ETResponseSerializer {
@@ -122,7 +118,7 @@ public extension ETRequestCacheProtocol {
 public protocol ETRequestProtocol : class {
     var requestUrl: String { get }
     
-    var taskType: TaskType { get }
+    var taskType: ETTaskType { get }
     var baseUrl: String { get }
     var method: ETRequestMethod { get }
     var parameters:  [String: AnyObject]? { get }
@@ -138,10 +134,8 @@ public protocol ETRequestProtocol : class {
  make ETRequestProtocol some methed default and optional
  */
 public extension ETRequestProtocol {
-    var taskType: TaskType { return .Data }
     var baseUrl: String { return ETNetworkConfig.sharedInstance.baseUrl }
     
-    var method: ETRequestMethod { return .Post }
     var parameters: [String: AnyObject]? { return nil }
     var headers: [String: String]? { return nil }
     var parameterEncoding: ETRequestParameterEncoding { return  .Json }
@@ -154,15 +148,19 @@ public extension ETRequestProtocol {
 public protocol ETRequestDownloadProtocol: class {
 //    var destinationURL: DownloadFileDestination { get }
     var resumeData: NSData? { get }
+    ///the url that you want to save the file
+    func downloadDestination() -> (NSURL, NSHTTPURLResponse) -> NSURL
 }
 
 public extension ETRequestDownloadProtocol {
 //    var destinationURL: DownloadFileDestination { return Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask) }
     var resumeData: NSData? { return nil }
+    func downloadDestination() -> (NSURL, NSHTTPURLResponse) -> NSURL {
+        return ETRequest.suggestedDownloadDestination()
+    }
 }
 
 public protocol ETRequestUploadProtocol: class {
-    var uploadType: UploadType { get }
     var fileURL: NSURL? { get }
     var fileData: NSData? { get }
     var formData: [UploadFormProtocol]? { get }

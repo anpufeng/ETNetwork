@@ -29,6 +29,7 @@ class GetApi: ETRequest {
 
 extension GetApi: ETRequestProtocol {
     var method: ETRequestMethod { return .Get }
+    var taskType: ETTaskType { return .Data }
     var requestUrl: String { return "/get" }
     var parameters:  [String: AnyObject]? {
         return ["foo": bar]
@@ -58,11 +59,25 @@ let dataApi = GetApi(bar: "GetApi")
 extension GetDownloadApi: ETRequestDownloadProtocol {
     
 }
+
+extension DownloadResumeDataApi: ETRequestDownloadProtocol {
+    func downloadDestination() -> (NSURL, NSHTTPURLResponse) -> NSURL {
+        return { temporaryURL, response -> NSURL in
+            let directoryURLs = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
+            if !directoryURLs.isEmpty {
+                return directoryURLs[0].URLByAppendingPathComponent("mydownload.dmg")
+            }
+            
+            return temporaryURL
+        }
+    }
+    
+    var resumeData: NSData? { return data }
+}
 ```
 ###upload request
 ```swift
 extension UploadStreamApi: ETRequestUploadProtocol {
-    var uploadType: UploadType { return .FormData }
     var formData: [UploadFormProtocol]? {
         var forms: [UploadFormProtocol] = []
         let jsonInputStream = NSInputStream(data: jsonData)
@@ -90,6 +105,7 @@ extension UploadStreamApi: ETRequestUploadProtocol {
 
         return forms
     }
+
 }
 ```
 ###know the progress

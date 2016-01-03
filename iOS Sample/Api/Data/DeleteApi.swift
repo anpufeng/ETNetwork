@@ -21,6 +21,7 @@ class DeleteApi: ETRequest {
 
 extension DeleteApi: ETRequestProtocol {
     var method: ETRequestMethod { return .Delete }
+    var taskType: ETTaskType { return .Data }
     var requestUrl: String { return "/delete" }
     var parameters:  [String: AnyObject]? {
         return ["foo": bar]

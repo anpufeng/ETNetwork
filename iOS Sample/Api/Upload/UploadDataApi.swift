@@ -20,7 +20,7 @@ class UploadDataApi: ETRequest {
 
 extension UploadDataApi: ETRequestProtocol {
     var method: ETRequestMethod { return .Post }
-    var taskType: TaskType { return .Upload }
+    var taskType: ETTaskType { return .UploadFileData }
     var requestUrl: String { return "/post" }
     var parameters:  [String: AnyObject]? {
         return ["upload": "UploadDataApi"]
@@ -30,9 +30,6 @@ extension UploadDataApi: ETRequestProtocol {
 }
 
 extension UploadDataApi: ETRequestUploadProtocol {
-    var uploadType: UploadType { return .FileData }
-    var fileURL: NSURL? { return nil }
     var fileData: NSData? { return data }
-    var formData: [UploadFormProtocol]? { return nil }
 }
 
