@@ -58,6 +58,13 @@ public class ETRequest {
         manager?.cancelRequest(self)
     }
     
+    public func suspend() {
+        jobRequest?.task.suspend()
+    }
+    
+    public func resume() {
+        jobRequest?.task.resume()
+    }
     public var requestIdentifier: Int? {
         //no request exist if use cache
         guard let jobRequest = jobRequest else {  return nil }
@@ -171,6 +178,25 @@ public extension ETRequest {
         }
        
 
+        return self
+    }
+    
+    public func httpResponse(completion: (NSHTTPURLResponse?, NSError?) -> Void) -> Self {
+        if let _ = self.loadedCacheData  where self.jobRequest == nil {
+            completion(nil, nil)
+        } else {
+            operationQueue.addOperationWithBlock { () -> Void in
+                guard let jobRequest = self.jobRequest else {
+                    completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
+                    return
+                }
+                
+                jobRequest.response(completionHandler: { response -> Void in
+                    completion(response.1, response.3)
+                })
+            }
+        }
+        
         return self
     }
 }
@@ -395,6 +421,10 @@ public extension ETRequest {
         let nsObject: AnyObject? = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"]
         let version = nsObject as! String
         return version
+    }
+    
+    public static func suggestedDownloadDestination() -> (NSURL, NSHTTPURLResponse) -> NSURL {
+        return JobRequest.suggestedDownloadDestination()
     }
 }
 

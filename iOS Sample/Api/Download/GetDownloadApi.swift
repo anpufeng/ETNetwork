@@ -20,6 +20,7 @@ class GetDownloadApi: ETRequest {
 
 extension GetDownloadApi: ETRequestProtocol {
     var method: ETRequestMethod { return .Get }
+    var taskType: ETTaskType { return .Download }
     var requestUrl: String { return "http://dldir1.qq.com/qqfile/QQforMac/QQ_V4.0.6.dmg" }
     var parameters:  [String: AnyObject]? {
         return nil
@@ -30,7 +31,7 @@ extension GetDownloadApi: ETRequestProtocol {
 extension GetDownloadApi: ETRequestCacheProtocol {
     
     //cache
-    var cacheSeconds: Int { return 200 }
+    var cacheSeconds: Int { return -1 }
 }
 
 extension GetDownloadApi: ETRequestDownloadProtocol {

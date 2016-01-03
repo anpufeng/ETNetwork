@@ -25,6 +25,7 @@ extension PostApi: ETRequestProtocol {
         return ["token": "YourCustomToken"]
     }
     var method: ETRequestMethod { return .Post }
+    var taskType: ETTaskType { return .Data }
     var requestUrl: String { return "/post" }
     var parameters:  [String: AnyObject]? {
         return ["foo": bar]

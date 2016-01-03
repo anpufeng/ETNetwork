@@ -22,7 +22,7 @@ class UploadStreamApi: ETRequest {
 
 extension UploadStreamApi: ETRequestProtocol {
     var method: ETRequestMethod { return .Post }
-    var taskType: TaskType { return .Upload }
+    var taskType: ETTaskType { return .UploadFormData }
     var requestUrl: String { return "/post" }
     var parameters:  [String: AnyObject]? {
         return ["upload": "UploadStreamApiParameters"]
@@ -32,7 +32,6 @@ extension UploadStreamApi: ETRequestProtocol {
 }
 
 extension UploadStreamApi: ETRequestUploadProtocol {
-    var uploadType: UploadType { return .FormData }
     var formData: [UploadFormProtocol]? {
         var forms: [UploadFormProtocol] = []
         let jsonInputStream = NSInputStream(data: jsonData)

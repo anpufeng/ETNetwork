@@ -31,27 +31,25 @@ class DownloadTableViewController: UITableViewController {
 
         guard let downloadRows = downloadRows else { fatalError("not set rows") }
         switch downloadRows {
-        case .Download, .DownloadWithResumeData:
+        case .Download:
             downloadApi = GetDownloadApi(bar: "GetDownloadApi")
+        case .DownloadWithResumeData:
+            downloadApi = DownloadResumeDataApi(data: nil)
         }
 
 
         self.title = "\(downloadRows.description)"
 
         downloadApi?.start()
+        
 //        if let data = downloadApi?.cachedData {
 //            print("cached data: \(data)")
 //        }
         downloadApi?.progress({ (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
             print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
             print("percent: \(Float(totalBytesRead)/Float(totalBytesExpectedToRead))")
-        }).responseData({ (data, error) -> Void in
-            if (error != nil) {
-                print("==========error: \(error)")
-            } else {
-                print("download successful")
-//                print("==========data: \(data)")
-            }
+        }).httpResponse({ (httpResponse, error) -> Void in
+            print("httpResponse \(httpResponse), error: \(error)")
         })
 
         /*

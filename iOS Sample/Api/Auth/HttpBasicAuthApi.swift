@@ -25,6 +25,7 @@ extension HttpBasicAuthApi: ETRequestProtocol {
         return ["token": "YourCustomToken"]
     }
     var method: ETRequestMethod { return .Get }
+    var taskType: ETTaskType { return .Data }
     var requestUrl: String { return "/basic-auth/user/passwd" }
     var parameters:  [String: AnyObject]? {
         return ["foo": bar]
