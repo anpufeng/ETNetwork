@@ -10,7 +10,6 @@ import UIKit
 import ETNetwork
 
 
-/// PostApi with custom headers
 class HttpBasicAuthApi: ETRequest {
     
     var bar: String
