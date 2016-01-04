@@ -38,7 +38,7 @@ extension UploadStreamApi: ETRequestUploadProtocol {
         let jsonStreamWrap = UploadFormStream(name: "streamJson", stream: jsonInputStream, length: UInt64(jsonData.length), fileName: "streamJsonFileName", mimeType: "text/plain")
 
         let imgInputStream = NSInputStream(data: imgData)
-        let imgStreamWrap = UploadFormStream(name: "streamImg", stream: imgInputStream, length: UInt64(jsonData.length), fileName: "steamImgFileName", mimeType: "image/png")
+        let imgStreamWrap = UploadFormStream(name: "streamImg", stream: imgInputStream, length: UInt64(imgData.length), fileName: "steamImgFileName", mimeType: "image/png")
 
         forms.append(jsonStreamWrap)
         forms.append(imgStreamWrap)
