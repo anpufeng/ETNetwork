@@ -40,7 +40,7 @@ public class ETRequest {
         jobRequest?.cancel()
     }
     
-    public func start(ignoreCache: Bool = false) {
+    public func start(ignoreCache ignoreCache: Bool = false) {
         start(ETManager.sharedInstance, ignoreCache: ignoreCache)
     }
     
@@ -435,7 +435,7 @@ extension ETRequest: CustomDebugStringConvertible {
         if  let authProtocol = self as? ETRequestAuthProtocol {
             str.appendContentsOf("      authenticate: \(authProtocol.credential)\n")
         }
-        str.appendContentsOf("      url: \(requestProtocol.requestUrl)\n")
+        str.appendContentsOf("      url: \(requestProtocol.baseUrl + requestProtocol.requestUrl)\n")
         str.appendContentsOf("      method: \(requestProtocol.method.method.rawValue)\n")
         str.appendContentsOf("      paramters: \(requestProtocol.parameters)\n")
         str.appendContentsOf("      headers: \(requestProtocol.headers)\n")

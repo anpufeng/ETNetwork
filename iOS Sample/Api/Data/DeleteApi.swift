@@ -30,7 +30,6 @@ extension DeleteApi: ETRequestProtocol {
 
 
 extension DeleteApi: ETRequestCacheProtocol {
-
-    //cache
+    var cacheVersion: UInt64 { return 1 }
     var cacheSeconds: Int { return 60 }
 }
