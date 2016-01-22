@@ -11,6 +11,9 @@ import ETNetwork
 
 class DownloadTableViewController: UITableViewController {
 
+    @IBOutlet weak var readLabel: UILabel!
+    @IBOutlet weak var totalLabel: UILabel!
+    @IBOutlet weak var processView: UIProgressView!
     var downloadRows: DownloadRows?
     var downloadApi: ETRequest?
 
@@ -29,6 +32,19 @@ class DownloadTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
+        self.downloadRequest()
+
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+    }
+
+    @IBAction func refresh() {
+        refreshControl?.beginRefreshing()
+        self.downloadRequest()
+        self.refreshControl?.endRefreshing()
+    }
+
+    func downloadRequest() {
         guard let downloadRows = downloadRows else { fatalError("not set rows") }
         switch downloadRows {
         case .Download:
@@ -41,13 +57,19 @@ class DownloadTableViewController: UITableViewController {
         self.title = "\(downloadRows.description)"
 
         downloadApi?.start()
-        
-//        if let data = downloadApi?.cachedData {
-//            print("cached data: \(data)")
-//        }
+
+        //        if let data = downloadApi?.cachedData {
+        //            print("cached data: \(data)")
+        //        }
         downloadApi?.progress({ (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
             print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
-            print("percent: \(Float(totalBytesRead)/Float(totalBytesExpectedToRead))")
+            let percent = Float(totalBytesRead)/Float(totalBytesExpectedToRead)
+            print("percent: \(percent)")
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.processView.progress = percent
+                self.readLabel.text = "read: \(totalBytesRead/1024) KB"
+                self.totalLabel.text = "total: \(totalBytesExpectedToRead/1024) KB"
+            })
         }).httpResponse({ (httpResponse, error) -> Void in
             print("httpResponse \(httpResponse), error: \(error)")
         })
@@ -58,19 +80,18 @@ class DownloadTableViewController: UITableViewController {
         tmpApi.start()
 
         tmpApi.progress({ (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
-            print("tmpApi bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
-            print("tmpApi percent: \(Float(totalBytesRead)/Float(totalBytesExpectedToRead))")
+        print("tmpApi bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
+        print("tmpApi percent: \(Float(totalBytesRead)/Float(totalBytesExpectedToRead))")
         }).responseData({ (data, error) -> Void in
-            if (error != nil) {
-                print("tmpApi ==========error: \(error)")
-            } else {
-                print("tmpApi download successful")
-                //                print("==========data: \(data)")
-            }
+        if (error != nil) {
+        print("tmpApi ==========error: \(error)")
+        } else {
+        print("tmpApi download successful")
+        //                print("==========data: \(data)")
+        }
         })
-
+        
         */
-
     }
 
 
@@ -80,7 +101,7 @@ class DownloadTableViewController: UITableViewController {
     }
 
     // MARK: - Table view data source
-
+/*
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 0
@@ -90,6 +111,7 @@ class DownloadTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return 0
     }
+*/
 
     /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

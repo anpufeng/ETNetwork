@@ -23,7 +23,7 @@ class DataTableViewController: UITableViewController {
 
     @IBAction func refresh() {
         refreshControl?.beginRefreshing()
-        self.request()
+        self.dataRequest()
         self.refreshControl?.endRefreshing()
     }
 
@@ -36,13 +36,13 @@ class DataTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
-        self.request()
+        self.dataRequest()
 
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
     }
 
-    func request() {
+    func dataRequest() {
         guard let dataRows = dataRows else { fatalError("not set rows") }
         switch dataRows {
         case .Get:

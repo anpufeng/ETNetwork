@@ -17,7 +17,7 @@ public class ETRequest {
     weak var manager: ETManager?
     
     public var ignoreCache: Bool = false
-    var dataFromCache: Bool = false
+    public private (set)var dataFromCache: Bool = false
     var dataCached: Bool = false
     var loadedCacheData: NSData?
     lazy var serialQueue: dispatch_queue_t = {
