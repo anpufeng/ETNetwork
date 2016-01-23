@@ -146,14 +146,13 @@ public extension ETRequestProtocol {
 
 
 public protocol ETRequestDownloadProtocol: class {
-//    var destinationURL: DownloadFileDestination { get }
+    ///DownloadTaskDelegate data is resumeData
     var resumeData: NSData? { get }
     ///the url that you want to save the file
     func downloadDestination() -> (NSURL, NSHTTPURLResponse) -> NSURL
 }
 
 public extension ETRequestDownloadProtocol {
-//    var destinationURL: DownloadFileDestination { return Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask) }
     var resumeData: NSData? { return nil }
     func downloadDestination() -> (NSURL, NSHTTPURLResponse) -> NSURL {
         return ETRequest.suggestedDownloadDestination()

@@ -16,6 +16,11 @@ class DataTableViewController: UITableViewController {
     var dataRows: DataRows?
     var dataApi: ETRequest?
 
+    deinit {
+        dataApi?.cancel()
+        print("\(self.dynamicType)  deinit")
+
+    }
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -44,6 +49,7 @@ class DataTableViewController: UITableViewController {
 
     func dataRequest() {
         guard let dataRows = dataRows else { fatalError("not set rows") }
+        dataApi?.cancel()
         switch dataRows {
         case .Get:
             dataApi = GetApi(bar: "GetApi")
@@ -59,18 +65,19 @@ class DataTableViewController: UITableViewController {
         self.title = "\(dataRows.description)"
 
         dataApi?.start(ignoreCache: cacheSwitch.on)
-        dataApi?.responseJson({ (json, error) -> Void in
+        dataApi?.responseJson({ [weak self] (json, error) -> Void in
+            guard let strongSelf = self else { return }
             if (error != nil) {
                 print("==========error: \(error)")
-                self.bodyCell.textLabel?.text = error?.localizedDescription
+                strongSelf.bodyCell.textLabel?.text = error?.localizedDescription
             } else {
-                self.headerCell.textLabel?.text = self.dataApi?.debugDescription
-                self.bodyCell.textLabel?.text = "\(json.debugDescription)"
-                print(self.dataApi.debugDescription)
+                strongSelf.headerCell.textLabel?.text = strongSelf.dataApi?.debugDescription
+                strongSelf.bodyCell.textLabel?.text = "\(json.debugDescription)"
+                print(strongSelf.dataApi.debugDescription)
                 print("==========json: \(json)")
             }
 
-            self.tableView.reloadData()
+            strongSelf.tableView.reloadData()
         })
     }
 

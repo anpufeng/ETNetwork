@@ -103,6 +103,27 @@ public extension ETRequest {
         return self
     }
 
+    
+    public func response(completion: (NSData?, NSError?) -> Void ) -> Self {
+        if let data = self.loadedCacheData  where self.jobRequest == nil {
+            completion(data, nil)
+        } else {
+            operationQueue.addOperationWithBlock { () -> Void in
+                guard let jobRequest = self.jobRequest else {
+                    completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
+                    return
+                }
+                
+               jobRequest.response(completionHandler: { response -> Void in
+                    completion(response.2, response.3)
+               })
+            }
+            
+        }
+        
+        
+        return self
+    }
     public func responseStr(completion: (String?, NSError?) -> Void ) -> Self {
         if let data = self.loadedCacheData  where self.jobRequest == nil {
             let responseSerializer = Request.stringResponseSerializer(encoding: NSUTF8StringEncoding)
@@ -182,7 +203,7 @@ public extension ETRequest {
     }
     
     public func httpResponse(completion: (NSHTTPURLResponse?, NSError?) -> Void) -> Self {
-        if let _ = self.loadedCacheData  where self.jobRequest == nil {
+        if let _ = self.loadedCacheData where self.jobRequest == nil {
             completion(nil, nil)
         } else {
             operationQueue.addOperationWithBlock { () -> Void in
