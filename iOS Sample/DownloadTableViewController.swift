@@ -9,6 +9,7 @@
 import UIKit
 import ETNetwork
 
+var shouldResume = false
 
 class DownloadTableViewController: UITableViewController {
 
@@ -41,12 +42,14 @@ class DownloadTableViewController: UITableViewController {
     }
     
     class func saveLastData(data: NSData?) {
-        guard let data = data else {
-            NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "resumeData")
-            return
+        if shouldResume {
+            guard let data = data else {
+                NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "resumeData")
+                return
+            }
+            
+            NSUserDefaults.standardUserDefaults().setObject(data, forKey: "resumeData")
         }
-        
-        NSUserDefaults.standardUserDefaults().setObject(data, forKey: "resumeData")
     }
     class func lastData() -> NSData? {
         return NSUserDefaults.standardUserDefaults().dataForKey("resumeData")
@@ -65,8 +68,10 @@ class DownloadTableViewController: UITableViewController {
         switch downloadRows {
         case .Download:
             downloadApi = GetDownloadApi(bar: "GetDownloadApi")
+            shouldResume = false
         case .DownloadWithResumeData:
             downloadApi = DownloadResumeDataApi(data: DownloadTableViewController.lastData())
+            shouldResume = true
         }
 
 
@@ -84,8 +89,10 @@ class DownloadTableViewController: UITableViewController {
 //            print("percent: \(percent)")
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 strongSelf.processView.progress = percent
-                strongSelf.readLabel.text = "read: \(totalBytesRead/1024) KB"
-                strongSelf.totalLabel.text = "total: \(totalBytesExpectedToRead/1024) KB"
+                let read = String(format: "%.2f", Float(totalBytesRead)/1024)
+                let total = String(format: "%.2f", Float(totalBytesExpectedToRead)/1024)
+                strongSelf.readLabel.text = "read: \(read) KB"
+                strongSelf.totalLabel.text = "total: \(total) KB"
             })
            
         }).response({ (data, error) -> Void in

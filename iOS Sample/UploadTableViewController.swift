@@ -11,6 +11,9 @@ import ETNetwork
 
 class UploadTableViewController: UITableViewController {
 
+    @IBOutlet weak var writeLabel: UILabel!
+    @IBOutlet weak var totalLabel: UILabel!
+    @IBOutlet weak var processView: UIProgressView!
     var uploadRows: UploadRows?
     var uploadApi: ETRequest?
 
@@ -44,7 +47,6 @@ class UploadTableViewController: UITableViewController {
                 }
 
             }
-
         }
 
         self.title = "\(uploadRows.description)"
@@ -55,9 +57,19 @@ class UploadTableViewController: UITableViewController {
         uploadApi.start()
         uploadApi.formDataencodingError { (error) -> Void in
             print("encoding error: \(error)")
-        }.progress({ (bytesWrite, totalBytesWrite, totalBytesExpectedToWrite) -> Void in
-            //print("bytesWrite: \(bytesWrite), totalBytesWrite: \(totalBytesWrite), totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)")
-            print("percent: \(100 * Double(totalBytesWrite)/Double(totalBytesExpectedToWrite))")
+        }.progress({ [weak self] (bytesWrite, totalBytesWrite, totalBytesExpectedToWrite) -> Void in
+            print("bytesWrite: \(bytesWrite), totalBytesWrite: \(totalBytesWrite), totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)")
+            print("percent: \(100 * Float(totalBytesWrite)/Float(totalBytesExpectedToWrite))")
+            
+            let percent = Float(totalBytesWrite)/Float(totalBytesExpectedToWrite)
+            guard let strongSelf = self else { return }
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                strongSelf.processView.progress = percent
+                let read = String(format: "%.2f", Float(totalBytesWrite)/1024)
+                let total = String(format: "%.2f", Float(totalBytesExpectedToWrite)/1024)
+                strongSelf.writeLabel.text = "read: \(read) KB"
+                strongSelf.totalLabel.text = "total: \(total) KB"
+            })
         }).responseJson({ (json, error) -> Void in
             if (error != nil) {
                 print("==========error: \(error)")
@@ -75,6 +87,7 @@ class UploadTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
+    /*
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 0
@@ -84,7 +97,7 @@ class UploadTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return 0
     }
-
+    */
     /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
