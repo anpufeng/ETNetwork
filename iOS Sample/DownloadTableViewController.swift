@@ -9,11 +9,17 @@
 import UIKit
 import ETNetwork
 
+var shouldResume = false
+
 class DownloadTableViewController: UITableViewController {
 
+    @IBOutlet weak var readLabel: UILabel!
+    @IBOutlet weak var totalLabel: UILabel!
+    @IBOutlet weak var processView: UIProgressView!
     var downloadRows: DownloadRows?
     var downloadApi: ETRequest?
 
+    @IBOutlet weak var resumeBtn: UIButton!
     deinit {
         downloadApi?.cancel()
 
@@ -29,58 +35,91 @@ class DownloadTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
+        self.downloadRequest()
+
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+    }
+    
+    class func saveLastData(data: NSData?) {
+        if shouldResume {
+            guard let data = data else {
+                NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "resumeData")
+                return
+            }
+            
+            NSUserDefaults.standardUserDefaults().setObject(data, forKey: "resumeData")
+        }
+    }
+    class func lastData() -> NSData? {
+        return NSUserDefaults.standardUserDefaults().dataForKey("resumeData")
+    }
+
+    @IBAction func refresh() {
+        refreshControl?.beginRefreshing()
+        DownloadTableViewController.saveLastData(nil)
+        self.downloadRequest()
+        self.refreshControl?.endRefreshing()
+    }
+
+    func downloadRequest() {
         guard let downloadRows = downloadRows else { fatalError("not set rows") }
+        downloadApi?.cancel()
         switch downloadRows {
         case .Download:
             downloadApi = GetDownloadApi(bar: "GetDownloadApi")
+            shouldResume = false
         case .DownloadWithResumeData:
-            downloadApi = DownloadResumeDataApi(data: nil)
+            downloadApi = DownloadResumeDataApi(data: DownloadTableViewController.lastData())
+            shouldResume = true
         }
 
 
         self.title = "\(downloadRows.description)"
 
         downloadApi?.start()
-        
-//        if let data = downloadApi?.cachedData {
-//            print("cached data: \(data)")
-//        }
-        downloadApi?.progress({ (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
-            print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
-            print("percent: \(Float(totalBytesRead)/Float(totalBytesExpectedToRead))")
+
+        //        if let data = downloadApi?.cachedData {
+        //            print("cached data: \(data)")
+        //        }
+        downloadApi?.progress({ [weak self] (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
+            guard let strongSelf = self else { return }
+//            print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
+            let percent = Float(totalBytesRead)/Float(totalBytesExpectedToRead)
+//            print("percent: \(percent)")
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                strongSelf.processView.progress = percent
+                let read = String(format: "%.2f", Float(totalBytesRead)/1024)
+                let total = String(format: "%.2f", Float(totalBytesExpectedToRead)/1024)
+                strongSelf.readLabel.text = "read: \(read) KB"
+                strongSelf.totalLabel.text = "total: \(total) KB"
+            })
+           
+        }).response({ (data, error) -> Void in
+            print("data: \(data) size: \(data?.length), error: \(error)")
+            DownloadTableViewController.saveLastData(data)
         }).httpResponse({ (httpResponse, error) -> Void in
             print("httpResponse \(httpResponse), error: \(error)")
         })
-
-        /*
-
-        let tmpApi = GetDownloadApi(bar: "GetDownloadApi")
-        tmpApi.start()
-
-        tmpApi.progress({ (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
-            print("tmpApi bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
-            print("tmpApi percent: \(Float(totalBytesRead)/Float(totalBytesExpectedToRead))")
-        }).responseData({ (data, error) -> Void in
-            if (error != nil) {
-                print("tmpApi ==========error: \(error)")
-            } else {
-                print("tmpApi download successful")
-                //                print("==========data: \(data)")
-            }
-        })
-
-        */
-
     }
 
 
+    @IBAction func responseToResumeBtn(sender: UIButton) {
+        if sender.selected {
+            self.downloadApi?.resume()
+            sender.selected = false
+        } else {
+            self.downloadApi?.suspend()
+            sender.selected = true
+        }
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 
     // MARK: - Table view data source
-
+/*
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 0
@@ -90,6 +129,7 @@ class DownloadTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return 0
     }
+*/
 
     /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

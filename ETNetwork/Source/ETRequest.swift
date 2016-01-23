@@ -17,7 +17,7 @@ public class ETRequest {
     weak var manager: ETManager?
     
     public var ignoreCache: Bool = false
-    var dataFromCache: Bool = false
+    public private (set)var dataFromCache: Bool = false
     var dataCached: Bool = false
     var loadedCacheData: NSData?
     lazy var serialQueue: dispatch_queue_t = {
@@ -40,7 +40,7 @@ public class ETRequest {
         jobRequest?.cancel()
     }
     
-    public func start(ignoreCache: Bool = false) {
+    public func start(ignoreCache ignoreCache: Bool = false) {
         start(ETManager.sharedInstance, ignoreCache: ignoreCache)
     }
     
@@ -103,6 +103,27 @@ public extension ETRequest {
         return self
     }
 
+    
+    public func response(completion: (NSData?, NSError?) -> Void ) -> Self {
+        if let data = self.loadedCacheData  where self.jobRequest == nil {
+            completion(data, nil)
+        } else {
+            operationQueue.addOperationWithBlock { () -> Void in
+                guard let jobRequest = self.jobRequest else {
+                    completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
+                    return
+                }
+                
+               jobRequest.response(completionHandler: { response -> Void in
+                    completion(response.2, response.3)
+               })
+            }
+            
+        }
+        
+        
+        return self
+    }
     public func responseStr(completion: (String?, NSError?) -> Void ) -> Self {
         if let data = self.loadedCacheData  where self.jobRequest == nil {
             let responseSerializer = Request.stringResponseSerializer(encoding: NSUTF8StringEncoding)
@@ -182,7 +203,7 @@ public extension ETRequest {
     }
     
     public func httpResponse(completion: (NSHTTPURLResponse?, NSError?) -> Void) -> Self {
-        if let _ = self.loadedCacheData  where self.jobRequest == nil {
+        if let _ = self.loadedCacheData where self.jobRequest == nil {
             completion(nil, nil)
         } else {
             operationQueue.addOperationWithBlock { () -> Void in
@@ -435,7 +456,7 @@ extension ETRequest: CustomDebugStringConvertible {
         if  let authProtocol = self as? ETRequestAuthProtocol {
             str.appendContentsOf("      authenticate: \(authProtocol.credential)\n")
         }
-        str.appendContentsOf("      url: \(requestProtocol.requestUrl)\n")
+        str.appendContentsOf("      url: \(requestProtocol.baseUrl + requestProtocol.requestUrl)\n")
         str.appendContentsOf("      method: \(requestProtocol.method.method.rawValue)\n")
         str.appendContentsOf("      paramters: \(requestProtocol.parameters)\n")
         str.appendContentsOf("      headers: \(requestProtocol.headers)\n")

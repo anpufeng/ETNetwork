@@ -14,6 +14,7 @@ class DownloadResumeDataApi: ETRequest {
     var data: NSData?
     init(data: NSData?) {
         self.data = data
+        print("resumedata size: \(data?.length)")
         super.init()
     }
 }

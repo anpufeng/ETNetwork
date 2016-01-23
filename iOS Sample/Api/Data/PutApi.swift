@@ -10,8 +10,6 @@ import UIKit
 import ETNetwork
 
 class PutApi: ETRequest {
-
-
     var bar: String
     init(bar: String) {
         self.bar = bar
@@ -30,7 +28,6 @@ extension PutApi: ETRequestProtocol {
 
 
 extension PutApi: ETRequestCacheProtocol {
-
-    //cache
-    var cacheSeconds: Int { return 10 }
+    var cacheVersion: UInt64 { return 1 }
+    var cacheSeconds: Int { return 60 }
 }

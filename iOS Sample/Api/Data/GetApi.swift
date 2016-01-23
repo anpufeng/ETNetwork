@@ -29,8 +29,7 @@ extension GetApi: ETRequestProtocol {
 
 
 extension GetApi: ETRequestCacheProtocol {
-    
-    //cache
-    var cacheSeconds: Int { return -1 }
+    var cacheVersion: UInt64 { return 1 }
+    var cacheSeconds: Int { return 60 }
 }
 

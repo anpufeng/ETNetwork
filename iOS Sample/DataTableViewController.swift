@@ -10,9 +10,28 @@ import UIKit
 import ETNetwork
 
 class DataTableViewController: UITableViewController {
-
+    @IBOutlet weak var bodyCell: UITableViewCell!
+    @IBOutlet weak var headerCell: UITableViewCell!
+    @IBOutlet weak var cacheSwitch: UISwitch!
     var dataRows: DataRows?
     var dataApi: ETRequest?
+
+    deinit {
+        dataApi?.cancel()
+        print("\(self.dynamicType)  deinit")
+
+    }
+    override func awakeFromNib() {
+        super.awakeFromNib()
+
+    }
+
+    @IBAction func refresh() {
+        refreshControl?.beginRefreshing()
+        self.dataRequest()
+        self.refreshControl?.endRefreshing()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -21,12 +40,19 @@ class DataTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-        
+
+        self.dataRequest()
+
+        refreshControl = UIRefreshControl()
+        refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+    }
+
+    func dataRequest() {
         guard let dataRows = dataRows else { fatalError("not set rows") }
+        dataApi?.cancel()
         switch dataRows {
         case .Get:
             dataApi = GetApi(bar: "GetApi")
-            
         case .Post:
             dataApi = PostApi(bar: "PostApi")
         case .Put:
@@ -36,15 +62,22 @@ class DataTableViewController: UITableViewController {
 
         }
 
-            self.title = "\(dataRows.description)"
-        
-        dataApi?.start()
-        dataApi?.responseJson({ (json, error) -> Void in
+        self.title = "\(dataRows.description)"
+
+        dataApi?.start(ignoreCache: cacheSwitch.on)
+        dataApi?.responseJson({ [weak self] (json, error) -> Void in
+            guard let strongSelf = self else { return }
             if (error != nil) {
                 print("==========error: \(error)")
+                strongSelf.bodyCell.textLabel?.text = error?.localizedDescription
+            } else {
+                strongSelf.headerCell.textLabel?.text = strongSelf.dataApi?.debugDescription
+                strongSelf.bodyCell.textLabel?.text = "\(json.debugDescription)"
+                print(strongSelf.dataApi.debugDescription)
+                print("==========json: \(json)")
             }
-            print(self.dataApi.debugDescription)
-            print("==========json: \(json)")
+
+            strongSelf.tableView.reloadData()
         })
     }
 
@@ -67,7 +100,7 @@ class DataTableViewController: UITableViewController {
     }
 */
 
-    /*
+/*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
 
@@ -75,7 +108,7 @@ class DataTableViewController: UITableViewController {
 
         return cell
     }
-    */
+*/
 
     /*
     // Override to support conditional editing of the table view.
