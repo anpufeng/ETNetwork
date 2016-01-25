@@ -79,6 +79,16 @@ class DataTableViewController: UITableViewController {
 
             strongSelf.tableView.reloadData()
         })
+
+
+        let one = GetApi(bar: "GetApi")
+        let two = PostApi(bar: "PostApi")
+        let three = GetApi(bar: "GetApi")
+        let four = PostApi(bar: "PostApi")
+        let five = GetApi(bar: "GetApi")
+        let six = PostApi(bar: "PostApi")
+        let batch = ETBatchRequest(requests: [one, two, three, four, five, six])
+        batch.start()
     }
 
     override func didReceiveMemoryWarning() {

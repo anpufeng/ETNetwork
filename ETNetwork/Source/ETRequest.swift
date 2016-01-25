@@ -21,7 +21,7 @@ public class ETRequest {
     var dataCached: Bool = false
     var loadedCacheData: NSData?
     lazy var serialQueue: dispatch_queue_t = {
-        return dispatch_queue_create(nil, DISPATCH_QUEUE_SERIAL)
+        return dispatch_queue_create("etrequest_save_cache", DISPATCH_QUEUE_SERIAL)
     }()
 
     lazy var operationQueue: NSOperationQueue = {
