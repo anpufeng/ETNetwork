@@ -22,45 +22,48 @@ public class ETBatchRequest {
         return operationQueue
     }()
 
+    public var completion: ((error: NSError?) -> Void)?
+    
+    deinit {
+       ETLog("\(self.dynamicType)  deinit")
+    }
+
     public init(requests: [ETRequest]) {
         self.requests = requests
 
         for req in self.requests {
-            self.addRequest(req)
+            _addRequest(req)
         }
     }
 
     private func _addRequest(req: ETRequest) {
-
-    }
-
-    public func addRequest(req: ETRequest) {
-
-        self.operationQueue.addOperationWithBlock { () -> Void in
+        operationQueue.addOperationWithBlock { () -> Void in
             req.start()
             req.response({ (data, error) -> Void in
                 if error == nil {
-                    ETLog("finish one task")
                     self.finishedTask++
-                    print("finishtask: \(self.finishedTask), array count: \(self.requests.count)")
                     if self.finishedTask == self.requests.count {
-                        ETLog("finish all task")
+                        self.completion?(error: nil)
                     }
                 } else {
-                    //ERROR
-                    print("request error: \(error)")
                     self.stop()
+                    self.completion?(error: error)
                 }
             })
         }
     }
 
+    public func addRequest(req: ETRequest) {
+        requests.append(req)
+        _addRequest(req)
+    }
+
     public func start() {
-        self.operationQueue.suspended = false
+        operationQueue.suspended = false
     }
 
     public func stop() {
-        self.operationQueue.cancelAllOperations()
-        self.requests.removeAll()
+        operationQueue.cancelAllOperations()
+        requests.removeAll()
     }
 }

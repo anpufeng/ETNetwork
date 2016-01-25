@@ -82,13 +82,58 @@ class DataTableViewController: UITableViewController {
 
 
         let one = GetApi(bar: "GetApi")
+        one.responseJson { (json, error) -> Void in
+            if (error != nil) {
+                print("==========error: \(error)")
+            } else {
+                print("one finished")
+            }
+        }
         let two = PostApi(bar: "PostApi")
-        let three = GetApi(bar: "GetApi")
-        let four = PostApi(bar: "PostApi")
-        let five = GetApi(bar: "GetApi")
-        let six = PostApi(bar: "PostApi")
-        let batch = ETBatchRequest(requests: [one, two, three, four, five, six])
+        two.responseJson { (json, error) -> Void in
+            if (error != nil) {
+                print("==========error: \(error)")
+            } else {
+                print("two finished")
+            }
+        }
+        let three = PutApi(bar: "GetApi")
+        three.responseJson { (json, error) -> Void in
+            if (error != nil) {
+                print("==========error: \(error)")
+            } else {
+                print("three finished")
+            }
+        }
+        let four = DeleteApi(bar: "PostApi")
+        four.responseJson { (json, error) -> Void in
+            if (error != nil) {
+                print("==========error: \(error)")
+            } else {
+                print("four finished")
+            }
+        }
+        let five = GetDownloadApi(bar: "GetDownloadApi")
+        five.response { (data, error) -> Void in
+            if (error != nil) {
+                print("==========error: \(error)")
+            } else {
+                print("five finished")
+            }
+        }.progress({ (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
+                print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
+                let percent = Float(totalBytesRead)/Float(totalBytesExpectedToRead)
+                print("percent: \(percent)")
+        })
+        let batch = ETBatchRequest(requests: [one, two, three, four, five])
         batch.start()
+        batch.completion = { error in
+            if let error = error {
+                print("batch request failure : \(error)")
+            } else {
+                print("batch request success")
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
