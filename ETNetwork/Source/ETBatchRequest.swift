@@ -30,13 +30,19 @@ public class ETBatchRequest {
         }
     }
 
+    private func _addRequest(req: ETRequest) {
+
+    }
+
     public func addRequest(req: ETRequest) {
-        self.requests.append(req)
+
         self.operationQueue.addOperationWithBlock { () -> Void in
+            req.start()
             req.response({ (data, error) -> Void in
                 if error == nil {
                     ETLog("finish one task")
                     self.finishedTask++
+                    print("finishtask: \(self.finishedTask), array count: \(self.requests.count)")
                     if self.finishedTask == self.requests.count {
                         ETLog("finish all task")
                     }
@@ -46,8 +52,6 @@ public class ETBatchRequest {
                     self.stop()
                 }
             })
-            req.start()
-
         }
     }
 
