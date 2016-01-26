@@ -81,6 +81,7 @@ class DataTableViewController: UITableViewController {
         })
 
 
+        /*
         let one = GetApi(bar: "GetApi")
         one.responseJson { (json, error) -> Void in
             if (error != nil) {
@@ -134,6 +135,38 @@ class DataTableViewController: UITableViewController {
                 print("batch request success")
             }
         }
+        */
+        
+        let one = GetApi(bar: "GetApi")
+        let two = PostApi(bar: "PostApi")
+        let three = PutApi(bar: "PutApi")
+        let four = DeleteApi(bar: "DeleteApi")
+   
+        let chain = ETChainRequest()
+        chain.addRequest(one) { (json, error) -> Void in
+            print("++++++one finished")
+            
+        }
+        chain.addRequest(two) { (json, error) -> Void in
+            print("++++++two finished")
+            
+        }
+        chain.addRequest(three) { (json, error) -> Void in
+            print("++++++three finished")
+           
+        }
+        chain.addRequest(four) { (json, error) -> Void in
+            print("++++++four finished")
+        }
+        
+        chain.completion = { error in
+            if let error = error {
+                print("chain request failure : \(error)")
+            } else {
+                print("chain request success")
+            }
+        }
+        chain.start()
     }
 
     override func didReceiveMemoryWarning() {

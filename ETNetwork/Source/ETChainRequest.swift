@@ -9,11 +9,6 @@
 
 import Foundation
 
-extension ETRequest {
-    public func addDependecy(req: ETRequest, completion: () -> Void) {
-
-    }
-}
 
 public class ETChainRequest {
     private var requests: [ETRequest] = []
@@ -28,22 +23,23 @@ public class ETChainRequest {
     public var completion: ((error: NSError?) -> Void)?
 
     deinit {
+        operationQueue.cancelAllOperations()
+        operationQueue.suspended = false
         ETLog("\(self.dynamicType)  deinit")
     }
 
-    public init(req: ETRequest) {
-        self.requests.append(req)
+    public init() {
 
-        for req in self.requests {
-            _addRequest(req)
-        }
     }
 
-    private func _addRequest(req: ETRequest) {
+    public func addRequest(req: ETRequest, completion: (AnyObject?, NSError?) -> Void) {
+        requests.append(req)
         operationQueue.addOperationWithBlock { () -> Void in
             req.start()
-            req.response({ (data, error) -> Void in
+            //FIXME: multi thread
+            req.responseJson({ (json, error) -> Void in
                 if error == nil {
+                    completion(json, error)
                     self.finishedTask++
                     if self.finishedTask == self.requests.count {
                         self.completion?(error: nil)
@@ -54,11 +50,6 @@ public class ETChainRequest {
                 }
             })
         }
-    }
-
-    public func addDependecy(req: ETRequest) {
-        requests.append(req)
-        _addRequest(req)
     }
 
     public func start() {

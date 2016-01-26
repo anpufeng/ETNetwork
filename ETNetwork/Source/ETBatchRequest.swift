@@ -21,6 +21,9 @@ public class ETBatchRequest {
     public var completion: ((error: NSError?) -> Void)?
     
     deinit {
+        operationQueue.cancelAllOperations()
+        operationQueue.suspended = false
+        
        ETLog("\(self.dynamicType)  deinit")
     }
 
@@ -36,6 +39,7 @@ public class ETBatchRequest {
     private func _addRequest(req: ETRequest) {
         operationQueue.addOperationWithBlock { () -> Void in
             req.start()
+            //FIXME: multi thread
             req.response({ (data, error) -> Void in
                 if error == nil {
                     self.finishedTask++
