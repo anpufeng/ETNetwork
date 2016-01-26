@@ -8,10 +8,6 @@
 
 import Foundation
 
-public protocol ETBatchRequestDelegate {
-
-}
-
 public class ETBatchRequest {
     private var requests: [ETRequest] = []
     private var finishedTask = 0
@@ -28,8 +24,9 @@ public class ETBatchRequest {
        ETLog("\(self.dynamicType)  deinit")
     }
 
-    public init(requests: [ETRequest]) {
+    public init(requests: [ETRequest], maxConcurrent: Int = 3) {
         self.requests = requests
+        self.operationQueue.maxConcurrentOperationCount = maxConcurrent
 
         for req in self.requests {
             _addRequest(req)
