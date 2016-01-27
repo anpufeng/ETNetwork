@@ -36,7 +36,6 @@ public class ETChainRequest {
         requests.append(req)
         operationQueue.addOperationWithBlock { () -> Void in
             req.start()
-            //FIXME: multi thread
             req.responseJson({ (json, error) -> Void in
                 if error == nil {
                     completion(json, error)

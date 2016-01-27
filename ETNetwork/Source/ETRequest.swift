@@ -18,6 +18,9 @@ public class ETRequest {
     
     public var ignoreCache: Bool = false
     public private (set)var dataFromCache: Bool = false
+    private var noJobRequestError: NSError {
+        return Error.errorWithCode(-8000, failureReason: "no request")
+    }
     var dataCached: Bool = false
     var loadedCacheData: NSData?
     lazy var serialQueue: dispatch_queue_t = {
@@ -106,11 +109,17 @@ public extension ETRequest {
     
     public func response(completion: (NSData?, NSError?) -> Void ) -> Self {
         if let data = self.loadedCacheData  where self.jobRequest == nil {
-            completion(data, nil)
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                completion(data, nil)
+            })
+            
         } else {
             operationQueue.addOperationWithBlock { () -> Void in
                 guard let jobRequest = self.jobRequest else {
-                    completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        completion(nil, self.noJobRequestError)
+                    })
+                    
                     return
                 }
                 
@@ -133,11 +142,16 @@ public extension ETRequest {
                 data,
                 nil
             )
-            completion(result.value, result.error)
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                completion(result.value, result.error)
+            })
+            
         } else {
             operationQueue.addOperationWithBlock { () -> Void in
                 guard let jobRequest = self.jobRequest else {
-                    completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        completion(nil, self.noJobRequestError)
+                    })
                     return
                 }
                 
@@ -165,11 +179,17 @@ public extension ETRequest {
                 data,
                 nil
             )
-            completion(result.value, result.error)
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                completion(result.value, result.error)
+            })
+            
         } else {
             operationQueue.addOperationWithBlock { () -> Void in
                 guard let jobRequest = self.jobRequest else {
-                    completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        completion(nil, self.noJobRequestError)
+                    })
+                    
                     return
                 }
                 
@@ -184,11 +204,17 @@ public extension ETRequest {
     
     public func responseData(completion: (NSData?, NSError?) -> Void ) -> Self {
         if let data = self.loadedCacheData  where self.jobRequest == nil {
-            completion(data, nil)
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                completion(data, nil)
+            })
+            
         } else {
             operationQueue.addOperationWithBlock { () -> Void in
                 guard let jobRequest = self.jobRequest else {
-                    completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        completion(nil, self.noJobRequestError)
+                    })
+                    
                     return
                 }
                 
@@ -204,11 +230,15 @@ public extension ETRequest {
     
     public func httpResponse(completion: (NSHTTPURLResponse?, NSError?) -> Void) -> Self {
         if let _ = self.loadedCacheData where self.jobRequest == nil {
-            completion(nil, nil)
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                completion(nil, nil)
+            })
         } else {
             operationQueue.addOperationWithBlock { () -> Void in
                 guard let jobRequest = self.jobRequest else {
-                    completion(nil, Error.errorWithCode(-6008, failureReason: "no request"))
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        completion(nil, self.noJobRequestError)
+                    })
                     return
                 }
                 

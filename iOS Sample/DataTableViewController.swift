@@ -137,6 +137,7 @@ class DataTableViewController: UITableViewController {
         }
         */
         
+        /*
         let one = GetApi(bar: "GetApi")
         let two = PostApi(bar: "PostApi")
         let three = PutApi(bar: "PutApi")
@@ -145,19 +146,26 @@ class DataTableViewController: UITableViewController {
         let chain = ETChainRequest()
         chain.addRequest(one) { (json, error) -> Void in
             print("++++++one finished")
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                NSThread.sleepForTimeInterval(2)
+                chain.addRequest(two) { (json, error) -> Void in
+                    print("++++++two finished")
+                    chain.addRequest(three) { (json, error) -> Void in
+                        print("++++++three finished")
+                        chain.addRequest(four) { (json, error) -> Void in
+                            print("++++++four finished")
+                        }
+                        
+                    }
+                    
+                }
+            })
+            
             
         }
-        chain.addRequest(two) { (json, error) -> Void in
-            print("++++++two finished")
-            
-        }
-        chain.addRequest(three) { (json, error) -> Void in
-            print("++++++three finished")
-           
-        }
-        chain.addRequest(four) { (json, error) -> Void in
-            print("++++++four finished")
-        }
+        
+
+        
         
         chain.completion = { error in
             if let error = error {
@@ -167,6 +175,7 @@ class DataTableViewController: UITableViewController {
             }
         }
         chain.start()
+        */
     }
 
     override func didReceiveMemoryWarning() {
