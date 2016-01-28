@@ -27,6 +27,7 @@ public class ETRequest {
         return dispatch_queue_create("etrequest_save_cache", DISPATCH_QUEUE_SERIAL)
     }()
 
+    //FIXME: only for upload
     lazy var operationQueue: NSOperationQueue = {
         let operationQueue = NSOperationQueue()
         operationQueue.maxConcurrentOperationCount = 1
