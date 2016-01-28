@@ -18,7 +18,6 @@ public func ETLog<T>(object: T, _ file: String = __FILE__, _ function: String = 
     }
 }
 
-
 public class ETManager {
     public static var logEnable = true
     
@@ -26,16 +25,6 @@ public class ETManager {
         return ETManager()
     }()
     
-    public var timeoutIntervalForResource: NSTimeInterval = 100 {
-        didSet {
-            jobManager.session.configuration.timeoutIntervalForResource = timeoutIntervalForResource
-        }
-    }
-    public var timeoutIntervalForRequest: NSTimeInterval = 200 {
-        didSet {
-           jobManager.session.configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
-        }
-    }
     private let jobManager: JobManager
     private var subRequests: [Int: ETRequest] = [:]
     private let concurrentQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
@@ -62,67 +51,51 @@ public class ETManager {
             }
         }
     }
-    
-    public init() {
+    public convenience init() {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
-        configuration.timeoutIntervalForResource = timeoutIntervalForResource
-        configuration.timeoutIntervalForRequest = timeoutIntervalForRequest
-        jobManager = JobManager(configuration: configuration)
-        jobManager.delegate.taskDidComplete = { (session, task, error) -> Void in
-            //use the default process before our job
-            if let delegate = self.jobManager.delegate[task] {
-                delegate.URLSession(session, task: task, didCompleteWithError: error)
-            }
+        configuration.timeoutIntervalForRequest = 15
+        self.init(configuration: configuration)
+    }
 
-            //addition job
-            let request  = objc_getAssociatedObject(task, &AssociatedKey.inneKey) as? ETRequest
-            if let request = request {
-                ETLog(request.jobRequest.debugDescription)
-                if let _ = error {
-                    request.delegate?.requestFailed(request)
-                } else {
-                    request.delegate?.requestFinished(request)
-                    request.saveResponseToCacheFile()
-                }
-                
-                self.cancelRequest(request)
-                self[request] = nil
-            } else {
-                ETLog("warning: objc_getAssociatedObject fail ")
-            }
-        }
-
+    public convenience init(timeoutForRequest: NSTimeInterval) {
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
+        configuration.timeoutIntervalForRequest = timeoutForRequest
+        self.init(configuration: configuration)
     }
 
     public init(configuration: NSURLSessionConfiguration) {
         jobManager = JobManager(configuration: configuration)
-        jobManager.delegate.taskDidComplete = { (session, task, error) -> Void in
+        jobManager.delegate.taskDidComplete = { [weak self] (session, task, error) -> Void in
             //use the default process before our job
-            if let delegate = self.jobManager.delegate[task] {
-                delegate.URLSession(session, task: task, didCompleteWithError: error)
-            }
-
-            //addition job
-            let request  = objc_getAssociatedObject(task, &AssociatedKey.inneKey) as? ETRequest
-            if let request = request {
-                ETLog(request.jobRequest.debugDescription)
-                if let _ = error {
-                    request.delegate?.requestFailed(request)
-                } else {
-                    request.delegate?.requestFinished(request)
-                    request.saveResponseToCacheFile()
+            if let strongSelf = self {
+                if let delegate = strongSelf.jobManager.delegate[task] {
+                    delegate.URLSession(session, task: task, didCompleteWithError: error)
                 }
 
-                self.cancelRequest(request)
-            } else {
-                ETLog("objc_getAssociatedObject fail ")
+                //additional job
+                let request  = objc_getAssociatedObject(task, &AssociatedKey.inneKey) as? ETRequest
+                if let request = request {
+                    ETLog(request.jobRequest.debugDescription)
+                    if let _ = error {
+                        request.delegate?.requestFailed(request)
+                    } else {
+                        request.delegate?.requestFinished(request)
+                        request.saveResponseToCacheFile()
+                    }
+
+                    strongSelf.cancelRequest(request)
+                    strongSelf[request] = nil
+                } else {
+                    ETLog("objc_getAssociatedObject fail ")
+                }
             }
         }
     }
 
-    private func commonInit(configuration: NSURLSessionConfiguration) {
-
+    deinit {
+        ETLog("\(self.dynamicType ) deinit")
     }
 
     func addRequest(request: ETRequest) {
@@ -211,9 +184,11 @@ public class ETManager {
             
             objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
             request.jobRequest = req
+            if request.needInOperationQueue {
+                request.operationQueue.suspended = false
+            }
             self[request] = request
             request.manager = self
-            request.operationQueue.suspended = false;
         } else {
             fatalError("must implement ETRequestProtocol")
         }

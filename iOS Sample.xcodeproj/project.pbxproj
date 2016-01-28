@@ -14,6 +14,7 @@
 		2A6661A91C2122E300D8B110 /* DeleteApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661A81C2122E300D8B110 /* DeleteApi.swift */; };
 		2A6661AF1C21264E00D8B110 /* GetDownloadApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6661AD1C21264E00D8B110 /* GetDownloadApi.swift */; };
 		2A7306031C27C2BC002D4BE7 /* UploadStreamApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7306021C27C2BC002D4BE7 /* UploadStreamApi.swift */; };
+		2ABFEEF91C59FAE100000BFE /* BatchChainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ABFEEF81C59FAE100000BFE /* BatchChainTableViewController.swift */; };
 		2AE4F8AE1C3298E500A3F215 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2AE4F8AD1C3298E500A3F215 /* test.txt */; };
 		2AE4F8B21C329B9200A3F215 /* upload2.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AE4F8B11C329B9200A3F215 /* upload2.png */; };
 		2AFC4D801C2432C200E105FF /* upload.png in Resources */ = {isa = PBXBuildFile; fileRef = 2AFC4D7F1C2432C200E105FF /* upload.png */; };
@@ -88,6 +89,7 @@
 		2A6661A81C2122E300D8B110 /* DeleteApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteApi.swift; sourceTree = "<group>"; };
 		2A6661AD1C21264E00D8B110 /* GetDownloadApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetDownloadApi.swift; sourceTree = "<group>"; };
 		2A7306021C27C2BC002D4BE7 /* UploadStreamApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadStreamApi.swift; sourceTree = "<group>"; };
+		2ABFEEF81C59FAE100000BFE /* BatchChainTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BatchChainTableViewController.swift; path = "iOS Sample/BatchChainTableViewController.swift"; sourceTree = SOURCE_ROOT; };
 		2AE4F8AD1C3298E500A3F215 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
 		2AE4F8B11C329B9200A3F215 /* upload2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upload2.png; sourceTree = "<group>"; };
 		2AFC4D7F1C2432C200E105FF /* upload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = upload.png; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 				2A2417F91C204B5700609D15 /* DownloadTableViewController.swift */,
 				2A2417FD1C204BC900609D15 /* UploadTableViewController.swift */,
 				2A2417FF1C204BDF00609D15 /* AuthTableViewController.swift */,
+				2ABFEEF81C59FAE100000BFE /* BatchChainTableViewController.swift */,
 			);
 			path = "iOS Sample";
 			sourceTree = "<group>";
@@ -426,6 +429,7 @@
 				2AFC4D861C252AA400E105FF /* UploadDataApi.swift in Sources */,
 				AA4FEEB71C3772A200C70C32 /* DownloadResumeDataApi.swift in Sources */,
 				2AFC4D841C2432F500E105FF /* UploadFileApi.swift in Sources */,
+				2ABFEEF91C59FAE100000BFE /* BatchChainTableViewController.swift in Sources */,
 				2A6661AF1C21264E00D8B110 /* GetDownloadApi.swift in Sources */,
 				AA141DF91C0935880038CD74 /* DataTableViewController.swift in Sources */,
 				AA141E011C0A88140038CD74 /* GetApi.swift in Sources */,
