@@ -20,6 +20,7 @@ public class ETChainRequest {
         return operationQueue
     }()
 
+    //FIXME: completion not right
     public var completion: ((error: NSError?) -> Void)?
 
     deinit {

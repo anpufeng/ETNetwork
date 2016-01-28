@@ -32,6 +32,7 @@ public class ETBatchRequest {
         self.operationQueue.maxConcurrentOperationCount = maxConcurrent
 
         for req in self.requests {
+            req.needInOperationQueue = true
             _addRequest(req)
         }
     }
