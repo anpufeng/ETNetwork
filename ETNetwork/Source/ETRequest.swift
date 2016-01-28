@@ -38,8 +38,6 @@ public class ETRequest {
     
     deinit {
         ETLog("\(self.dynamicType ) deinit")
-        operationQueue.cancelAllOperations()
-        operationQueue.suspended = false
         jobRequest?.cancel()
     }
     
@@ -53,7 +51,7 @@ public class ETRequest {
             delegate?.requestFinished(self)
             return
         }
-        
+
         manager.addRequest(self)
     }
     
@@ -77,6 +75,16 @@ public class ETRequest {
     public init() {
 
     }
+
+    func reqResponse(closure:() -> ()) {
+        if let _ = self as? ETRequestUploadProtocol {
+            operationQueue.addOperationWithBlock({ () -> Void in
+                closure()
+            })
+        } else {
+            closure()
+        }
+    }
 }
 
 //MARK: response
@@ -93,16 +101,15 @@ public extension ETRequest {
     }
     
     public func progress(closure: ((Int64, Int64, Int64) -> Void)? = nil) -> Self {
-        operationQueue.addOperationWithBlock { () -> Void in
+        reqResponse { () -> () in
             self.jobRequest?.progress({ (readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite) -> Void in
                 if let closure = closure {
                     closure(readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite)
                 }
-                
+
             })
         }
-        
-        
+
         return self
     }
 
@@ -114,23 +121,21 @@ public extension ETRequest {
             })
             
         } else {
-            operationQueue.addOperationWithBlock { () -> Void in
+            reqResponse({ () -> () in
                 guard let jobRequest = self.jobRequest else {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(nil, self.noJobRequestError)
                     })
-                    
+
                     return
                 }
-                
-               jobRequest.response(completionHandler: { response -> Void in
+
+                jobRequest.response(completionHandler: { response -> Void in
                     completion(response.2, response.3)
-               })
-            }
-            
+                })
+            })
         }
-        
-        
+
         return self
     }
     public func responseStr(completion: (String?, NSError?) -> Void ) -> Self {
@@ -147,22 +152,20 @@ public extension ETRequest {
             })
             
         } else {
-            operationQueue.addOperationWithBlock { () -> Void in
+            reqResponse({ () -> () in
                 guard let jobRequest = self.jobRequest else {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(nil, self.noJobRequestError)
                     })
                     return
                 }
-                
+
                 jobRequest.responseString(completionHandler: { response -> Void in
                     completion(response.result.value, response.result.error)
                 })
-            }
-            
+            })
         }
        
-
         return self
     }
     
@@ -184,19 +187,19 @@ public extension ETRequest {
             })
             
         } else {
-            operationQueue.addOperationWithBlock { () -> Void in
+            reqResponse({ () -> () in
                 guard let jobRequest = self.jobRequest else {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(nil, self.noJobRequestError)
                     })
-                    
+
                     return
                 }
-                
+
                 jobRequest.responseJSON(options: jsonOption, completionHandler: { response -> Void in
                     completion(response.result.value, response.result.error)
                 })
-            }
+            })
         }
 
         return self
@@ -209,22 +212,21 @@ public extension ETRequest {
             })
             
         } else {
-            operationQueue.addOperationWithBlock { () -> Void in
+            reqResponse({ () -> () in
                 guard let jobRequest = self.jobRequest else {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(nil, self.noJobRequestError)
                     })
-                    
+
                     return
                 }
-                
+
                 jobRequest.responseData({ response -> Void in
                     completion(response.result.value, response.result.error)
                 })
-            }
+            })
         }
        
-
         return self
     }
     
@@ -234,18 +236,19 @@ public extension ETRequest {
                 completion(nil, nil)
             })
         } else {
-            operationQueue.addOperationWithBlock { () -> Void in
+            reqResponse({ () -> () in
                 guard let jobRequest = self.jobRequest else {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(nil, self.noJobRequestError)
                     })
                     return
                 }
-                
+
                 jobRequest.response(completionHandler: { response -> Void in
                     completion(response.1, response.3)
                 })
-            }
+
+            })
         }
         
         return self
