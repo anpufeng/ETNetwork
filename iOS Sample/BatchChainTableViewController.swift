@@ -13,6 +13,11 @@ class BatchChainTableViewController: UITableViewController {
     var bcRows: BatchChainRows?
     var chainApi: ETChainRequest?
     var batchApi: ETBatchRequest?
+    deinit {
+        chainApi?.stop()
+        batchApi?.stop()
+        print("\(self.dynamicType)  deinit")
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -47,23 +52,15 @@ class BatchChainTableViewController: UITableViewController {
             chainApi = ETChainRequest()
             chainApi?.addRequest(one) { (json, error) -> Void in
                 print("++++++ 1 finished")
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                    NSThread.sleepForTimeInterval(2)
-                    self.chainApi?.addRequest(two) { (json, error) -> Void in
-                        print("++++++ 2 finished")
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                            self.chainApi?.addRequest(three) { (json, error) -> Void in
-                                print("++++++ 3 finished")
-                                self.chainApi?.addRequest(four) { (json, error) -> Void in
-                                    print("++++++ 4 finished")
-                                }
-
-                            }
-                        })
-
-
+                self.chainApi?.addRequest(two) { (json, error) -> Void in
+                    print("++++++ 2 finished")
+                    self.chainApi?.addRequest(three) { (json, error) -> Void in
+                        print("++++++ 3 finished")
+                        self.chainApi?.addRequest(four) { (json, error) -> Void in
+                            print("++++++ 4 finished")
+                        }
                     }
-                })
+                }
             }
 
             chainApi?.completion = { error in

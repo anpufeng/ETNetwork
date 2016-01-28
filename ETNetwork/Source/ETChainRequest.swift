@@ -39,14 +39,20 @@ public class ETChainRequest {
             req.start()
             req.responseJson({ (json, error) -> Void in
                 if error == nil {
-                    completion(json, error)
-                    self.finishedTask++
-                    if self.finishedTask == self.requests.count {
-                        self.completion?(error: nil)
-                    }
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        completion(json, error)
+                        self.finishedTask++
+                        if self.finishedTask == self.requests.count {
+                            self.completion?(error: nil)
+                        }
+                    })
+
                 } else {
                     self.stop()
-                    self.completion?(error: error)
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        self.completion?(error: error)
+                    })
+
                 }
             })
         }
@@ -58,6 +64,9 @@ public class ETChainRequest {
 
     public func stop() {
         operationQueue.cancelAllOperations()
+        for req in self.requests {
+            req.cancel()
+        }
         requests.removeAll()
     }
 }
