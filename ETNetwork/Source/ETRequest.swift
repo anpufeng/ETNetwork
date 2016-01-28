@@ -19,7 +19,7 @@ public class ETRequest {
     public var ignoreCache: Bool = false
     public private (set)var dataFromCache: Bool = false
     private var noJobRequestError: NSError {
-        return Error.errorWithCode(-8000, failureReason: "no request")
+        return Error.errorWithCode(-8000, failureReason: "no request, please call start first")
     }
     var dataCached: Bool = false
     var loadedCacheData: NSData?
@@ -27,6 +27,7 @@ public class ETRequest {
         return dispatch_queue_create("etrequest_save_cache", DISPATCH_QUEUE_SERIAL)
     }()
 
+    var needInOperationQueue = false
     lazy var operationQueue: NSOperationQueue = {
         let operationQueue = NSOperationQueue()
         operationQueue.maxConcurrentOperationCount = 1
@@ -49,6 +50,9 @@ public class ETRequest {
         self.ignoreCache = ignoreCache
         if shouldUseCache() {
             delegate?.requestFinished(self)
+            if needInOperationQueue {
+                self.operationQueue.suspended = false
+            }
             return
         }
 
@@ -82,7 +86,14 @@ public class ETRequest {
                 closure()
             })
         } else {
-            closure()
+            if needInOperationQueue {
+                operationQueue.addOperationWithBlock({ () -> Void in
+                    closure()
+                })
+            } else {
+                closure()
+            }
+
         }
     }
 }
@@ -113,15 +124,14 @@ public extension ETRequest {
         return self
     }
 
-    
     public func response(completion: (NSData?, NSError?) -> Void ) -> Self {
-        if let data = self.loadedCacheData  where self.jobRequest == nil {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion(data, nil)
-            })
-            
-        } else {
-            reqResponse({ () -> () in
+        reqResponse { () -> () in
+            if let data = self.loadedCacheData  where self.jobRequest == nil {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    completion(data, nil)
+                })
+
+            } else {
                 guard let jobRequest = self.jobRequest else {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(nil, self.noJobRequestError)
@@ -133,26 +143,27 @@ public extension ETRequest {
                 jobRequest.response(completionHandler: { response -> Void in
                     completion(response.2, response.3)
                 })
-            })
+            }
+
         }
 
         return self
     }
     public func responseStr(completion: (String?, NSError?) -> Void ) -> Self {
-        if let data = self.loadedCacheData  where self.jobRequest == nil {
-            let responseSerializer = Request.stringResponseSerializer(encoding: NSUTF8StringEncoding)
-            let result = responseSerializer.serializeResponse(
-                self.jobRequest?.request,
-                self.jobRequest?.response,
-                data,
-                nil
-            )
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion(result.value, result.error)
-            })
-            
-        } else {
-            reqResponse({ () -> () in
+        reqResponse { () -> () in
+            if let data = self.loadedCacheData  where self.jobRequest == nil {
+                let responseSerializer = Request.stringResponseSerializer(encoding: NSUTF8StringEncoding)
+                let result = responseSerializer.serializeResponse(
+                    self.jobRequest?.request,
+                    self.jobRequest?.response,
+                    data,
+                    nil
+                )
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    completion(result.value, result.error)
+                })
+
+            } else {
                 guard let jobRequest = self.jobRequest else {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(nil, self.noJobRequestError)
@@ -163,31 +174,32 @@ public extension ETRequest {
                 jobRequest.responseString(completionHandler: { response -> Void in
                     completion(response.result.value, response.result.error)
                 })
-            })
+            }
         }
+
        
         return self
     }
     
     public func responseJson(completion: (AnyObject?, NSError?) -> Void ) -> Self {
-        var jsonOption: NSJSONReadingOptions = .AllowFragments
-        if let requestProtocol = self as? ETRequestProtocol {
-            jsonOption = requestProtocol.responseJsonReadingOption
-        }
-        if let data = self.loadedCacheData where self.jobRequest == nil {
-            let responseSerializer = Request.JSONResponseSerializer(options: jsonOption)
-            let result = responseSerializer.serializeResponse(
-                self.jobRequest?.request,
-                self.jobRequest?.response,
-                data,
-                nil
-            )
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion(result.value, result.error)
-            })
-            
-        } else {
-            reqResponse({ () -> () in
+        reqResponse { () -> () in
+            var jsonOption: NSJSONReadingOptions = .AllowFragments
+            if let requestProtocol = self as? ETRequestProtocol {
+                jsonOption = requestProtocol.responseJsonReadingOption
+            }
+            if let data = self.loadedCacheData where self.jobRequest == nil {
+                let responseSerializer = Request.JSONResponseSerializer(options: jsonOption)
+                let result = responseSerializer.serializeResponse(
+                    self.jobRequest?.request,
+                    self.jobRequest?.response,
+                    data,
+                    nil
+                )
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    completion(result.value, result.error)
+                })
+                
+            } else {
                 guard let jobRequest = self.jobRequest else {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(nil, self.noJobRequestError)
@@ -199,20 +211,20 @@ public extension ETRequest {
                 jobRequest.responseJSON(options: jsonOption, completionHandler: { response -> Void in
                     completion(response.result.value, response.result.error)
                 })
-            })
+            }
         }
 
         return self
     }
     
     public func responseData(completion: (NSData?, NSError?) -> Void ) -> Self {
-        if let data = self.loadedCacheData  where self.jobRequest == nil {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion(data, nil)
-            })
-            
-        } else {
-            reqResponse({ () -> () in
+        reqResponse { () -> () in
+            if let data = self.loadedCacheData  where self.jobRequest == nil {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    completion(data, nil)
+                })
+
+            } else {
                 guard let jobRequest = self.jobRequest else {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(nil, self.noJobRequestError)
@@ -224,19 +236,21 @@ public extension ETRequest {
                 jobRequest.responseData({ response -> Void in
                     completion(response.result.value, response.result.error)
                 })
-            })
+
+            }
         }
+
        
         return self
     }
     
     public func httpResponse(completion: (NSHTTPURLResponse?, NSError?) -> Void) -> Self {
-        if let _ = self.loadedCacheData where self.jobRequest == nil {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion(nil, nil)
-            })
-        } else {
-            reqResponse({ () -> () in
+        reqResponse { () -> () in
+            if let _ = self.loadedCacheData where self.jobRequest == nil {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    completion(nil, nil)
+                })
+            } else {
                 guard let jobRequest = self.jobRequest else {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(nil, self.noJobRequestError)
@@ -247,9 +261,9 @@ public extension ETRequest {
                 jobRequest.response(completionHandler: { response -> Void in
                     completion(response.1, response.3)
                 })
-
-            })
+            }
         }
+
         
         return self
     }

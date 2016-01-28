@@ -18,7 +18,6 @@ public func ETLog<T>(object: T, _ file: String = __FILE__, _ function: String = 
     }
 }
 
-//FIXME: deinit
 public class ETManager {
     public static var logEnable = true
     
@@ -75,7 +74,7 @@ public class ETManager {
                     delegate.URLSession(session, task: task, didCompleteWithError: error)
                 }
 
-                //addition job
+                //additional job
                 let request  = objc_getAssociatedObject(task, &AssociatedKey.inneKey) as? ETRequest
                 if let request = request {
                     ETLog(request.jobRequest.debugDescription)
@@ -185,6 +184,9 @@ public class ETManager {
             
             objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
             request.jobRequest = req
+            if request.needInOperationQueue {
+                request.operationQueue.suspended = false
+            }
             self[request] = request
             request.manager = self
         } else {
