@@ -10,7 +10,7 @@ import UIKit
 import ETNetwork
 
 enum Sections: Int {
-    case Data, Download, Upload, Credit
+    case Data, Download, Upload, Credit, BatchChain
     
     var segueIdentifer: String {
         switch self {
@@ -22,6 +22,8 @@ enum Sections: Int {
             return "Upload"
         case .Credit:
             return "Auth"
+        case .BatchChain:
+            return "BatchChain"
         }
     }
 }
@@ -83,6 +85,18 @@ enum AuthRows: Int {
     }
 }
 
+enum BatchChainRows: Int {
+    case Batch, Chain
+    var description: String {
+        switch self {
+        case .Batch:
+            return "Batch"
+        case .Chain:
+            return "Chain"
+        }
+    }
+}
+
 
 class RootTableViewController: UITableViewController {
 
@@ -126,6 +140,8 @@ class RootTableViewController: UITableViewController {
             dest.uploadRows = UploadRows(rawValue: indexPath.row)
         } else if let dest = dest as? AuthTableViewController {
             dest.authRows = AuthRows(rawValue: indexPath.row)
+        }  else if let dest = dest as? BatchChainTableViewController {
+            dest.bcRows = BatchChainRows(rawValue: indexPath.row)
         }
     }
 

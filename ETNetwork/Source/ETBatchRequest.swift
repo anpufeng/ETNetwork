@@ -32,6 +32,7 @@ public class ETBatchRequest {
         self.operationQueue.maxConcurrentOperationCount = maxConcurrent
 
         for req in self.requests {
+            req.needInOperationQueue = true
             _addRequest(req)
         }
     }
@@ -41,13 +42,19 @@ public class ETBatchRequest {
             req.start()
             req.response({ (data, error) -> Void in
                 if error == nil {
-                    self.finishedTask++
-                    if self.finishedTask == self.requests.count {
-                        self.completion?(error: nil)
-                    }
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        self.finishedTask++
+                        if self.finishedTask == self.requests.count {
+                            self.completion?(error: nil)
+                        }
+                    })
+
                 } else {
                     self.stop()
-                    self.completion?(error: error)
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        self.completion?(error: error)
+                    })
+
                 }
             })
         }
@@ -64,6 +71,9 @@ public class ETBatchRequest {
 
     public func stop() {
         operationQueue.cancelAllOperations()
+        for req in self.requests {
+            req.cancel()
+        }
         requests.removeAll()
     }
 }
