@@ -18,10 +18,11 @@ class DownloadTableViewController: UITableViewController {
     @IBOutlet weak var processView: UIProgressView!
     var downloadRows: DownloadRows?
     var downloadApi: ETRequest?
+    var manager: ETManager = ETManager(timeoutForRequest: 300)
 
     @IBOutlet weak var resumeBtn: UIButton!
     deinit {
-        downloadApi?.cancel()
+        manager.cancelAllRequests()
 
         print("\(self.dynamicType)  deinit")
     }
@@ -76,8 +77,7 @@ class DownloadTableViewController: UITableViewController {
 
 
         self.title = "\(downloadRows.description)"
-
-        downloadApi?.start()
+        downloadApi?.start(manager, ignoreCache: true)
 
         //        if let data = downloadApi?.cachedData {
         //            print("cached data: \(data)")

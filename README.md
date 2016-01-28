@@ -36,7 +36,7 @@ extension GetApi: ETRequestProtocol {
     }
 }
 ```
-###cache the request
+###cache the request, implement `ETRequestCacheProtocol` 
 ```swift
 extension GetApi: ETRequestCacheProtocol {
     var cacheVersion: UInt64 { return 1 }
@@ -44,17 +44,17 @@ extension GetApi: ETRequestCacheProtocol {
 }
 
 let dataApi = GetApi(bar: "GetApi")
-       dataApi.start()
-        dataApi.responseJson({ (json, error) -> Void in
-            if (error != nil) {
-                print("==========error: \(error)")
-            } else {
-                print("==========json: \(json)")
-            }
-        })
+dataApi.start()
+dataApi.responseJson({ (json, error) -> Void in
+    if (error != nil) {
+        print("==========error: \(error)")
+    } else {
+        print("==========json: \(json)")
+    }
+})
 ```
 
-###download request, 
+###download request, implement `ETRequestDownloadProtocol`
 ```swift
 extension GetDownloadApi: ETRequestDownloadProtocol {
     
@@ -75,7 +75,7 @@ extension DownloadResumeDataApi: ETRequestDownloadProtocol {
     var resumeData: NSData? { return data }
 }
 ```
-###upload request
+###upload request, implement `ETRequestUploadProtocol`
 ```swift
 extension UploadStreamApi: ETRequestUploadProtocol {
     var formData: [UploadFormProtocol]? {
@@ -117,14 +117,44 @@ uploadApi.formDataencodingError { (error) -> Void in
             print("percent: \(100 * Double(totalBytesWrite)/Double(totalBytesExpectedToWrite))")
         })
 ```
+###batch request
+```swift
+let one = GetApi(bar: "GetApi")
+let two = PostApi(bar: "PostApi")
+let three = PutApi(bar: "PutApi")
+let four = DeleteApi(bar: "DeleteApi")
+let five = GetDownloadApi(bar: "GetDownloadApi")
 
 
+batchApi = ETBatchRequest(requests: [one, two, three, four, five])
+batchApi?.start()
+```
+###chain request
+```swift
+let one = GetApi(bar: "GetApi")
+let two = PostApi(bar: "PostApi")
+let three = PutApi(bar: "PutApi")
+let four = DeleteApi(bar: "DeleteApi")
+
+chainApi = ETChainRequest()
+chainApi?.addRequest(one) { (json, error) -> Void in
+    print("++++++ 1 finished")
+    self.chainApi?.addRequest(two) { (json, error) -> Void in
+        print("++++++ 2 finished")
+        self.chainApi?.addRequest(three) { (json, error) -> Void in
+            print("++++++ 3 finished")
+            self.chainApi?.addRequest(four) { (json, error) -> Void in
+                print("++++++ 4 finished")
+            }
+        }
+    }
+}
+```
 
 ##TODO
- * batch request
- * chain request
  * do we need request delegate?
  * optimize & bug fix
+ * more test
  
-##License
+## License
 ETNetwork is released under the MIT license. See LICENSE for details.
