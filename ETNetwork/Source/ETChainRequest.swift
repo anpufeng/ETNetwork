@@ -33,6 +33,7 @@ public class ETChainRequest {
 
     }
 
+    //FIXME:  multi thread
     public func addRequest(req: ETRequest, completion: (AnyObject?, NSError?) -> Void) {
         requests.append(req)
         operationQueue.addOperationWithBlock { () -> Void in

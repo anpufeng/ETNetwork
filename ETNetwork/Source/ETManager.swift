@@ -57,7 +57,7 @@ public class ETManager {
         self.init(configuration: configuration)
     }
 
-    public convenience init(timeoutForRequest: NSTimeInterval, timeoutForResource: NSTimeInterval = 15) {
+    public convenience init(timeoutForRequest: NSTimeInterval, timeoutForResource: NSTimeInterval = 7 * 24 * 3600) {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
         configuration.timeoutIntervalForRequest = timeoutForRequest

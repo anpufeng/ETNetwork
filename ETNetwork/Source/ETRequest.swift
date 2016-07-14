@@ -135,8 +135,8 @@ public extension ETRequest {
                 }
 
                 jobRequest.response(completionHandler: { response -> Void in
-                    if response.3 != nil {
-                        self.saveResponseToCacheFile()
+                    if response.3 == nil {
+                        self.saveResponseToCacheFile(response.2)
                     }
                      self.manager?.removeFromManager(self)
                     
@@ -171,8 +171,8 @@ public extension ETRequest {
                 }
 
                 jobRequest.responseString(completionHandler: { response -> Void in
-                    if response.result.error != nil {
-                        self.saveResponseToCacheFile()
+                    if response.result.error == nil {
+                        self.saveResponseToCacheFile(response.data)
                     }
                      self.manager?.removeFromManager(self)
                     
@@ -214,8 +214,8 @@ public extension ETRequest {
                 }
 
                 jobRequest.responseJSON(options: jsonOption, completionHandler: { response -> Void in
-                    if response.result.error != nil {
-                        self.saveResponseToCacheFile()
+                    if response.result.error == nil {
+                        self.saveResponseToCacheFile(response.data)
                     }
                     self.manager?.removeFromManager(self)
                     
@@ -245,7 +245,7 @@ public extension ETRequest {
 
                 jobRequest.responseData(completionHandler:{ response -> Void in
                     if response.result.error != nil {
-                        self.saveResponseToCacheFile()
+                        self.saveResponseToCacheFile(response.data)
                         self.manager?.cancelRequest(self)
                     }
                     completion(response.result.value, response.result.error)
@@ -405,19 +405,22 @@ public extension ETRequest {
         return true
     }
     
-    func saveResponseToCacheFile() -> Void {
+    func saveResponseToCacheFile(data: NSData?) -> Void {
         if shouldStoreCache() {
             //only cache data
-//            guard let data = jobRequest?.delegate.data else { return }
-            guard let cacheProtocol = self as? ETRequestCacheProtocol else { return }
-            /*
+            guard let data = data else {
+                return
+            }
+            guard let cacheProtocol = self as? ETRequestCacheProtocol else {
+                return
+            }
+            
             dispatch_async(serialQueue) { () -> Void in
                 let result = data.writeToFile(self.cacheFilePath(), atomically: true)
                 NSKeyedArchiver.archiveRootObject(NSNumber(unsignedLongLong: cacheProtocol.cacheVersion), toFile: self.cacheVersionFilePath())
                 self.dataCached = true
                 log("write to file: \(self.cacheFilePath()) result: \(result)")
             }
- */
         }
     }
     private func cacheFilePath() -> String {

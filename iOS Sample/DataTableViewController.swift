@@ -28,7 +28,7 @@ class DataTableViewController: UITableViewController {
     @IBAction func refresh() {
         refreshControl?.beginRefreshing()
         self.dataRequest()
-        self.refreshControl?.endRefreshing()
+        
     }
 
     override func viewDidLoad() {
@@ -65,7 +65,11 @@ class DataTableViewController: UITableViewController {
 
         dataApi?.start(ignoreCache: cacheSwitch.on)
         dataApi?.responseJson({ [weak self] (json, error) -> Void in
-            guard let strongSelf = self else { return }
+            
+            guard let strongSelf = self else {
+                return
+            }
+            strongSelf.refreshControl?.endRefreshing()
             if (error != nil) {
                 print("==========error: \(error)")
                 strongSelf.bodyCell.textLabel?.text = error?.localizedDescription

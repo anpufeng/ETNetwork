@@ -60,6 +60,7 @@ public class ETBatchRequest {
         }
     }
 
+    //FIXME: mult thread
     public func addRequest(req: ETRequest) {
         requests.append(req)
         _addRequest(req)
