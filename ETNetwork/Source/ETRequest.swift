@@ -12,11 +12,8 @@ import Alamofire
 
 ///the request class
 public class ETRequest {
-    var jobRequest: JobRequest? {
-        didSet {
-            manager?.cancelRequest(self)
-        }
-    }
+    var jobRequest: JobRequest?
+        
     weak var manager: ETManager?
     
     public var ignoreCache: Bool = false
@@ -71,11 +68,6 @@ public class ETRequest {
     
     public func resume() {
         jobRequest?.task.resume()
-    }
-    public var requestIdentifier: Int? {
-        //no request exist if use cache
-        guard let jobRequest = jobRequest else {  return nil }
-        return jobRequest.task.taskIdentifier
     }
     
     public init() {
@@ -146,8 +138,7 @@ public extension ETRequest {
                     if response.3 != nil {
                         self.saveResponseToCacheFile()
                     }
-                    self.manager?.cancelRequest(self)
-                    self.manager?[self] = nil
+                     self.manager?.removeFromManager(self)
                     
                     completion(response.2, response.3)
                 })
@@ -183,8 +174,7 @@ public extension ETRequest {
                     if response.result.error != nil {
                         self.saveResponseToCacheFile()
                     }
-                    self.manager?.cancelRequest(self)
-                    self.manager?[self] = nil
+                     self.manager?.removeFromManager(self)
                     
                     completion(response.result.value, response.result.error)
                 })
@@ -227,8 +217,7 @@ public extension ETRequest {
                     if response.result.error != nil {
                         self.saveResponseToCacheFile()
                     }
-                    self.manager?.cancelRequest(self)
-                    self.manager?[self] = nil
+                    self.manager?.removeFromManager(self)
                     
                     completion(response.result.value, response.result.error)
                 })

@@ -29,7 +29,7 @@ class BatchChainTableViewController: UITableViewController {
 
         self.bcRequest()
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(BatchChainTableViewController.refresh), forControlEvents: .ValueChanged)
     }
 
     @IBAction func refresh() {
@@ -86,7 +86,7 @@ class BatchChainTableViewController: UITableViewController {
                 if (error != nil) {
                     print("==========error: \(error)")
                 } else {
-                    print("one finished")
+                    print("one finished: \(json)")
                 }
             }
 
@@ -103,7 +103,7 @@ class BatchChainTableViewController: UITableViewController {
                 if (error != nil) {
                     print("==========error: \(error)")
                 } else {
-                    print("three finished")
+                    print("three finished: \(json)")
                 }
             }
 
@@ -111,7 +111,7 @@ class BatchChainTableViewController: UITableViewController {
                 if (error != nil) {
                     print("==========error: \(error)")
                 } else {
-                    print("four finished")
+                    print("four finished: \(json)")
                 }
             }
 

@@ -18,7 +18,7 @@ class DownloadTableViewController: UITableViewController {
     @IBOutlet weak var processView: UIProgressView!
     var downloadRows: DownloadRows?
     var downloadApi: ETRequest?
-    var manager: ETManager = ETManager(timeoutForRequest: 300)
+    var manager: ETManager = ETManager(timeoutForRequest: 15)
 
     @IBOutlet weak var resumeBtn: UIButton!
     deinit {
@@ -39,7 +39,7 @@ class DownloadTableViewController: UITableViewController {
         self.downloadRequest()
 
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(DownloadTableViewController.refresh), forControlEvents: .ValueChanged)
     }
     
     class func saveLastData(data: NSData?) {
@@ -84,9 +84,9 @@ class DownloadTableViewController: UITableViewController {
         //        }
         downloadApi?.progress({ [weak self] (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
             guard let strongSelf = self else { return }
-//            print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
+            print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
             let percent = Float(totalBytesRead)/Float(totalBytesExpectedToRead)
-//            print("percent: \(percent)")
+            print("percent: \(percent)")
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 strongSelf.processView.progress = percent
                 let read = String(format: "%.2f", Float(totalBytesRead)/1024)

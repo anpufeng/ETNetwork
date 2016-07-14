@@ -45,7 +45,6 @@ public class ETManager {
         }
         
         set {
-            guard let identifier = request.requestIdentifier else { return }
             dispatch_barrier_async(concurrentQueue) {
                 self.subRequests[request.identifier()] = newValue
             }
@@ -58,41 +57,16 @@ public class ETManager {
         self.init(configuration: configuration)
     }
 
-    public convenience init(timeoutForRequest: NSTimeInterval) {
+    public convenience init(timeoutForRequest: NSTimeInterval, timeoutForResource: NSTimeInterval = 15) {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
         configuration.timeoutIntervalForRequest = timeoutForRequest
+        configuration.timeoutIntervalForResource = timeoutForResource
         self.init(configuration: configuration)
     }
 
     public init(configuration: NSURLSessionConfiguration) {
         jobManager = JobManager(configuration: configuration)
-        
-        /*
-        jobManager.delegate.taskDidComplete = { [weak self] (session, task, error) -> Void in
-            //use the default process before our job
-            if let strongSelf = self {
-                if let delegate = strongSelf.jobManager.delegate[task] {
-                    delegate.URLSession(session, task: task, didCompleteWithError: error)
-                }
-
-                //additional job
-                let request  = objc_getAssociatedObject(task, &AssociatedKey.inneKey) as? ETRequest
-                if let request = request {
-                    log(request.jobRequest.debugDescription)
-                    if let _ = error {
-                    } else {
-                        request.saveResponseToCacheFile()
-                    }
-
-                    strongSelf.cancelRequest(request)
-                    strongSelf[request] = nil
-                } else {
-                    log("objc_getAssociatedObject fail ")
-                }
-            }
-        }
- */
     }
 
     deinit {
@@ -144,7 +118,6 @@ public class ETManager {
                             } else {
                                 multipart.appendBodyPart(data: wrapData.data, name: wrapData.name)
                             }
-                            
                         } else if wrapped is UploadFormFileURL {
                             let wrapFileURL = wrapped as! UploadFormFileURL
                             if let mimeType = wrapFileURL.mimeType, fileName = wrapFileURL.fileName {
@@ -206,6 +179,9 @@ public class ETManager {
         self[request] = nil
     }
     
+    func removeFromManager(request: ETRequest) {
+        self[request] = nil
+    }
     public func cancelAllRequests() {
         let dic = subRequests as NSDictionary
         let copyDic: NSMutableDictionary = dic.mutableCopy() as! NSMutableDictionary
