@@ -1,4 +1,10 @@
 # ETNetwork
+
+## Requirements
+
+- iOS 8.0+ 
+- Xcode 7.3+
+- 
 ## What
 
 ETNetwork is is a high level request util based on [Alamofire](https://github.com/Alamofire/Alamofire), take [YTKNetwork](https://github.com/yuantiku/YTKNetwork/) as reference. 
@@ -152,7 +158,7 @@ chainApi?.addRequest(one) { (json, error) -> Void in
 ```
 
 ##TODO
- * do we need request delegate?
+
  * optimize & bug fix
  * more test
  
