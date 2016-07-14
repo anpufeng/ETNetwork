@@ -75,7 +75,7 @@ public enum ETResponseSerializer {
  if you conform to this protocol, the ETRequestProtocol will be ignored
  */
 public protocol ETRequestCustom {
-    var customUrlRequest: NSURLRequest { get}
+    var customUrlRequest: NSURLRequest { get }
 }
 
 /**

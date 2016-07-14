@@ -26,7 +26,7 @@ public class ETChainRequest {
     deinit {
         operationQueue.cancelAllOperations()
         operationQueue.suspended = false
-        ETLog("\(self.dynamicType)  deinit")
+        log("\(self.dynamicType)  deinit")
     }
 
     public init() {

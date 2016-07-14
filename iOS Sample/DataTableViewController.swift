@@ -17,7 +17,6 @@ class DataTableViewController: UITableViewController {
     var dataApi: ETRequest?
 
     deinit {
-        dataApi?.cancel()
         print("\(self.dynamicType)  deinit")
 
     }
@@ -44,7 +43,7 @@ class DataTableViewController: UITableViewController {
         self.dataRequest()
 
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(DataTableViewController.refresh), forControlEvents: .ValueChanged)
     }
 
     func dataRequest() {
@@ -76,9 +75,10 @@ class DataTableViewController: UITableViewController {
                 print(strongSelf.dataApi.debugDescription)
                 print("==========json: \(json)")
             }
-
+            
             strongSelf.tableView.reloadData()
-        })
+            })
+        
     }
 
     override func didReceiveMemoryWarning() {

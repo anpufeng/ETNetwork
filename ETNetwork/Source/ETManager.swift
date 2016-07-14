@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 
 
-public func ETLog<T>(object: T, _ file: String = __FILE__, _ function: String = __FUNCTION__, _ line: Int = __LINE__) {
+public func log<T>(object: T, _ file: String = __FILE__, _ function: String = __FUNCTION__, _ line: Int = __LINE__) {
     if ETManager.logEnable {
         let path = file as NSString
         let fileNameWithoutPath = path.lastPathComponent
@@ -27,7 +27,7 @@ public class ETManager {
     }()
     
     private let jobManager: JobManager
-    private var subRequests: [Int: ETRequest] = [:]
+    private var subRequests: [String: ETRequest] = [:]
     private let concurrentQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
     
     private struct AssociatedKey {
@@ -37,9 +37,8 @@ public class ETManager {
     subscript(request: ETRequest) -> ETRequest? {
         get {
             var req: ETRequest?
-            guard let identifier = request.requestIdentifier else { return req }
             dispatch_sync(concurrentQueue) {
-                req = self.subRequests[identifier]
+                req = self.subRequests[request.identifier()]
             }
             
             return req
@@ -48,7 +47,7 @@ public class ETManager {
         set {
             guard let identifier = request.requestIdentifier else { return }
             dispatch_barrier_async(concurrentQueue) {
-                self.subRequests[identifier] = newValue
+                self.subRequests[request.identifier()] = newValue
             }
         }
     }
@@ -68,6 +67,8 @@ public class ETManager {
 
     public init(configuration: NSURLSessionConfiguration) {
         jobManager = JobManager(configuration: configuration)
+        
+        /*
         jobManager.delegate.taskDidComplete = { [weak self] (session, task, error) -> Void in
             //use the default process before our job
             if let strongSelf = self {
@@ -78,7 +79,7 @@ public class ETManager {
                 //additional job
                 let request  = objc_getAssociatedObject(task, &AssociatedKey.inneKey) as? ETRequest
                 if let request = request {
-                    ETLog(request.jobRequest.debugDescription)
+                    log(request.jobRequest.debugDescription)
                     if let _ = error {
                     } else {
                         request.saveResponseToCacheFile()
@@ -87,17 +88,22 @@ public class ETManager {
                     strongSelf.cancelRequest(request)
                     strongSelf[request] = nil
                 } else {
-                    ETLog("objc_getAssociatedObject fail ")
+                    log("objc_getAssociatedObject fail ")
                 }
             }
         }
+ */
     }
 
     deinit {
-        ETLog("\(self.dynamicType ) deinit")
+        log("\(self.dynamicType ) deinit")
     }
 
     func addRequest(request: ETRequest) {
+        if let req = self[request] {
+            log("already in processing, nothing to do")
+            return
+        }
         if let requestProtocol = request as? ETRequestProtocol {
             let method = requestProtocol.method.method
             let headers = requestProtocol.headers
@@ -161,7 +167,7 @@ public class ETManager {
                         switch encodingResult {
                         case .Success(let upload, _, _):
                             if let authProtocol = request as? ETRequestAuthProtocol {
-                                upload.delegate.credential = authProtocol.credential
+//                                upload.delegate.credential = authProtocol.credential
                             }
                             objc_setAssociatedObject(upload.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
                             request.jobRequest = upload
@@ -178,10 +184,11 @@ public class ETManager {
             guard let req = jobReq else { return }
             
             if let authProtocol = request as? ETRequestAuthProtocol {
-                req.delegate.credential = authProtocol.credential
+//                req.delegate.credential = authProtocol.credential
             }
             
             objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
+           
             request.jobRequest = req
             if request.needInOperationQueue {
                 request.operationQueue.suspended = false
@@ -196,6 +203,7 @@ public class ETManager {
     
     func cancelRequest(request: ETRequest) {
         request.jobRequest?.cancel()
+        self[request] = nil
     }
     
     public func cancelAllRequests() {

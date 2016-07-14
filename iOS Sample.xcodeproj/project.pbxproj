@@ -33,6 +33,10 @@
 		AA4FE5F71BE9B62B00475BF7 /* iOS_SampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4FE5F61BE9B62B00475BF7 /* iOS_SampleUITests.swift */; };
 		AA4FEEAE1C360F2600C70C32 /* HttpBasicAuthApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4FEEAD1C360F2600C70C32 /* HttpBasicAuthApi.swift */; };
 		AA4FEEB71C3772A200C70C32 /* DownloadResumeDataApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4FEEB61C3772A200C70C32 /* DownloadResumeDataApi.swift */; };
+		AA88ADA71D3737D3004E84DE /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA88ADA51D3737D3004E84DE /* Alamofire.framework */; };
+		AA88ADA81D3737D3004E84DE /* Alamofire.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA88ADA51D3737D3004E84DE /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AA88ADA91D3737D3004E84DE /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA88ADA61D3737D3004E84DE /* CryptoSwift.framework */; };
+		AA88ADAA1D3737D3004E84DE /* CryptoSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA88ADA61D3737D3004E84DE /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AA9163661BFC92620071746D /* ETNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4FE60A1BE9B66B00475BF7 /* ETNetwork.framework */; };
 		AA91636A1BFC96B60071746D /* ETNetwork.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA4FE60A1BE9B66B00475BF7 /* ETNetwork.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -75,7 +79,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				AA88ADAA1D3737D3004E84DE /* CryptoSwift.framework in CopyFiles */,
 				AA91636A1BFC96B60071746D /* ETNetwork.framework in CopyFiles */,
+				AA88ADA81D3737D3004E84DE /* Alamofire.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -115,6 +121,8 @@
 		AA4FE6041BE9B66B00475BF7 /* ETNetwork.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = ETNetwork.xcodeproj; sourceTree = "<group>"; };
 		AA4FEEAD1C360F2600C70C32 /* HttpBasicAuthApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpBasicAuthApi.swift; sourceTree = "<group>"; };
 		AA4FEEB61C3772A200C70C32 /* DownloadResumeDataApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadResumeDataApi.swift; sourceTree = "<group>"; };
+		AA88ADA51D3737D3004E84DE /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
+		AA88ADA61D3737D3004E84DE /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,7 +130,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA88ADA91D3737D3004E84DE /* CryptoSwift.framework in Frameworks */,
 				AA9163661BFC92620071746D /* ETNetwork.framework in Frameworks */,
+				AA88ADA71D3737D3004E84DE /* Alamofire.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,6 +198,8 @@
 		AA4FE5CA1BE9B62A00475BF7 = {
 			isa = PBXGroup;
 			children = (
+				AA88ADA51D3737D3004E84DE /* Alamofire.framework */,
+				AA88ADA61D3737D3004E84DE /* CryptoSwift.framework */,
 				AA4FE5D51BE9B62A00475BF7 /* iOS Sample */,
 				AA4FE5EA1BE9B62B00475BF7 /* iOS SampleTests */,
 				AA4FE5F51BE9B62B00475BF7 /* iOS SampleUITests */,
@@ -583,6 +595,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/CryptoSwift/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "iOS Sample/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -599,6 +612,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/CryptoSwift/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "iOS Sample/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

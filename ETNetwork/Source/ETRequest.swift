@@ -10,9 +10,13 @@ import Foundation
 import CryptoSwift
 import Alamofire
 
-///the requst class
+///the request class
 public class ETRequest {
-    var jobRequest: JobRequest?
+    var jobRequest: JobRequest? {
+        didSet {
+            manager?.cancelRequest(self)
+        }
+    }
     weak var manager: ETManager?
     
     public var ignoreCache: Bool = false
@@ -37,7 +41,7 @@ public class ETRequest {
     var formDataEncodingErrorCompletion: ((ErrorType) -> Void)?
     
     deinit {
-        ETLog("\(self.dynamicType ) deinit")
+        log("\(self.dynamicType ) deinit")
         jobRequest?.cancel()
     }
     
@@ -139,6 +143,12 @@ public extension ETRequest {
                 }
 
                 jobRequest.response(completionHandler: { response -> Void in
+                    if response.3 != nil {
+                        self.saveResponseToCacheFile()
+                    }
+                    self.manager?.cancelRequest(self)
+                    self.manager?[self] = nil
+                    
                     completion(response.2, response.3)
                 })
             }
@@ -170,6 +180,12 @@ public extension ETRequest {
                 }
 
                 jobRequest.responseString(completionHandler: { response -> Void in
+                    if response.result.error != nil {
+                        self.saveResponseToCacheFile()
+                    }
+                    self.manager?.cancelRequest(self)
+                    self.manager?[self] = nil
+                    
                     completion(response.result.value, response.result.error)
                 })
             }
@@ -179,6 +195,7 @@ public extension ETRequest {
         return self
     }
     
+
     public func responseJson(completion: (AnyObject?, NSError?) -> Void ) -> Self {
         reqResponse { () -> () in
             var jsonOption: NSJSONReadingOptions = .AllowFragments
@@ -207,6 +224,12 @@ public extension ETRequest {
                 }
 
                 jobRequest.responseJSON(options: jsonOption, completionHandler: { response -> Void in
+                    if response.result.error != nil {
+                        self.saveResponseToCacheFile()
+                    }
+                    self.manager?.cancelRequest(self)
+                    self.manager?[self] = nil
+                    
                     completion(response.result.value, response.result.error)
                 })
             }
@@ -231,7 +254,11 @@ public extension ETRequest {
                     return
                 }
 
-                jobRequest.responseData({ response -> Void in
+                jobRequest.responseData(completionHandler:{ response -> Void in
+                    if response.result.error != nil {
+                        self.saveResponseToCacheFile()
+                        self.manager?.cancelRequest(self)
+                    }
                     completion(response.result.value, response.result.error)
                 })
 
@@ -392,14 +419,16 @@ public extension ETRequest {
     func saveResponseToCacheFile() -> Void {
         if shouldStoreCache() {
             //only cache data
-            guard let data = jobRequest?.delegate.data else { return }
+//            guard let data = jobRequest?.delegate.data else { return }
             guard let cacheProtocol = self as? ETRequestCacheProtocol else { return }
+            /*
             dispatch_async(serialQueue) { () -> Void in
                 let result = data.writeToFile(self.cacheFilePath(), atomically: true)
                 NSKeyedArchiver.archiveRootObject(NSNumber(unsignedLongLong: cacheProtocol.cacheVersion), toFile: self.cacheVersionFilePath())
                 self.dataCached = true
-                ETLog("write to file: \(self.cacheFilePath()) result: \(result)")
+                log("write to file: \(self.cacheFilePath()) result: \(result)")
             }
+ */
         }
     }
     private func cacheFilePath() -> String {
@@ -432,9 +461,13 @@ public extension ETRequest {
         
         let requestInfo = "Method:\(requestProtocol.method) Host:\(baseUrl) Url:\(requestUrl) Parameters:\(parameters), AppVersion\(ETRequest.appVersion)"
         let md5 = requestInfo.md5()
-        ETLog("filename md5: \(md5)")
+//        log("filename md5: \(md5)")
         
         return md5
+    }
+    
+    public func identifier() -> String {
+        return cacheFileName()
     }
     
     
@@ -478,7 +511,7 @@ public extension ETRequest {
             try NSFileManager.defaultManager().createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
             //TODO addDoNotBackupAttribute
         } catch {
-            ETLog("creat path:\(path) error")
+            log("creat path:\(path) error")
         }
     }
     

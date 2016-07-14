@@ -24,7 +24,7 @@ public class ETBatchRequest {
         operationQueue.cancelAllOperations()
         operationQueue.suspended = false
         
-       ETLog("\(self.dynamicType)  deinit")
+       log("\(self.dynamicType)  deinit")
     }
 
     public init(requests: [ETRequest], maxConcurrent: Int = 3) {
