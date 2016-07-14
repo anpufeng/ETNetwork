@@ -19,12 +19,13 @@ public class ETRequest {
     public var ignoreCache: Bool = false
     public private (set)var dataFromCache: Bool = false
     private var noJobRequestError: NSError {
-        return Error.errorWithCode(-8000, failureReason: "no request, please call start first")
+        let userInfo = [NSLocalizedFailureReasonErrorKey: "no request, please call start first"]
+        return NSError(domain: "ETNetwork", code: -8000, userInfo: userInfo)
     }
     var dataCached: Bool = false
     var loadedCacheData: NSData?
     lazy var serialQueue: dispatch_queue_t = {
-        return dispatch_queue_create("etrequest_save_cache", DISPATCH_QUEUE_SERIAL)
+        return dispatch_queue_create("ETNetwork_Save_Cache", DISPATCH_QUEUE_SERIAL)
     }()
     
     var needInOperationQueue = false

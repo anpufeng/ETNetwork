@@ -41,7 +41,7 @@ public class ETChainRequest {
                 if error == nil {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(json, error)
-                        self.finishedTask++
+                        self.finishedTask += 1
                         if self.finishedTask == self.requests.count {
                             self.completion?(error: nil)
                         }

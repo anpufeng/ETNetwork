@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 
 
-public func log<T>(object: T, _ file: String = __FILE__, _ function: String = __FUNCTION__, _ line: Int = __LINE__) {
+public func log<T>(object: T, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
     if ETManager.logEnable {
         let path = file as NSString
         let fileNameWithoutPath = path.lastPathComponent
@@ -28,7 +28,7 @@ public class ETManager {
     
     private let jobManager: JobManager
     private var subRequests: [String: ETRequest] = [:]
-    private let concurrentQueue = dispatch_queue_create("concurrent_etmanager", DISPATCH_QUEUE_CONCURRENT)
+    private let concurrentQueue = dispatch_queue_create("ETNetwork_Manager_Concurrent_Queue", DISPATCH_QUEUE_CONCURRENT)
     
     private struct AssociatedKey {
         static var inneKey = "etrequest"
@@ -74,14 +74,14 @@ public class ETManager {
     }
 
     func addRequest(request: ETRequest) {
-        if let req = self[request] {
+        if self[request] != nil {
             log("already in processing, nothing to do")
             return
         }
         if let requestProtocol = request as? ETRequestProtocol {
             let method = requestProtocol.method.method
             let headers = requestProtocol.headers
-            let serializer = requestProtocol.responseSerializer
+            _ = requestProtocol.responseSerializer
             let parameters = requestProtocol.parameters
             let encoding = requestProtocol.parameterEncoding.encode
             
@@ -139,7 +139,7 @@ public class ETManager {
                     }, encodingCompletion: { encodingResult in
                         switch encodingResult {
                         case .Success(let upload, _, _):
-                            if let authProtocol = request as? ETRequestAuthProtocol {
+                            if request is ETRequestAuthProtocol {
 //                                upload.delegate.credential = authProtocol.credential
                             }
                             objc_setAssociatedObject(upload.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
@@ -156,7 +156,7 @@ public class ETManager {
 
             guard let req = jobReq else { return }
             
-            if let authProtocol = request as? ETRequestAuthProtocol {
+            if request is ETRequestAuthProtocol {
 //                req.delegate.credential = authProtocol.credential
             }
             

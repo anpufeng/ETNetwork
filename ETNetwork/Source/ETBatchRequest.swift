@@ -18,7 +18,7 @@ public class ETBatchRequest {
         return operationQueue
     }()
 
-    private let seriQueue = dispatch_queue_create("batch_queue", nil)
+    private let seriQueue = dispatch_queue_create("ETNetwork_Batch_Seri_Queue", nil)
     public var completion: ((error: NSError?) -> Void)?
     
     deinit {
@@ -44,7 +44,7 @@ public class ETBatchRequest {
             req.response({ (data, error) -> Void in
                 if error == nil {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        self.finishedTask++
+                        self.finishedTask += 1
                         if self.finishedTask == self.requests.count {
                             self.completion?(error: nil)
                         }
