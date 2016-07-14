@@ -29,7 +29,7 @@ class AuthTableViewController: UITableViewController {
             authApi = HttpBasicAuthApi(bar: "HttpBasicAuthApi")
         }
         
-        self.title = "\(authRows.description)"
+        title = "\(authRows.description)"
         
         
         guard let authApi = authApi else { fatalError("request nil") }

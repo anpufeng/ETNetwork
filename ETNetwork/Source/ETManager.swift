@@ -28,7 +28,7 @@ public class ETManager {
     
     private let jobManager: JobManager
     private var subRequests: [String: ETRequest] = [:]
-    private let concurrentQueue = dispatch_queue_create(nil, DISPATCH_QUEUE_CONCURRENT)
+    private let concurrentQueue = dispatch_queue_create("concurrent_etmanager", DISPATCH_QUEUE_CONCURRENT)
     
     private struct AssociatedKey {
         static var inneKey = "etrequest"

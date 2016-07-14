@@ -27,7 +27,7 @@ class DataTableViewController: UITableViewController {
 
     @IBAction func refresh() {
         refreshControl?.beginRefreshing()
-        self.dataRequest()
+        dataRequest()
         
     }
 
@@ -40,7 +40,7 @@ class DataTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
-        self.dataRequest()
+        dataRequest()
 
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(DataTableViewController.refresh), forControlEvents: .ValueChanged)
@@ -61,7 +61,7 @@ class DataTableViewController: UITableViewController {
 
         }
 
-        self.title = "\(dataRows.description)"
+        title = "\(dataRows.description)"
 
         dataApi?.start(ignoreCache: cacheSwitch.on)
         dataApi?.responseJson({ [weak self] (json, error) -> Void in

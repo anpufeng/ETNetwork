@@ -27,7 +27,7 @@ class BatchChainTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
-        self.bcRequest()
+        bcRequest()
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(BatchChainTableViewController.refresh), forControlEvents: .ValueChanged)
     }
@@ -35,8 +35,8 @@ class BatchChainTableViewController: UITableViewController {
     @IBAction func refresh() {
         refreshControl?.beginRefreshing()
         DownloadTableViewController.saveLastData(nil)
-        self.bcRequest()
-        self.refreshControl?.endRefreshing()
+        bcRequest()
+        refreshControl?.endRefreshing()
     }
 
 

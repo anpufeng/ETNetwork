@@ -18,6 +18,7 @@ public class ETBatchRequest {
         return operationQueue
     }()
 
+    private let seriQueue = dispatch_queue_create("batch_queue", nil)
     public var completion: ((error: NSError?) -> Void)?
     
     deinit {
@@ -60,9 +61,11 @@ public class ETBatchRequest {
         }
     }
 
-    //FIXME: mult thread
     public func addRequest(req: ETRequest) {
-        requests.append(req)
+        dispatch_async(seriQueue) {
+            self.requests.append(req)
+        }
+        
         _addRequest(req)
     }
 
@@ -75,6 +78,8 @@ public class ETBatchRequest {
         for req in self.requests {
             req.cancel()
         }
-        requests.removeAll()
+        dispatch_async(seriQueue) { 
+           self.requests.removeAll()
+        }
     }
 }

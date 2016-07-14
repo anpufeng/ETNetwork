@@ -36,7 +36,7 @@ class DownloadTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
-        self.downloadRequest()
+        downloadRequest()
 
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(DownloadTableViewController.refresh), forControlEvents: .ValueChanged)
@@ -59,8 +59,8 @@ class DownloadTableViewController: UITableViewController {
     @IBAction func refresh() {
         refreshControl?.beginRefreshing()
         DownloadTableViewController.saveLastData(nil)
-        self.downloadRequest()
-        self.refreshControl?.endRefreshing()
+        downloadRequest()
+        refreshControl?.endRefreshing()
     }
 
     func downloadRequest() {
@@ -76,7 +76,7 @@ class DownloadTableViewController: UITableViewController {
         }
 
 
-        self.title = "\(downloadRows.description)"
+        title = "\(downloadRows.description)"
         downloadApi?.start(manager, ignoreCache: true)
 
         //        if let data = downloadApi?.cachedData {
@@ -106,10 +106,10 @@ class DownloadTableViewController: UITableViewController {
 
     @IBAction func responseToResumeBtn(sender: UIButton) {
         if sender.selected {
-            self.downloadApi?.resume()
+            downloadApi?.resume()
             sender.selected = false
         } else {
-            self.downloadApi?.suspend()
+            downloadApi?.suspend()
             sender.selected = true
         }
     }
