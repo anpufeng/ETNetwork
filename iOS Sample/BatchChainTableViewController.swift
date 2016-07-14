@@ -27,16 +27,16 @@ class BatchChainTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
-        self.bcRequest()
+        bcRequest()
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(BatchChainTableViewController.refresh), forControlEvents: .ValueChanged)
     }
 
     @IBAction func refresh() {
         refreshControl?.beginRefreshing()
         DownloadTableViewController.saveLastData(nil)
-        self.bcRequest()
-        self.refreshControl?.endRefreshing()
+        bcRequest()
+        refreshControl?.endRefreshing()
     }
 
 
@@ -86,7 +86,7 @@ class BatchChainTableViewController: UITableViewController {
                 if (error != nil) {
                     print("==========error: \(error)")
                 } else {
-                    print("one finished")
+                    print("one finished: \(json)")
                 }
             }
 
@@ -103,7 +103,7 @@ class BatchChainTableViewController: UITableViewController {
                 if (error != nil) {
                     print("==========error: \(error)")
                 } else {
-                    print("three finished")
+                    print("three finished: \(json)")
                 }
             }
 
@@ -111,7 +111,7 @@ class BatchChainTableViewController: UITableViewController {
                 if (error != nil) {
                     print("==========error: \(error)")
                 } else {
-                    print("four finished")
+                    print("four finished: \(json)")
                 }
             }
 

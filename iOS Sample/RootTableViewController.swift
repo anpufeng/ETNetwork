@@ -120,7 +120,7 @@ class RootTableViewController: UITableViewController {
    //MARK: - Table view delegate
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let section = Sections(rawValue: indexPath.section)!
-        self.performSegueWithIdentifier(section.segueIdentifer, sender: indexPath)
+        performSegueWithIdentifier(section.segueIdentifer, sender: indexPath)
     }
 
     // MARK: - Navigation

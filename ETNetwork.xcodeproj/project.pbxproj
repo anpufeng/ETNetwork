@@ -7,31 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA1E47501D361B9100B1ACF1 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA1E474F1D361B9100B1ACF1 /* Alamofire.framework */; };
 		AA4FE5B41BE9B42F00475BF7 /* ETNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = AA4FE5B31BE9B42F00475BF7 /* ETNetwork.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AA4FE5BB1BE9B42F00475BF7 /* ETNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4FE5B01BE9B42F00475BF7 /* ETNetwork.framework */; };
 		AA4FE5C01BE9B42F00475BF7 /* ETNetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4FE5BF1BE9B42F00475BF7 /* ETNetworkTests.swift */; };
-		AA579BDA1BE9F4AF0018DBCB /* Alamofire.h in Headers */ = {isa = PBXBuildFile; fileRef = AA579BCA1BE9F4AF0018DBCB /* Alamofire.h */; };
-		AA579BDB1BE9F4AF0018DBCB /* Alamofire.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BCB1BE9F4AF0018DBCB /* Alamofire.swift */; };
-		AA579BDC1BE9F4AF0018DBCB /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BCC1BE9F4AF0018DBCB /* Download.swift */; };
-		AA579BDD1BE9F4AF0018DBCB /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BCD1BE9F4AF0018DBCB /* Error.swift */; };
-		AA579BDE1BE9F4AF0018DBCB /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AA579BCE1BE9F4AF0018DBCB /* Info.plist */; };
-		AA579BDF1BE9F4AF0018DBCB /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BCF1BE9F4AF0018DBCB /* Manager.swift */; };
-		AA579BE01BE9F4AF0018DBCB /* MultipartFormData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BD01BE9F4AF0018DBCB /* MultipartFormData.swift */; };
-		AA579BE11BE9F4AF0018DBCB /* ParameterEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BD11BE9F4AF0018DBCB /* ParameterEncoding.swift */; };
-		AA579BE21BE9F4AF0018DBCB /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BD21BE9F4AF0018DBCB /* Request.swift */; };
-		AA579BE31BE9F4AF0018DBCB /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BD31BE9F4AF0018DBCB /* Response.swift */; };
-		AA579BE41BE9F4AF0018DBCB /* ResponseSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BD41BE9F4AF0018DBCB /* ResponseSerialization.swift */; };
-		AA579BE51BE9F4AF0018DBCB /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BD51BE9F4AF0018DBCB /* Result.swift */; };
-		AA579BE61BE9F4AF0018DBCB /* ServerTrustPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BD61BE9F4AF0018DBCB /* ServerTrustPolicy.swift */; };
-		AA579BE71BE9F4AF0018DBCB /* Stream.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BD71BE9F4AF0018DBCB /* Stream.swift */; };
-		AA579BE81BE9F4AF0018DBCB /* Upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BD81BE9F4AF0018DBCB /* Upload.swift */; };
-		AA579BE91BE9F4AF0018DBCB /* Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BD91BE9F4AF0018DBCB /* Validation.swift */; };
 		AA579BF31BE9F6310018DBCB /* ETBatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BEE1BE9F6310018DBCB /* ETBatchRequest.swift */; };
 		AA579BF41BE9F6310018DBCB /* ETChainRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BEF1BE9F6310018DBCB /* ETChainRequest.swift */; };
 		AA579BF51BE9F6310018DBCB /* ETRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF01BE9F6310018DBCB /* ETRequest.swift */; };
 		AA579BF61BE9F6310018DBCB /* ETManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF11BE9F6310018DBCB /* ETManager.swift */; };
-		AA9163BC1C00B84F0071746D /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA9163B31C00B8200071746D /* CryptoSwift.framework */; };
-		AA9163C21C00B9B60071746D /* CryptoSwift.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AA9163B31C00B8200071746D /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AA88ADA31D3724B2004E84DE /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA88ADA21D3724B2004E84DE /* CryptoSwift.framework */; };
 		AA94C4A81C0BDEAB00BD071C /* ETNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */; };
 		AAD212501BEB389A00C870C5 /* ETNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */; };
 /* End PBXBuildFile section */
@@ -44,41 +28,6 @@
 			remoteGlobalIDString = AA4FE5AF1BE9B42F00475BF7;
 			remoteInfo = ETNetwork;
 		};
-		AA9163B21C00B8200071746D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 754BE45519693E190098E6F3;
-			remoteInfo = "CryptoSwift iOS";
-		};
-		AA9163B41C00B8200071746D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 5596BDBB1BC8F220007E38D5;
-			remoteInfo = "CryptoSwift watchOS";
-		};
-		AA9163B61C00B8200071746D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 75D614BF1BD844F2001358B2;
-			remoteInfo = "CryptoSwift tvOS";
-		};
-		AA9163B81C00B8200071746D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 75DF77721BC8EB59006E9520;
-			remoteInfo = "CryptoSwift OSX";
-		};
-		AA9163BA1C00B8200071746D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 754BE46019693E190098E6F3;
-			remoteInfo = CryptoSwiftTests;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -88,40 +37,24 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				AA9163C21C00B9B60071746D /* CryptoSwift.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AA1E474F1D361B9100B1ACF1 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Alamofire.framework; path = Carthage/Build/iOS/Alamofire.framework; sourceTree = "<group>"; };
 		AA4FE5B01BE9B42F00475BF7 /* ETNetwork.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ETNetwork.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4FE5B31BE9B42F00475BF7 /* ETNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ETNetwork.h; sourceTree = "<group>"; };
 		AA4FE5B51BE9B42F00475BF7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA4FE5BA1BE9B42F00475BF7 /* ETNetworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ETNetworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4FE5BF1BE9B42F00475BF7 /* ETNetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ETNetworkTests.swift; sourceTree = "<group>"; };
 		AA4FE5C11BE9B42F00475BF7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AA579BCA1BE9F4AF0018DBCB /* Alamofire.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Alamofire.h; sourceTree = "<group>"; };
-		AA579BCB1BE9F4AF0018DBCB /* Alamofire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Alamofire.swift; sourceTree = "<group>"; };
-		AA579BCC1BE9F4AF0018DBCB /* Download.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Download.swift; sourceTree = "<group>"; };
-		AA579BCD1BE9F4AF0018DBCB /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
-		AA579BCE1BE9F4AF0018DBCB /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AA579BCF1BE9F4AF0018DBCB /* Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
-		AA579BD01BE9F4AF0018DBCB /* MultipartFormData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipartFormData.swift; sourceTree = "<group>"; };
-		AA579BD11BE9F4AF0018DBCB /* ParameterEncoding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParameterEncoding.swift; sourceTree = "<group>"; };
-		AA579BD21BE9F4AF0018DBCB /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
-		AA579BD31BE9F4AF0018DBCB /* Response.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
-		AA579BD41BE9F4AF0018DBCB /* ResponseSerialization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResponseSerialization.swift; sourceTree = "<group>"; };
-		AA579BD51BE9F4AF0018DBCB /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
-		AA579BD61BE9F4AF0018DBCB /* ServerTrustPolicy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerTrustPolicy.swift; sourceTree = "<group>"; };
-		AA579BD71BE9F4AF0018DBCB /* Stream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stream.swift; sourceTree = "<group>"; };
-		AA579BD81BE9F4AF0018DBCB /* Upload.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Upload.swift; sourceTree = "<group>"; };
-		AA579BD91BE9F4AF0018DBCB /* Validation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Validation.swift; sourceTree = "<group>"; };
 		AA579BEE1BE9F6310018DBCB /* ETBatchRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETBatchRequest.swift; sourceTree = "<group>"; };
 		AA579BEF1BE9F6310018DBCB /* ETChainRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETChainRequest.swift; sourceTree = "<group>"; };
 		AA579BF01BE9F6310018DBCB /* ETRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETRequest.swift; sourceTree = "<group>"; };
 		AA579BF11BE9F6310018DBCB /* ETManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETManager.swift; sourceTree = "<group>"; };
-		AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CryptoSwift.xcodeproj; path = CryptoSwift/CryptoSwift.xcodeproj; sourceTree = "<group>"; };
+		AA88ADA21D3724B2004E84DE /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
 		AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETNetwork.swift; sourceTree = "<group>"; };
 		AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETNetworkConfig.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -131,7 +64,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA9163BC1C00B84F0071746D /* CryptoSwift.framework in Frameworks */,
+				AA88ADA31D3724B2004E84DE /* CryptoSwift.framework in Frameworks */,
+				AA1E47501D361B9100B1ACF1 /* Alamofire.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,9 +83,9 @@
 		AA4FE5A61BE9B42F00475BF7 = {
 			isa = PBXGroup;
 			children = (
-				AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */,
+				AA88ADA21D3724B2004E84DE /* CryptoSwift.framework */,
+				AA1E474F1D361B9100B1ACF1 /* Alamofire.framework */,
 				AA579BED1BE9F6310018DBCB /* Source */,
-				AA579BC91BE9F4950018DBCB /* Alamofire */,
 				AA4FE5B21BE9B42F00475BF7 /* ETNetwork */,
 				AA4FE5BE1BE9B42F00475BF7 /* ETNetworkTests */,
 				AA4FE5B11BE9B42F00475BF7 /* Products */,
@@ -185,30 +119,6 @@
 			path = ETNetworkTests;
 			sourceTree = "<group>";
 		};
-		AA579BC91BE9F4950018DBCB /* Alamofire */ = {
-			isa = PBXGroup;
-			children = (
-				AA579BCA1BE9F4AF0018DBCB /* Alamofire.h */,
-				AA579BCB1BE9F4AF0018DBCB /* Alamofire.swift */,
-				AA579BCC1BE9F4AF0018DBCB /* Download.swift */,
-				AA579BCD1BE9F4AF0018DBCB /* Error.swift */,
-				AA579BCE1BE9F4AF0018DBCB /* Info.plist */,
-				AA579BCF1BE9F4AF0018DBCB /* Manager.swift */,
-				AA579BD01BE9F4AF0018DBCB /* MultipartFormData.swift */,
-				AA579BD11BE9F4AF0018DBCB /* ParameterEncoding.swift */,
-				AA579BD21BE9F4AF0018DBCB /* Request.swift */,
-				AA579BD31BE9F4AF0018DBCB /* Response.swift */,
-				AA579BD41BE9F4AF0018DBCB /* ResponseSerialization.swift */,
-				AA579BD51BE9F4AF0018DBCB /* Result.swift */,
-				AA579BD61BE9F4AF0018DBCB /* ServerTrustPolicy.swift */,
-				AA579BD71BE9F4AF0018DBCB /* Stream.swift */,
-				AA579BD81BE9F4AF0018DBCB /* Upload.swift */,
-				AA579BD91BE9F4AF0018DBCB /* Validation.swift */,
-			);
-			name = Alamofire;
-			path = ETNetwork/Alamofire;
-			sourceTree = "<group>";
-		};
 		AA579BED1BE9F6310018DBCB /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -223,18 +133,6 @@
 			path = ETNetwork/Source;
 			sourceTree = "<group>";
 		};
-		AA9163AB1C00B81F0071746D /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				AA9163B31C00B8200071746D /* CryptoSwift.framework */,
-				AA9163B51C00B8200071746D /* CryptoSwift.framework */,
-				AA9163B71C00B8200071746D /* CryptoSwift.framework */,
-				AA9163B91C00B8200071746D /* CryptoSwift.framework */,
-				AA9163BB1C00B8200071746D /* CryptoSwiftTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -243,7 +141,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA4FE5B41BE9B42F00475BF7 /* ETNetwork.h in Headers */,
-				AA579BDA1BE9F4AF0018DBCB /* Alamofire.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,12 +212,6 @@
 			mainGroup = AA4FE5A61BE9B42F00475BF7;
 			productRefGroup = AA4FE5B11BE9B42F00475BF7 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = AA9163AB1C00B81F0071746D /* Products */;
-					ProjectRef = AA9163AA1C00B81F0071746D /* CryptoSwift.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				AA4FE5AF1BE9B42F00475BF7 /* ETNetwork */,
@@ -329,50 +220,11 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXReferenceProxy section */
-		AA9163B31C00B8200071746D /* CryptoSwift.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = CryptoSwift.framework;
-			remoteRef = AA9163B21C00B8200071746D /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AA9163B51C00B8200071746D /* CryptoSwift.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = CryptoSwift.framework;
-			remoteRef = AA9163B41C00B8200071746D /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AA9163B71C00B8200071746D /* CryptoSwift.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = CryptoSwift.framework;
-			remoteRef = AA9163B61C00B8200071746D /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AA9163B91C00B8200071746D /* CryptoSwift.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = CryptoSwift.framework;
-			remoteRef = AA9163B81C00B8200071746D /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		AA9163BB1C00B8200071746D /* CryptoSwiftTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = CryptoSwiftTests.xctest;
-			remoteRef = AA9163BA1C00B8200071746D /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
-
 /* Begin PBXResourcesBuildPhase section */
 		AA4FE5AE1BE9B42F00475BF7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA579BDE1BE9F4AF0018DBCB /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,26 +242,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA579BE81BE9F4AF0018DBCB /* Upload.swift in Sources */,
-				AA579BDD1BE9F4AF0018DBCB /* Error.swift in Sources */,
-				AA579BE21BE9F4AF0018DBCB /* Request.swift in Sources */,
-				AA579BDB1BE9F4AF0018DBCB /* Alamofire.swift in Sources */,
 				AA579BF41BE9F6310018DBCB /* ETChainRequest.swift in Sources */,
-				AA579BE71BE9F4AF0018DBCB /* Stream.swift in Sources */,
 				AA579BF61BE9F6310018DBCB /* ETManager.swift in Sources */,
-				AA579BE41BE9F4AF0018DBCB /* ResponseSerialization.swift in Sources */,
-				AA579BE51BE9F4AF0018DBCB /* Result.swift in Sources */,
-				AA579BE01BE9F4AF0018DBCB /* MultipartFormData.swift in Sources */,
 				AA579BF51BE9F6310018DBCB /* ETRequest.swift in Sources */,
-				AA579BE31BE9F4AF0018DBCB /* Response.swift in Sources */,
-				AA579BE11BE9F4AF0018DBCB /* ParameterEncoding.swift in Sources */,
-				AA579BE91BE9F4AF0018DBCB /* Validation.swift in Sources */,
-				AA579BE61BE9F4AF0018DBCB /* ServerTrustPolicy.swift in Sources */,
 				AA579BF31BE9F6310018DBCB /* ETBatchRequest.swift in Sources */,
 				AAD212501BEB389A00C870C5 /* ETNetworkConfig.swift in Sources */,
 				AA94C4A81C0BDEAB00BD071C /* ETNetwork.swift in Sources */,
-				AA579BDC1BE9F4AF0018DBCB /* Download.swift in Sources */,
-				AA579BDF1BE9F4AF0018DBCB /* Manager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -531,6 +369,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = ETNetwork/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -542,6 +384,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ethanwhy.ETNetwork;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -554,6 +397,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = ETNetwork/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -565,6 +412,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ethanwhy.ETNetwork;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
 			name = Release;
 		};

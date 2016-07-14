@@ -7,13 +7,13 @@
 //
 
 import Foundation
-
+import Alamofire
 
 ///wrap the alamofire method
 public enum ETRequestMethod {
     case Options, Get, Head, Post, Put, Patch, Delete, Trace, Connect
     
-    var method: Method {
+    var method: Alamofire.Method {
         switch self {
         case .Options:
             return Method.OPTIONS
@@ -70,33 +70,12 @@ public enum ETResponseSerializer {
 }
 
 
-//MARK: protocol
-/**
- the request delegate callback
- */
-public protocol ETRequestDelegate : class {
-    func requestFinished(request: ETRequest)
-    func requestFailed(request: ETRequest)
-}
-
-/**
- make ETRequestDelegate callback method optional
- */
-public  extension ETRequestDelegate {
-    func requestFinished(request: ETRequest) {
-        
-    }
-    func requestFailed(request: ETRequest) {
-        
-    }
-}
-
 /**
  conform to custom your own NSURLRequest
  if you conform to this protocol, the ETRequestProtocol will be ignored
  */
 public protocol ETRequestCustom {
-    var customUrlRequest: NSURLRequest { get}
+    var customUrlRequest: NSURLRequest { get }
 }
 
 /**
@@ -236,5 +215,5 @@ public final class UploadFormStream: UploadFormProtocol {
 
 
 //name easily
-typealias JobRequest = Request
-typealias JobManager = Manager
+typealias JobRequest = Alamofire.Request
+typealias JobManager = Alamofire.Manager

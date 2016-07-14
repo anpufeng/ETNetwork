@@ -17,7 +17,6 @@ class DataTableViewController: UITableViewController {
     var dataApi: ETRequest?
 
     deinit {
-        dataApi?.cancel()
         print("\(self.dynamicType)  deinit")
 
     }
@@ -28,8 +27,8 @@ class DataTableViewController: UITableViewController {
 
     @IBAction func refresh() {
         refreshControl?.beginRefreshing()
-        self.dataRequest()
-        self.refreshControl?.endRefreshing()
+        dataRequest()
+        
     }
 
     override func viewDidLoad() {
@@ -41,10 +40,10 @@ class DataTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
 
-        self.dataRequest()
+        dataRequest()
 
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(DataTableViewController.refresh), forControlEvents: .ValueChanged)
     }
 
     func dataRequest() {
@@ -62,11 +61,15 @@ class DataTableViewController: UITableViewController {
 
         }
 
-        self.title = "\(dataRows.description)"
+        title = "\(dataRows.description)"
 
         dataApi?.start(ignoreCache: cacheSwitch.on)
         dataApi?.responseJson({ [weak self] (json, error) -> Void in
-            guard let strongSelf = self else { return }
+            
+            guard let strongSelf = self else {
+                return
+            }
+            strongSelf.refreshControl?.endRefreshing()
             if (error != nil) {
                 print("==========error: \(error)")
                 strongSelf.bodyCell.textLabel?.text = error?.localizedDescription
@@ -76,9 +79,10 @@ class DataTableViewController: UITableViewController {
                 print(strongSelf.dataApi.debugDescription)
                 print("==========json: \(json)")
             }
-
+            
             strongSelf.tableView.reloadData()
-        })
+            })
+        
     }
 
     override func didReceiveMemoryWarning() {

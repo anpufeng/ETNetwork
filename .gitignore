@@ -1,5 +1,6 @@
 _Store
 build/
+Checkouts/
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -16,4 +17,6 @@ DerivedData
 .DS_Store
 
 *.xcuserstate
+
+Cartfile.resolved
 
