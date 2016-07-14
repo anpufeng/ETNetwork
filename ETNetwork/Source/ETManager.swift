@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Alamofire
 
 
 public func ETLog<T>(object: T, _ file: String = __FILE__, _ function: String = __FUNCTION__, _ line: Int = __LINE__) {
@@ -53,7 +54,7 @@ public class ETManager {
     }
     public convenience init() {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
+        configuration.HTTPAdditionalHeaders = Alamofire.Manager.defaultHTTPHeaders
         configuration.timeoutIntervalForRequest = 15
         self.init(configuration: configuration)
     }
@@ -79,9 +80,7 @@ public class ETManager {
                 if let request = request {
                     ETLog(request.jobRequest.debugDescription)
                     if let _ = error {
-                        request.delegate?.requestFailed(request)
                     } else {
-                        request.delegate?.requestFinished(request)
                         request.saveResponseToCacheFile()
                     }
 

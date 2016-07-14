@@ -8,11 +8,10 @@
 
 import Foundation
 import CryptoSwift
+import Alamofire
 
 ///the requst class
 public class ETRequest {
-    public weak var delegate: ETRequestDelegate?
-    
     var jobRequest: JobRequest?
     weak var manager: ETManager?
     
@@ -49,7 +48,6 @@ public class ETRequest {
     public func start(manager: ETManager, ignoreCache: Bool) -> Void {
         self.ignoreCache = ignoreCache
         if shouldUseCache() {
-            delegate?.requestFinished(self)
             if needInOperationQueue {
                 self.operationQueue.suspended = false
             }
@@ -106,7 +104,7 @@ public extension ETRequest {
     }
 
     public func formDataencodingError(completion: ((ErrorType) -> Void)) -> Self {
-        self.formDataEncodingErrorCompletion = completion
+        formDataEncodingErrorCompletion = completion
         
         return self
     }

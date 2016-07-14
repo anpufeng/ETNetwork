@@ -7,13 +7,13 @@
 //
 
 import Foundation
-
+import Alamofire
 
 ///wrap the alamofire method
 public enum ETRequestMethod {
     case Options, Get, Head, Post, Put, Patch, Delete, Trace, Connect
     
-    var method: Method {
+    var method: Alamofire.Method {
         switch self {
         case .Options:
             return Method.OPTIONS
@@ -69,27 +69,6 @@ public enum ETResponseSerializer {
     case Data, String, Json, PropertyList
 }
 
-
-//MARK: protocol
-/**
- the request delegate callback
- */
-public protocol ETRequestDelegate : class {
-    func requestFinished(request: ETRequest)
-    func requestFailed(request: ETRequest)
-}
-
-/**
- make ETRequestDelegate callback method optional
- */
-public  extension ETRequestDelegate {
-    func requestFinished(request: ETRequest) {
-        
-    }
-    func requestFailed(request: ETRequest) {
-        
-    }
-}
 
 /**
  conform to custom your own NSURLRequest
