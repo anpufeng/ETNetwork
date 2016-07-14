@@ -1,4 +1,10 @@
 # ETNetwork
+
+## Requirements
+
+- iOS 8.0+ 
+- Xcode 7.3+
+
 ## What
 
 ETNetwork is is a high level request util based on [Alamofire](https://github.com/Alamofire/Alamofire), take [YTKNetwork](https://github.com/yuantiku/YTKNetwork/) as reference. 
@@ -14,6 +20,8 @@ because using md5 in swift is complicated. http://iosdeveloperzone.com/2014/10/0
 ## How to use
 ```bash
 $ git clone https://github.com/anpufeng/ETNetwork/
+
+carthage update
 ```
 open iOS Sample.xcodeproj, run the sample project
 ##every request, implement `ETRequestProtocol` 
@@ -152,7 +160,7 @@ chainApi?.addRequest(one) { (json, error) -> Void in
 ```
 
 ##TODO
- * do we need request delegate?
+
  * optimize & bug fix
  * more test
  
