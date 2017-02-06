@@ -8,24 +8,24 @@
 
 import Foundation
 
-public class ETBatchRequest {
-    private var requests: [ETRequest] = []
-    private var finishedTask = 0
-    lazy var operationQueue: NSOperationQueue = {
-        let operationQueue = NSOperationQueue()
+open class ETBatchRequest {
+    fileprivate var requests: [ETRequest] = []
+    fileprivate var finishedTask = 0
+    lazy var operationQueue: OperationQueue = {
+        let operationQueue = OperationQueue()
         operationQueue.maxConcurrentOperationCount = 3
-        operationQueue.suspended = true
+        operationQueue.isSuspended = true
         return operationQueue
     }()
 
-    private let seriQueue = dispatch_queue_create("batch_queue", nil)
-    public var completion: ((error: NSError?) -> Void)?
+    fileprivate let seriQueue = DispatchQueue(label: "batch_queue", attributes: [])
+    open var completion: ((_ error: NSError?) -> Void)?
     
     deinit {
         operationQueue.cancelAllOperations()
-        operationQueue.suspended = false
+        operationQueue.isSuspended = false
         
-       log("\(self.dynamicType)  deinit")
+       log("\(type(of: self))  deinit")
     }
 
     public init(requests: [ETRequest], maxConcurrent: Int = 3) {
@@ -38,22 +38,22 @@ public class ETBatchRequest {
         }
     }
 
-    private func _addRequest(req: ETRequest) {
-        operationQueue.addOperationWithBlock { () -> Void in
+    fileprivate func _addRequest(_ req: ETRequest) {
+        operationQueue.addOperation { () -> Void in
             req.start()
             req.response({ (data, error) -> Void in
                 if error == nil {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        self.finishedTask++
+                    DispatchQueue.main.async(execute: { () -> Void in
+                        self.finishedTask += 1
                         if self.finishedTask == self.requests.count {
-                            self.completion?(error: nil)
+                            self.completion?(nil)
                         }
                     })
 
                 } else {
                     self.stop()
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        self.completion?(error: error)
+                    DispatchQueue.main.async(execute: { () -> Void in
+                        self.completion?(error)
                     })
 
                 }
@@ -61,24 +61,24 @@ public class ETBatchRequest {
         }
     }
 
-    public func addRequest(req: ETRequest) {
-        dispatch_async(seriQueue) {
+    open func addRequest(_ req: ETRequest) {
+        seriQueue.async {
             self.requests.append(req)
         }
         
         _addRequest(req)
     }
 
-    public func start() {
-        operationQueue.suspended = false
+    open func start() {
+        operationQueue.isSuspended = false
     }
 
-    public func stop() {
+    open func stop() {
         operationQueue.cancelAllOperations()
         for req in self.requests {
             req.cancel()
         }
-        dispatch_async(seriQueue) { 
+        seriQueue.async { 
            self.requests.removeAll()
         }
     }

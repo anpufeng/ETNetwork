@@ -24,7 +24,7 @@ class DownloadTableViewController: UITableViewController {
     deinit {
         manager.cancelAllRequests()
 
-        print("\(self.dynamicType)  deinit")
+        print("\(type(of: self))  deinit")
     }
     
     override func viewDidLoad() {
@@ -39,21 +39,22 @@ class DownloadTableViewController: UITableViewController {
         downloadRequest()
 
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: #selector(DownloadTableViewController.refresh), forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(DownloadTableViewController.refresh), for: .valueChanged)
     }
     
-    class func saveLastData(data: NSData?) {
+    class func saveLastData(_ data: Data?) {
         if shouldResume {
             guard let data = data else {
-                NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "resumeData")
+                UserDefaults.standard.set(nil, forKey: "resumeData")
                 return
             }
             
-            NSUserDefaults.standardUserDefaults().setObject(data, forKey: "resumeData")
+            print("savelastData: -----------");
+            UserDefaults.standard.set(data, forKey: "resumeData")
         }
     }
-    class func lastData() -> NSData? {
-        return NSUserDefaults.standardUserDefaults().dataForKey("resumeData")
+    class func lastData() -> Data? {
+        return UserDefaults.standard.data(forKey: "resumeData")
     }
 
     @IBAction func refresh() {
@@ -67,10 +68,10 @@ class DownloadTableViewController: UITableViewController {
         guard let downloadRows = downloadRows else { fatalError("not set rows") }
         downloadApi?.cancel()
         switch downloadRows {
-        case .Download:
+        case .download:
             downloadApi = GetDownloadApi(bar: "GetDownloadApi")
             shouldResume = false
-        case .DownloadWithResumeData:
+        case .downloadWithResumeData:
             downloadApi = DownloadResumeDataApi(data: DownloadTableViewController.lastData())
             shouldResume = true
         }
@@ -87,7 +88,7 @@ class DownloadTableViewController: UITableViewController {
             print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
             let percent = Float(totalBytesRead)/Float(totalBytesExpectedToRead)
             print("percent: \(percent)")
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
                 strongSelf.processView.progress = percent
                 let read = String(format: "%.2f", Float(totalBytesRead)/1024)
                 let total = String(format: "%.2f", Float(totalBytesExpectedToRead)/1024)
@@ -96,7 +97,7 @@ class DownloadTableViewController: UITableViewController {
             })
            
         }).response({ (data, error) -> Void in
-            print("data: \(data) size: \(data?.length), error: \(error)")
+            print("data: \(data) size: \(data?.count), error: \(error)")
             DownloadTableViewController.saveLastData(data)
         }).httpResponse({ (httpResponse, error) -> Void in
             print("httpResponse \(httpResponse), error: \(error)")
@@ -104,13 +105,13 @@ class DownloadTableViewController: UITableViewController {
     }
 
 
-    @IBAction func responseToResumeBtn(sender: UIButton) {
-        if sender.selected {
+    @IBAction func responseToResumeBtn(_ sender: UIButton) {
+        if sender.isSelected {
             downloadApi?.resume()
-            sender.selected = false
+            sender.isSelected = false
         } else {
             downloadApi?.suspend()
-            sender.selected = true
+            sender.isSelected = true
         }
     }
     override func didReceiveMemoryWarning() {

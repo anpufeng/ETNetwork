@@ -29,20 +29,20 @@ class UploadTableViewController: UITableViewController {
 
         guard let uploadRows = uploadRows else { fatalError("not set rows") }
         switch uploadRows {
-        case .UploadFile:
-            let fileURL = NSBundle.mainBundle().URLForResource("upload", withExtension: "png")
+        case .uploadFile:
+            let fileURL = Bundle.main.url(forResource: "upload", withExtension: "png")
             uploadApi = UploadFileApi(fileURL: fileURL!)
-        case .UploadData:
-            if let path = NSBundle.mainBundle().pathForResource("sample", ofType: "json") {
-                if let data = NSData(contentsOfFile: path) {
+        case .uploadData:
+            if let path = Bundle.main.path(forResource: "sample", ofType: "json") {
+                if let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
                     uploadApi = UploadDataApi(data: data)
                 }
 
             }
 
-        case .UploadStream:
-            if let jsonPath = NSBundle.mainBundle().pathForResource("sample", ofType: "json"), imgPath = NSBundle.mainBundle().pathForResource("upload", ofType: "png"){
-                if let jsonData = NSData(contentsOfFile: jsonPath), imgData = NSData(contentsOfFile: imgPath) {
+        case .uploadStream:
+            if let jsonPath = Bundle.main.path(forResource: "sample", ofType: "json"), let imgPath = Bundle.main.path(forResource: "upload", ofType: "png"){
+                if let jsonData = try? Data(contentsOf: URL(fileURLWithPath: jsonPath)), let imgData = try? Data(contentsOf: URL(fileURLWithPath: imgPath)) {
                     uploadApi = UploadStreamApi(jsonData: jsonData, imgData: imgData)
                 }
 
@@ -63,7 +63,7 @@ class UploadTableViewController: UITableViewController {
             
             let percent = Float(totalBytesWrite)/Float(totalBytesExpectedToWrite)
             guard let strongSelf = self else { return }
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
                 strongSelf.processView.progress = percent
                 let read = String(format: "%.2f", Float(totalBytesWrite)/1024)
                 let total = String(format: "%.2f", Float(totalBytesExpectedToWrite)/1024)

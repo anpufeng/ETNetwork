@@ -10,64 +10,64 @@ import UIKit
 import ETNetwork
 
 enum Sections: Int {
-    case Data, Download, Upload, Credit, BatchChain
+    case data, download, upload, credit, batchChain
     
     var segueIdentifer: String {
         switch self {
-        case .Data:
+        case .data:
             return "Data"
-        case .Download:
+        case .download:
             return "Download"
-        case .Upload:
+        case .upload:
             return "Upload"
-        case .Credit:
+        case .credit:
             return "Auth"
-        case .BatchChain:
+        case .batchChain:
             return "BatchChain"
         }
     }
 }
 
 enum DataRows: Int {
-    case Get, Post, Put, Delete
+    case get, post, put, delete
     
     var description: String {
         switch self {
-        case .Get:
+        case .get:
             return "GET"
-        case .Post:
+        case .post:
             return "POST"
-        case .Put:
+        case .put:
             return "PUT"
-        case .Delete:
+        case .delete:
             return "DELETE"
         }
     }
 }
 
 enum DownloadRows: Int {
-    case Download, DownloadWithResumeData
+    case download, downloadWithResumeData
 
     var description: String {
         switch self {
-        case .Download:
+        case .download:
             return "Download"
-        case .DownloadWithResumeData:
+        case .downloadWithResumeData:
             return "DownloadWithResumeData"
         }
     }
 }
 
 enum UploadRows: Int {
-    case UploadData, UploadFile, UploadStream
+    case uploadData, uploadFile, uploadStream
 
     var description: String {
         switch self {
-        case .UploadData:
+        case .uploadData:
             return "UploadData"
-        case .UploadFile:
+        case .uploadFile:
             return "UploadFile"
-            case .UploadStream:
+            case .uploadStream:
             return "UploadStream"
 
         }
@@ -75,23 +75,23 @@ enum UploadRows: Int {
 }
 
 enum AuthRows: Int {
-    case HttpBasic
+    case httpBasic
     
     var description: String {
         switch self {
-        case .HttpBasic:
+        case .httpBasic:
             return "HttpBasic"
         }
     }
 }
 
 enum BatchChainRows: Int {
-    case Batch, Chain
+    case batch, chain
     var description: String {
         switch self {
-        case .Batch:
+        case .batch:
             return "Batch"
-        case .Chain:
+        case .chain:
             return "Chain"
         }
     }
@@ -118,20 +118,20 @@ class RootTableViewController: UITableViewController {
     // MARK: - Table view data source
 
    //MARK: - Table view delegate
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let section = Sections(rawValue: indexPath.section)!
-        performSegueWithIdentifier(section.segueIdentifer, sender: indexPath)
+        performSegue(withIdentifier: section.segueIdentifer, sender: indexPath)
     }
 
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        let dest = segue.destinationViewController
-         let indexPath = sender as! NSIndexPath
+        let dest = segue.destination
+         let indexPath = sender as! IndexPath
         if let dest = dest as? DataTableViewController {
             dest.dataRows = DataRows(rawValue: indexPath.row)
         } else if let dest = dest as? DownloadTableViewController {

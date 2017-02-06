@@ -16,7 +16,7 @@ class BatchChainTableViewController: UITableViewController {
     deinit {
         chainApi?.stop()
         batchApi?.stop()
-        print("\(self.dynamicType)  deinit")
+        print("\(type(of: self))  deinit")
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,7 +29,7 @@ class BatchChainTableViewController: UITableViewController {
 
         bcRequest()
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: #selector(BatchChainTableViewController.refresh), forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(BatchChainTableViewController.refresh), for: .valueChanged)
     }
 
     @IBAction func refresh() {
@@ -43,7 +43,7 @@ class BatchChainTableViewController: UITableViewController {
     func bcRequest() {
         guard let bcRows = bcRows else { fatalError("not set rows") }
         switch bcRows {
-        case .Chain:
+        case .chain:
             let one = GetApi(bar: "GetApi")
             let two = PostApi(bar: "PostApi")
             let three = PutApi(bar: "PutApi")
@@ -71,7 +71,7 @@ class BatchChainTableViewController: UITableViewController {
                 }
             }
             chainApi?.start()
-        case .Batch:
+        case .batch:
 
             let one = GetApi(bar: "GetApi")
             let two = PostApi(bar: "PostApi")
@@ -144,12 +144,12 @@ class BatchChainTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 0
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return 0
     }

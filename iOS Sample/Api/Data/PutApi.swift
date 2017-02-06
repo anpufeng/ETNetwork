@@ -18,11 +18,11 @@ class PutApi: ETRequest {
 }
 
 extension PutApi: ETRequestProtocol {
-    var method: ETRequestMethod { return .Put }
-    var taskType: ETTaskType { return .Data }
+    var method: ETRequestMethod { return .put }
+    var taskType: ETTaskType { return .data }
     var requestUrl: String { return "/put" }
     var parameters:  [String: AnyObject]? {
-        return ["foo": bar]
+        return ["foo": bar as AnyObject]
     }
 }
 

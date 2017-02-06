@@ -8,8 +8,8 @@
 
 import UIKit
 
-public class ETNetworkConfig {
-     public static let sharedInstance: ETNetworkConfig = {
+open class ETNetworkConfig {
+     open static let sharedInstance: ETNetworkConfig = {
         
         return ETNetworkConfig()
     }()

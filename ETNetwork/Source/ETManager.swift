@@ -10,34 +10,34 @@ import Foundation
 import Alamofire
 
 
-public func log<T>(object: T, _ file: String = __FILE__, _ function: String = __FUNCTION__, _ line: Int = __LINE__) {
+public func log<T>(_ object: T, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
     if ETManager.logEnable {
         let path = file as NSString
         let fileNameWithoutPath = path.lastPathComponent
-        let info = "\(NSDate()): \(fileNameWithoutPath).\(function)[\(line)]: \(object)"
+        let info = "\(Date()): \(fileNameWithoutPath).\(function)[\(line)]: \(object)"
         print(info)
     }
 }
 
-public class ETManager {
-    public static var logEnable = true
+open class ETManager {
+    open static var logEnable = true
     
-    public static let sharedInstance: ETManager = {
+    open static let sharedInstance: ETManager = {
         return ETManager()
     }()
     
-    private let jobManager: JobManager
-    private var subRequests: [String: ETRequest] = [:]
-    private let concurrentQueue = dispatch_queue_create("concurrent_etmanager", DISPATCH_QUEUE_CONCURRENT)
+    fileprivate let jobManager: JobManager
+    fileprivate var subRequests: [String: ETRequest] = [:]
+    fileprivate let concurrentQueue = DispatchQueue(label: "concurrent_etmanager", attributes: DispatchQueue.Attributes.concurrent)
     
-    private struct AssociatedKey {
+    fileprivate struct AssociatedKey {
         static var inneKey = "etrequest"
     }
     
     subscript(request: ETRequest) -> ETRequest? {
         get {
             var req: ETRequest?
-            dispatch_sync(concurrentQueue) {
+            concurrentQueue.sync {
                 req = self.subRequests[request.identifier()]
             }
             
@@ -45,35 +45,35 @@ public class ETManager {
         }
         
         set {
-            dispatch_barrier_async(concurrentQueue) {
+            concurrentQueue.async(flags: .barrier, execute: {
                 self.subRequests[request.identifier()] = newValue
-            }
+            }) 
         }
     }
     public convenience init() {
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        configuration.HTTPAdditionalHeaders = Alamofire.Manager.defaultHTTPHeaders
+        let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = JobManager.defaultHTTPHeaders
         configuration.timeoutIntervalForRequest = 15
         self.init(configuration: configuration)
     }
 
-    public convenience init(timeoutForRequest: NSTimeInterval, timeoutForResource: NSTimeInterval = 7 * 24 * 3600) {
-        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        configuration.HTTPAdditionalHeaders = Manager.defaultHTTPHeaders
+    public convenience init(timeoutForRequest: TimeInterval, timeoutForResource: TimeInterval = 7 * 24 * 3600) {
+        let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = JobManager.defaultHTTPHeaders
         configuration.timeoutIntervalForRequest = timeoutForRequest
         configuration.timeoutIntervalForResource = timeoutForResource
         self.init(configuration: configuration)
     }
 
-    public init(configuration: NSURLSessionConfiguration) {
+    public init(configuration: URLSessionConfiguration) {
         jobManager = JobManager(configuration: configuration)
     }
 
     deinit {
-        log("\(self.dynamicType ) deinit")
+        log("\(type(of: self) ) deinit")
     }
 
-    func addRequest(request: ETRequest) {
+    func addRequest(_ request: ETRequest) {
         if let req = self[request] {
             log("already in processing, nothing to do")
             return
@@ -84,50 +84,105 @@ public class ETManager {
             let serializer = requestProtocol.responseSerializer
             let parameters = requestProtocol.parameters
             let encoding = requestProtocol.parameterEncoding.encode
+            let url = buildRequestUrl(request)
             
             var jobReq: Request?
             switch requestProtocol.taskType {
-            case .Data:
-                jobReq = jobManager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
-            case .Download:
+            case .data:
+                jobReq = jobManager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
+//                jobReq = jobManager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
+            case .download:
                 guard let downloadProtocol = request as? ETRequestDownloadProtocol else { fatalError("not implement ETRequestDownloadProtocol") }
                  let destination = downloadProtocol.downloadDestination()
                 if let resumeData = downloadProtocol.resumeData {
-                    jobReq = jobManager.download(resumeData, destination: destination)
+                    jobReq = jobManager.download(resumingWith: resumeData, to: destination)
+//                    jobReq = jobManager.download(resumeData, destination: destination)
                 } else {
-                    jobReq = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
+                    jobReq = jobManager.download(url, method: method, parameters: parameters, encoding: encoding, headers: headers, to: destination)
+//                    jobReq = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
                 }
 
-            case .UploadFileURL:
+            case .uploadFileURL:
                 guard let uploadProtocol = request as? ETRequestUploadProtocol else { fatalError("not implement ETREquestUploadProtocol") }
                 guard let fileURL = uploadProtocol.fileURL else { fatalError("must return fileURL") }
-                jobReq = jobManager.upload(method, buildRequestUrl(request), headers:headers, file: fileURL)
-            case .UploadFileData:
+                jobReq = jobManager.upload(fileURL, to: url, method: method, headers: headers)
+//                jobReq = jobManager.upload(method, buildRequestUrl(request), headers:headers, file: fileURL)
+            case .uploadFileData:
                 guard let uploadProtocol = request as? ETRequestUploadProtocol else { fatalError("not implement ETREquestUploadProtocol") }
                 guard let fileData = uploadProtocol.fileData else { fatalError("must return fileData") }
-                jobReq = jobManager.upload(method, buildRequestUrl(request), headers:headers, data: fileData)
-            case .UploadFormData:
+                jobReq = jobManager.upload(fileData, to: url, method: method, headers: headers)
+//                jobReq = jobManager.upload(method, buildRequestUrl(request), headers:headers, data: fileData)
+            case .uploadFormData:
                 guard let uploadProtocol = request as? ETRequestUploadProtocol else { fatalError("not implement ETREquestUploadProtocol") }
                 guard let formData = uploadProtocol.formData else { fatalError("must return formdata") }
+                jobManager.upload(multipartFormData: { (multipart) in
+                    for wrapped in formData {
+                        if wrapped is UploadFormData {
+                            let wrapData = wrapped as! UploadFormData
+                            if let mimeType = wrapData.mimeType, let fileName = wrapData.fileName {
+                                multipart.append(wrapData.data, withName: wrapData.name, fileName: fileName, mimeType: mimeType)
+//                                multipart.appendBodyPart(data: wrapData.data, name: wrapData.name, fileName: fileName, mimeType: mimeType)
+                            } else {
+                                multipart.append(wrapData.data, withName: wrapData.name)
+//                                multipart.appendBodyPart(data: wrapData.data, name: wrapData.name)
+                            }
+                        } else if wrapped is UploadFormFileURL {
+                            let wrapFileURL = wrapped as! UploadFormFileURL
+                            if let mimeType = wrapFileURL.mimeType, let fileName = wrapFileURL.fileName {
+//                                multipart.appendBodyPart(fileURL: wrapFileURL.fileURL, name: wrapFileURL.name, fileName: fileName, mimeType: mimeType)
+                                multipart.append(wrapFileURL.fileURL, withName: wrapFileURL.name, fileName: fileName, mimeType: mimeType)
+                            } else {
+//                                multipart.appendBodyPart(fileURL: wrapFileURL.fileURL, name: wrapFileURL.name)
+                                multipart.append(wrapFileURL.fileURL, withName: wrapFileURL.name)
+                            }
+                        } else if wrapped is UploadFormStream {
+                            let wrapStream = wrapped as! UploadFormStream
+                            if let mimeType = wrapStream.mimeType, let fileName = wrapStream.fileName {
+//                                multipart.appendBodyPart(stream: wrapStream.stream, length: wrapStream.length, name: wrapStream.name, fileName: fileName, mimeType: mimeType)
+                                multipart.append(wrapStream.stream, withLength: wrapStream.length, name: wrapStream.name, fileName: fileName, mimeType: mimeType)
+                            } else {
+                                fatalError("must have fileName & mimeType")
+                            }
+                        } else {
+                            fatalError("do not use UploadWrap")
+                        }
+                    }
+                }, to: url, encodingCompletion: { (encodingResult) in
+                    switch encodingResult {
+                    case .success(let upload, _, _):
+                        if let authProtocol = request as? ETRequestAuthProtocol {
+                            //                                upload.delegate.credential = authProtocol.credential
+                        }
+                        objc_setAssociatedObject(upload.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
+                        request.jobRequest = upload
+                        self[request] = request
+                        request.manager = self
+                        request.operationQueue.isSuspended = false;
+                        
+                    case .failure(let encodingError):
+                        request.formDataEncodingErrorCompletion?(encodingError)
+                    }
+                })
+                /*
                 jobManager.upload(method, buildRequestUrl(request), multipartFormData: { multipart in
                     for wrapped in formData {
                         if wrapped is UploadFormData {
                             let wrapData = wrapped as! UploadFormData
-                            if let mimeType = wrapData.mimeType, fileName = wrapData.fileName {
+                            if let mimeType = wrapData.mimeType, let fileName = wrapData.fileName {
                                 multipart.appendBodyPart(data: wrapData.data, name: wrapData.name, fileName: fileName, mimeType: mimeType)
                             } else {
                                 multipart.appendBodyPart(data: wrapData.data, name: wrapData.name)
                             }
                         } else if wrapped is UploadFormFileURL {
                             let wrapFileURL = wrapped as! UploadFormFileURL
-                            if let mimeType = wrapFileURL.mimeType, fileName = wrapFileURL.fileName {
+                            if let mimeType = wrapFileURL.mimeType, let fileName = wrapFileURL.fileName {
                                 multipart.appendBodyPart(fileURL: wrapFileURL.fileURL, name: wrapFileURL.name, fileName: fileName, mimeType: mimeType)
                             } else {
                                 multipart.appendBodyPart(fileURL: wrapFileURL.fileURL, name: wrapFileURL.name)
                             }
                         } else if wrapped is UploadFormStream {
                             let wrapStream = wrapped as! UploadFormStream
-                            if let mimeType = wrapStream.mimeType, fileName = wrapStream.fileName {
+                            if let mimeType = wrapStream.mimeType, let fileName = wrapStream.fileName {
                                 multipart.appendBodyPart(stream: wrapStream.stream, length: wrapStream.length, name: wrapStream.name, fileName: fileName, mimeType: mimeType)
                             } else {
                                 fatalError("must have fileName & mimeType")
@@ -138,7 +193,7 @@ public class ETManager {
                     }
                     }, encodingCompletion: { encodingResult in
                         switch encodingResult {
-                        case .Success(let upload, _, _):
+                        case .success(let upload, _, _):
                             if let authProtocol = request as? ETRequestAuthProtocol {
 //                                upload.delegate.credential = authProtocol.credential
                             }
@@ -146,25 +201,28 @@ public class ETManager {
                             request.jobRequest = upload
                             self[request] = request
                             request.manager = self
-                            request.operationQueue.suspended = false;
+                            request.operationQueue.isSuspended = false;
                             
-                        case .Failure(let encodingError):
+                        case .failure(let encodingError):
                             request.formDataEncodingErrorCompletion?(encodingError)
                         }
                 })
+                */
             }
 
             guard let req = jobReq else { return }
             
             if let authProtocol = request as? ETRequestAuthProtocol {
-//                req.delegate.credential = authProtocol.credential
+                if let credential = authProtocol.credential {
+                    req.authenticate(usingCredential: credential)
+                }
             }
             
             objc_setAssociatedObject(req.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
            
             request.jobRequest = req
             if request.needInOperationQueue {
-                request.operationQueue.suspended = false
+                request.operationQueue.isSuspended = false
             }
             self[request] = request
             request.manager = self
@@ -174,15 +232,15 @@ public class ETManager {
 
     }
     
-    func cancelRequest(request: ETRequest) {
+    func cancelRequest(_ request: ETRequest) {
         request.jobRequest?.cancel()
         self[request] = nil
     }
     
-    func removeFromManager(request: ETRequest) {
+    func removeFromManager(_ request: ETRequest) {
         self[request] = nil
     }
-    public func cancelAllRequests() {
+    open func cancelAllRequests() {
         let dic = subRequests as NSDictionary
         let copyDic: NSMutableDictionary = dic.mutableCopy() as! NSMutableDictionary
         
@@ -193,7 +251,7 @@ public class ETManager {
     }
     
     //MARK: private
-      private func buildRequestUrl(request: ETRequest) -> String {
+      fileprivate func buildRequestUrl(_ request: ETRequest) -> String {
         if let requestProtocol = request as? ETRequestProtocol  {
             if requestProtocol.requestUrl.hasPrefix("http") {
                 return requestProtocol.requestUrl

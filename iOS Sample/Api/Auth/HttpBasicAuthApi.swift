@@ -23,19 +23,19 @@ extension HttpBasicAuthApi: ETRequestProtocol {
         var headers: [String: String]? {
         return ["token": "YourCustomToken"]
     }
-    var method: ETRequestMethod { return .Get }
-    var taskType: ETTaskType { return .Data }
+    var method: ETRequestMethod { return .get }
+    var taskType: ETTaskType { return .data }
     var requestUrl: String { return "/basic-auth/user/passwd" }
     var parameters:  [String: AnyObject]? {
-        return ["foo": bar]
+        return ["foo": bar as AnyObject]
     }
 }
 
 extension HttpBasicAuthApi: ETRequestAuthProtocol {
-    var credential: NSURLCredential? {
+    var credential: URLCredential? {
         let user = "user"
         let password = "passwd"
-        let credential = NSURLCredential(user: user, password: password, persistence: .ForSession)
+        let credential = URLCredential(user: user, password: password, persistence: .forSession)
         return credential
     }
 

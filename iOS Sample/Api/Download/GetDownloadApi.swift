@@ -19,8 +19,8 @@ class GetDownloadApi: ETRequest {
 }
 
 extension GetDownloadApi: ETRequestProtocol {
-    var method: ETRequestMethod { return .Get }
-    var taskType: ETTaskType { return .Download }
+    var method: ETRequestMethod { return .get }
+    var taskType: ETTaskType { return .download }
     var requestUrl: String { return "http://dldir1.qq.com/qqfile/QQforMac/QQ_V4.0.6.dmg" }
     var parameters:  [String: AnyObject]? {
         return nil

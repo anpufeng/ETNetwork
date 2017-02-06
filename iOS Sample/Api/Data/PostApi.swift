@@ -24,11 +24,11 @@ extension PostApi: ETRequestProtocol {
     var headers: [String: String]? {
         return ["token": "YourCustomToken"]
     }
-    var method: ETRequestMethod { return .Post }
-    var taskType: ETTaskType { return .Data }
+    var method: ETRequestMethod { return .post }
+    var taskType: ETTaskType { return .data }
     var requestUrl: String { return "/post" }
     var parameters:  [String: AnyObject]? {
-        return ["foo": bar]
+        return ["foo": bar as AnyObject]
     }
 }
 

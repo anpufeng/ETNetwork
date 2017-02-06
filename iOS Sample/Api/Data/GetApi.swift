@@ -19,11 +19,11 @@ class GetApi: ETRequest {
 }
 
 extension GetApi: ETRequestProtocol {
-    var method: ETRequestMethod { return .Get }
-    var taskType: ETTaskType { return .Data }
+    var method: ETRequestMethod { return .get }
+    var taskType: ETTaskType { return .data }
     var requestUrl: String { return "/get" }
     var parameters:  [String: AnyObject]? {
-        return ["foo": bar]
+        return ["foo": bar as AnyObject]
     }
 }
 
