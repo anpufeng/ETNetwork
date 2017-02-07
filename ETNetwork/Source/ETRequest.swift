@@ -94,10 +94,15 @@ open class ETRequest {
     }
 
     func reqResponse(_ closure:@escaping () -> ()) {
-        if let _ = self as? ETRequestUploadProtocol {
-            operationQueue.addOperation({ () -> Void in
+        if let uploadProtocol = self as? ETRequestUploadProtocol {
+            //only suspend in formdata, will resume in manager when formData encoded success
+            if uploadProtocol.formData != nil {
+                operationQueue.addOperation({ () -> Void in
+                    closure()
+                })
+            } else {
                 closure()
-            })
+            }
         } else {
             if needInOperationQueue {
                 operationQueue.addOperation({ () -> Void in
