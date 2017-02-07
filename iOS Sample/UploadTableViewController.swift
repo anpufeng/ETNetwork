@@ -16,6 +16,10 @@ class UploadTableViewController: UITableViewController {
     @IBOutlet weak var processView: UIProgressView!
     var uploadRows: UploadRows?
     var uploadApi: ETRequest?
+    
+    deinit {
+        uploadApi?.cancel()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,10 +59,8 @@ class UploadTableViewController: UITableViewController {
         guard let uploadApi = uploadApi else { fatalError("request nil") }
 
         uploadApi.start()
-        uploadApi.formDataencodingError { (error) -> Void in
-            print("encoding error: \(error)")
-        }.progress({ [weak self] (bytesWrite, totalBytesWrite, totalBytesExpectedToWrite) -> Void in
-            print("bytesWrite: \(bytesWrite), totalBytesWrite: \(totalBytesWrite), totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)")
+        uploadApi.progress({ [weak self] (totalBytesWrite, totalBytesExpectedToWrite) -> Void in
+            print("totalBytesWrite: \(totalBytesWrite), totalBytesExpectedToWrite: \(totalBytesExpectedToWrite)")
             print("percent: \(100 * Float(totalBytesWrite)/Float(totalBytesExpectedToWrite))")
             
             let percent = Float(totalBytesWrite)/Float(totalBytesExpectedToWrite)
@@ -70,7 +72,7 @@ class UploadTableViewController: UITableViewController {
                 strongSelf.writeLabel.text = "read: \(read) KB"
                 strongSelf.totalLabel.text = "total: \(total) KB"
             })
-        }).responseJson({ (json, error) -> Void in
+        }).responseJSON({ (json, error) -> Void in
             if (error != nil) {
                 print("==========error: \(error)")
             } else {
@@ -80,6 +82,7 @@ class UploadTableViewController: UITableViewController {
         })
     }
 
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

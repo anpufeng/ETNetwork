@@ -102,7 +102,7 @@ public protocol ETRequestProtocol : class {
     var headers: [String: String]? { get }
     var parameterEncoding: ETRequestParameterEncoding { get }
     var responseStringEncoding: String.Encoding { get }
-    var responseJsonReadingOption: JSONSerialization.ReadingOptions { get }
+    var responseJSONReadingOption: JSONSerialization.ReadingOptions { get }
     var responseSerializer: ETResponseSerializer { get }
 }
 
@@ -116,7 +116,7 @@ public extension ETRequestProtocol {
     var headers: [String: String]? { return nil }
     var parameterEncoding: ETRequestParameterEncoding { return  .json }
     var responseStringEncoding: String.Encoding { return String.Encoding.utf8 }
-    var responseJsonReadingOption: JSONSerialization.ReadingOptions { return .allowFragments }
+    var responseJSONReadingOption: JSONSerialization.ReadingOptions { return .allowFragments }
     var responseSerializer: ETResponseSerializer { return .json }
 }
 

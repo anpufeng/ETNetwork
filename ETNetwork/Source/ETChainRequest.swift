@@ -21,7 +21,7 @@ open class ETChainRequest {
     }()
 
     //FIXME: completion not right
-    open var completion: ((_ error: NSError?) -> Void)?
+    open var completion: ((_ error: Error?) -> Void)?
 
     deinit {
         operationQueue.cancelAllOperations()
@@ -33,11 +33,11 @@ open class ETChainRequest {
 
     }
 
-    open func addRequest(_ req: ETRequest, completion: @escaping (AnyObject?, NSError?) -> Void) {
+    open func addRequest(_ req: ETRequest, completion: @escaping (Any?, Error?) -> Void) {
         requests.append(req)
         operationQueue.addOperation { () -> Void in
             req.start()
-            req.responseJson({ (json, error) -> Void in
+            req.responseJSON({ (json, error) -> Void in
                 if error == nil {
                     DispatchQueue.main.async(execute: { () -> Void in
                         completion(json, error)

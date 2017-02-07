@@ -19,7 +19,7 @@ open class ETBatchRequest {
     }()
 
     fileprivate let seriQueue = DispatchQueue(label: "batch_queue", attributes: [])
-    open var completion: ((_ error: NSError?) -> Void)?
+    open var completion: ((_ error: Error?) -> Void)?
     
     deinit {
         operationQueue.cancelAllOperations()
@@ -41,7 +41,7 @@ open class ETBatchRequest {
     fileprivate func _addRequest(_ req: ETRequest) {
         operationQueue.addOperation { () -> Void in
             req.start()
-            req.response({ (data, error) -> Void in
+            req.responseData({ (data, error) -> Void in
                 if error == nil {
                     DispatchQueue.main.async(execute: { () -> Void in
                         self.finishedTask += 1

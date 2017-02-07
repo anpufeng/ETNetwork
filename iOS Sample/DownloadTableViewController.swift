@@ -83,9 +83,9 @@ class DownloadTableViewController: UITableViewController {
         //        if let data = downloadApi?.cachedData {
         //            print("cached data: \(data)")
         //        }
-        downloadApi?.progress({ [weak self] (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
+        downloadApi?.progress({ [weak self] (totalBytesRead, totalBytesExpectedToRead) -> Void in
             guard let strongSelf = self else { return }
-            print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
+            print("totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
             let percent = Float(totalBytesRead)/Float(totalBytesExpectedToRead)
             print("percent: \(percent)")
             DispatchQueue.main.async(execute: { () -> Void in
@@ -96,7 +96,7 @@ class DownloadTableViewController: UITableViewController {
                 strongSelf.totalLabel.text = "total: \(total) KB"
             })
            
-        }).response({ (data, error) -> Void in
+        }).responseData({ (data, error) -> Void in
             print("data: \(data) size: \(data?.count), error: \(error)")
             DownloadTableViewController.saveLastData(data)
         }).httpResponse({ (httpResponse, error) -> Void in

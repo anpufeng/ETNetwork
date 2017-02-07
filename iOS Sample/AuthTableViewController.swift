@@ -35,7 +35,7 @@ class AuthTableViewController: UITableViewController {
         guard let authApi = authApi else { fatalError("request nil") }
         
         authApi.start()
-        authApi.responseJson({ (json, error) -> Void in
+        authApi.responseJSON({ (json, error) -> Void in
             if (error != nil) {
                 print("==========error: \(error)")
             } else {

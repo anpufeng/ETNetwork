@@ -64,7 +64,7 @@ class DataTableViewController: UITableViewController {
         title = "\(dataRows.description)"
 
         dataApi?.start(ignoreCache: cacheSwitch.isOn)
-        dataApi?.responseJson({ [weak self] (json, error) -> Void in
+        dataApi?.responseJSON({ [weak self] (json, error) -> Void in
             
             guard let strongSelf = self else {
                 return

@@ -21,7 +21,9 @@ class GetDownloadApi: ETRequest {
 extension GetDownloadApi: ETRequestProtocol {
     var method: ETRequestMethod { return .get }
     var taskType: ETTaskType { return .download }
-    var requestUrl: String { return "http://dldir1.qq.com/qqfile/QQforMac/QQ_V4.0.6.dmg" }
+    //http://dldir1.qq.com/qqfile/QQforMac/QQ_V4.0.6.dmg
+    //http://ftp-apk.pconline.com.cn/b5cb691afcce3906dc11602df610f212/pub/download/201010/freewifi_2232_0909.apk
+    var requestUrl: String { return "http://ftp-apk.pconline.com.cn/b5cb691afcce3906dc11602df610f212/pub/download/201010/freewifi_2232_0909.apk" }
     var parameters:  [String: AnyObject]? {
         return nil
     }

@@ -82,7 +82,7 @@ class BatchChainTableViewController: UITableViewController {
 
             batchApi = ETBatchRequest(requests: [one, two, three, four, five])
             batchApi?.start()
-            one.responseJson { (json, error) -> Void in
+            one.responseJSON { (json, error) -> Void in
                 if (error != nil) {
                     print("==========error: \(error)")
                 } else {
@@ -91,7 +91,7 @@ class BatchChainTableViewController: UITableViewController {
             }
 
 
-            two.responseJson { (json, error) -> Void in
+            two.responseJSON { (json, error) -> Void in
                 if (error != nil) {
                     print("==========error: \(error)")
                 } else {
@@ -99,7 +99,7 @@ class BatchChainTableViewController: UITableViewController {
                 }
             }
 
-            three.responseJson { (json, error) -> Void in
+            three.responseJSON { (json, error) -> Void in
                 if (error != nil) {
                     print("==========error: \(error)")
                 } else {
@@ -107,7 +107,7 @@ class BatchChainTableViewController: UITableViewController {
                 }
             }
 
-            four.responseJson { (json, error) -> Void in
+            four.responseJSON { (json, error) -> Void in
                 if (error != nil) {
                     print("==========error: \(error)")
                 } else {
@@ -115,14 +115,14 @@ class BatchChainTableViewController: UITableViewController {
                 }
             }
 
-            five.response { (data, error) -> Void in
+            five.responseData { (data, error) -> Void in
                 if (error != nil) {
                     print("==========error: \(error)")
                 } else {
                     print("five finished")
                 }
-                }.progress({ (bytesRead, totalBytesRead, totalBytesExpectedToRead) -> Void in
-                    print("bytesRead: \(bytesRead), totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
+                }.progress({ (totalBytesRead, totalBytesExpectedToRead) -> Void in
+                    print("totalBytesRead: \(totalBytesRead), totalBytesExpectedToRead: \(totalBytesExpectedToRead)")
                     let percent = Float(totalBytesRead)/Float(totalBytesExpectedToRead)
                     print("percent: \(percent)")
                 })

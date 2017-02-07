@@ -90,28 +90,23 @@ open class ETManager {
             switch requestProtocol.taskType {
             case .data:
                 jobReq = jobManager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
-//                jobReq = jobManager.request(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers)
             case .download:
                 guard let downloadProtocol = request as? ETRequestDownloadProtocol else { fatalError("not implement ETRequestDownloadProtocol") }
                  let destination = downloadProtocol.downloadDestination()
                 if let resumeData = downloadProtocol.resumeData {
                     jobReq = jobManager.download(resumingWith: resumeData, to: destination)
-//                    jobReq = jobManager.download(resumeData, destination: destination)
                 } else {
                     jobReq = jobManager.download(url, method: method, parameters: parameters, encoding: encoding, headers: headers, to: destination)
-//                    jobReq = jobManager.download(method, buildRequestUrl(request), parameters: parameters, encoding: encoding, headers: headers, destination: destination)
                 }
 
             case .uploadFileURL:
                 guard let uploadProtocol = request as? ETRequestUploadProtocol else { fatalError("not implement ETREquestUploadProtocol") }
                 guard let fileURL = uploadProtocol.fileURL else { fatalError("must return fileURL") }
                 jobReq = jobManager.upload(fileURL, to: url, method: method, headers: headers)
-//                jobReq = jobManager.upload(method, buildRequestUrl(request), headers:headers, file: fileURL)
             case .uploadFileData:
                 guard let uploadProtocol = request as? ETRequestUploadProtocol else { fatalError("not implement ETREquestUploadProtocol") }
                 guard let fileData = uploadProtocol.fileData else { fatalError("must return fileData") }
                 jobReq = jobManager.upload(fileData, to: url, method: method, headers: headers)
-//                jobReq = jobManager.upload(method, buildRequestUrl(request), headers:headers, data: fileData)
             case .uploadFormData:
                 guard let uploadProtocol = request as? ETRequestUploadProtocol else { fatalError("not implement ETREquestUploadProtocol") }
                 guard let formData = uploadProtocol.formData else { fatalError("must return formdata") }
@@ -121,24 +116,19 @@ open class ETManager {
                             let wrapData = wrapped as! UploadFormData
                             if let mimeType = wrapData.mimeType, let fileName = wrapData.fileName {
                                 multipart.append(wrapData.data, withName: wrapData.name, fileName: fileName, mimeType: mimeType)
-//                                multipart.appendBodyPart(data: wrapData.data, name: wrapData.name, fileName: fileName, mimeType: mimeType)
                             } else {
                                 multipart.append(wrapData.data, withName: wrapData.name)
-//                                multipart.appendBodyPart(data: wrapData.data, name: wrapData.name)
                             }
                         } else if wrapped is UploadFormFileURL {
                             let wrapFileURL = wrapped as! UploadFormFileURL
                             if let mimeType = wrapFileURL.mimeType, let fileName = wrapFileURL.fileName {
-//                                multipart.appendBodyPart(fileURL: wrapFileURL.fileURL, name: wrapFileURL.name, fileName: fileName, mimeType: mimeType)
                                 multipart.append(wrapFileURL.fileURL, withName: wrapFileURL.name, fileName: fileName, mimeType: mimeType)
                             } else {
-//                                multipart.appendBodyPart(fileURL: wrapFileURL.fileURL, name: wrapFileURL.name)
                                 multipart.append(wrapFileURL.fileURL, withName: wrapFileURL.name)
                             }
                         } else if wrapped is UploadFormStream {
                             let wrapStream = wrapped as! UploadFormStream
                             if let mimeType = wrapStream.mimeType, let fileName = wrapStream.fileName {
-//                                multipart.appendBodyPart(stream: wrapStream.stream, length: wrapStream.length, name: wrapStream.name, fileName: fileName, mimeType: mimeType)
                                 multipart.append(wrapStream.stream, withLength: wrapStream.length, name: wrapStream.name, fileName: fileName, mimeType: mimeType)
                             } else {
                                 fatalError("must have fileName & mimeType")
@@ -151,7 +141,9 @@ open class ETManager {
                     switch encodingResult {
                     case .success(let upload, _, _):
                         if let authProtocol = request as? ETRequestAuthProtocol {
-                            //                                upload.delegate.credential = authProtocol.credential
+                            if let credential = authProtocol.credential {
+                                upload.authenticate(usingCredential: credential)
+                            }
                         }
                         objc_setAssociatedObject(upload.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
                         request.jobRequest = upload
@@ -163,51 +155,6 @@ open class ETManager {
                         request.formDataEncodingErrorCompletion?(encodingError)
                     }
                 })
-                /*
-                jobManager.upload(method, buildRequestUrl(request), multipartFormData: { multipart in
-                    for wrapped in formData {
-                        if wrapped is UploadFormData {
-                            let wrapData = wrapped as! UploadFormData
-                            if let mimeType = wrapData.mimeType, let fileName = wrapData.fileName {
-                                multipart.appendBodyPart(data: wrapData.data, name: wrapData.name, fileName: fileName, mimeType: mimeType)
-                            } else {
-                                multipart.appendBodyPart(data: wrapData.data, name: wrapData.name)
-                            }
-                        } else if wrapped is UploadFormFileURL {
-                            let wrapFileURL = wrapped as! UploadFormFileURL
-                            if let mimeType = wrapFileURL.mimeType, let fileName = wrapFileURL.fileName {
-                                multipart.appendBodyPart(fileURL: wrapFileURL.fileURL, name: wrapFileURL.name, fileName: fileName, mimeType: mimeType)
-                            } else {
-                                multipart.appendBodyPart(fileURL: wrapFileURL.fileURL, name: wrapFileURL.name)
-                            }
-                        } else if wrapped is UploadFormStream {
-                            let wrapStream = wrapped as! UploadFormStream
-                            if let mimeType = wrapStream.mimeType, let fileName = wrapStream.fileName {
-                                multipart.appendBodyPart(stream: wrapStream.stream, length: wrapStream.length, name: wrapStream.name, fileName: fileName, mimeType: mimeType)
-                            } else {
-                                fatalError("must have fileName & mimeType")
-                            }
-                        } else {
-                            fatalError("do not use UploadWrap")
-                        }
-                    }
-                    }, encodingCompletion: { encodingResult in
-                        switch encodingResult {
-                        case .success(let upload, _, _):
-                            if let authProtocol = request as? ETRequestAuthProtocol {
-//                                upload.delegate.credential = authProtocol.credential
-                            }
-                            objc_setAssociatedObject(upload.task, &AssociatedKey.inneKey, request, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
-                            request.jobRequest = upload
-                            self[request] = request
-                            request.manager = self
-                            request.operationQueue.isSuspended = false;
-                            
-                        case .failure(let encodingError):
-                            request.formDataEncodingErrorCompletion?(encodingError)
-                        }
-                })
-                */
             }
 
             guard let req = jobReq else { return }

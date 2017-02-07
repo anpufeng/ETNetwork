@@ -10,6 +10,21 @@ import Foundation
 import CryptoSwift
 import Alamofire
 
+
+public enum ETError: Error {
+    case noJobRequest
+}
+
+extension ETError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .noJobRequest:
+            return "no request instance yet"
+        }
+    }
+}
+
+
 ///the request class
 open class ETRequest {
     var jobRequest: JobRequest?
@@ -18,10 +33,13 @@ open class ETRequest {
     
     open var ignoreCache: Bool = false
     open fileprivate (set)var dataFromCache: Bool = false
+    
+    /*
     fileprivate var noJobRequestError: NSError {
         return NSError(domain: "etrequest", code: -8000, userInfo: nil)
 //        return Alamofire.Error.errorWithCode(-8000, failureReason: "no request, please call start first")
     }
+ */
     var dataCached: Bool = false
     var loadedCacheData: Data?
     lazy var serialQueue: DispatchQueue = {
@@ -106,63 +124,38 @@ public extension ETRequest {
         return self
     }
     
-    public func progress(_ closure: ((Int64, Int64, Int64) -> Void)? = nil) -> Self {
+    public func progress(_ closure: ((Int64, Int64) -> Void)? = nil) -> Self {
         reqResponse { () -> () in
-            guard let downloadRequest = self.jobRequest as? DownloadRequest else {
+            guard let jobRequest = self.jobRequest else {
                 return
             }
-            //TODO: fix progress
-            downloadRequest.downloadProgress(closure: { (progress) in
-                if let closure = closure {
-                    closure(progress.completedUnitCount, progress.completedUnitCount, progress.totalUnitCount)
-                }
-            })
-            /*
-            downloadRequest.progress({ (readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite) -> Void in
-                if let closure = closure {
-                    closure(readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite)
-                }
-
-            })
-             */
-        }
-
-        return self
-    }
-
-    public func response(_ completion: @escaping (Data?, NSError?) -> Void ) -> Self {
-        reqResponse { () -> () in
-            if let data = self.loadedCacheData, self.jobRequest == nil {
-                DispatchQueue.main.async(execute: { () -> Void in
-                    completion(data, nil)
-                })
-
-            } else {
-                guard let jobRequest = self.jobRequest as? DataRequest else {
-                    DispatchQueue.main.async(execute: { () -> Void in
-                        completion(nil, self.noJobRequestError)
-                    })
-
-                    return
-                }
-
-                jobRequest.response(completionHandler: { response -> Void in
-                    response.response
-                    if response.error == nil {
-                        self.saveResponseToCacheFile(response.data)
+            
+            if let uploadReq = jobRequest as? UploadRequest {
+                uploadReq.uploadProgress(closure: { (progress) in
+                    if let closure = closure {
+                        closure(progress.completedUnitCount, progress.totalUnitCount)
                     }
-                     self.manager?.removeFromManager(self)
-                    
-                    //TODO error ?? NSError
-                    completion(response.data, response.error as! NSError)
+                })
+            } else if let dataReq = jobRequest as? DataRequest {
+                dataReq.downloadProgress(closure: { (progress) in
+                    if let closure = closure {
+                        closure(progress.completedUnitCount, progress.totalUnitCount)
+                    }
+                })
+                
+            } else if let downloadReq = jobRequest as? DownloadRequest {
+                downloadReq.downloadProgress(closure: { (progress) in
+                    if let closure = closure {
+                        closure(progress.completedUnitCount, progress.totalUnitCount)
+                    }
                 })
             }
-
         }
 
         return self
     }
-    public func responseStr(_ completion: @escaping (String?, NSError?) -> Void ) -> Self {
+
+    public func responseStr(_ completion: @escaping (String?, Error?) -> Void ) -> Self {
         reqResponse { () -> () in
             if let data = self.loadedCacheData, self.jobRequest == nil {
                 let responseSerializer = DataRequest.stringResponseSerializer(encoding: String.Encoding.utf8)
@@ -177,20 +170,42 @@ public extension ETRequest {
                 })
 
             } else {
-                guard let jobRequest = self.jobRequest as? DataRequest else {
+                guard let jobRequest = self.jobRequest else {
                     DispatchQueue.main.async(execute: { () -> Void in
-                        completion(nil, self.noJobRequestError)
+                        completion(nil, ETError.noJobRequest)
                     })
                     return
                 }
-                jobRequest.responseString(completionHandler: { response -> Void in
-                    if response.result.error == nil {
-                        self.saveResponseToCacheFile(response.data)
+                
+                func completionWrapper(string: String?, data: Data?, error: Error?) {
+                    if error == nil {
+                        if let data = data {
+                           self.saveResponseToCacheFile(data)
+                        }
                     }
-                     self.manager?.removeFromManager(self)
+                    self.manager?.removeFromManager(self)
+                    completion(string, error)
+                }
+                
+                if let dataReq = jobRequest as? DataRequest {
+                    dataReq.responseString(completionHandler: { (dataResponse) in
+                       completionWrapper(string: dataResponse.value, data: dataResponse.data, error: dataResponse.error)
+                    })
                     
-                    completion(response.result.value, response.result.error as NSError?)
-                })
+                } else if let downloadReq = jobRequest as? DownloadRequest {
+                    downloadReq.responseString(completionHandler: { (downloadResponse) in
+                        if let url = downloadResponse.destinationURL {
+                            do {
+                                let data = try Data(contentsOf: url)
+                                completionWrapper(string: downloadResponse.value, data: data, error: downloadResponse.error)
+                            } catch {
+                                completionWrapper(string: downloadResponse.value, data: nil, error: downloadResponse.error)
+                            }
+                        } else {
+                            completionWrapper(string: downloadResponse.value, data: nil, error: downloadResponse.error)
+                        }
+                    })
+                }
             }
         }
 
@@ -199,11 +214,11 @@ public extension ETRequest {
     }
     
 
-    public func responseJson(_ completion: @escaping (AnyObject?, NSError?) -> Void ) -> Self {
+    public func responseJSON(_ completion: @escaping (Any?, Error?) -> Void ) -> Self {
         reqResponse { () -> () in
             var jsonOption: JSONSerialization.ReadingOptions = .allowFragments
             if let requestProtocol = self as? ETRequestProtocol {
-                jsonOption = requestProtocol.responseJsonReadingOption
+                jsonOption = requestProtocol.responseJSONReadingOption
             }
             if let data = self.loadedCacheData, self.jobRequest == nil {
                 let responseSerializer = DataRequest.jsonResponseSerializer(options: jsonOption)
@@ -214,34 +229,56 @@ public extension ETRequest {
                     nil
                 )
                 DispatchQueue.main.async(execute: { () -> Void in
-                    //TODO: AS ANYOBJ &&  AS NSERROR
-                    completion(result.value as AnyObject?, result.error as NSError?)
+                    completion(result.value, result.error)
                 })
                 
             } else {
-                guard let jobRequest = self.jobRequest as? DataRequest else {
+                guard let jobRequest = self.jobRequest else {
                     DispatchQueue.main.async(execute: { () -> Void in
-                        completion(nil, self.noJobRequestError)
+                        completion(nil, ETError.noJobRequest)
                     })
 
                     return
                 }
-                jobRequest
-                jobRequest.responseJSON(options: jsonOption, completionHandler: { response -> Void in
-                    if response.result.error == nil {
-                        self.saveResponseToCacheFile(response.data)
+                
+                func completionWrapper(json: Any?, data: Data?, error: Error?) {
+                    if error == nil {
+                        if let data = data {
+                            self.saveResponseToCacheFile(data)
+                        }
                     }
                     self.manager?.removeFromManager(self)
-                    //TODO: AS ANYOBJ &&  AS NSERROR
-                    completion(response.result.value as AnyObject?, response.result.error as NSError?)
-                })
+                    completion(json, error)
+                }
+                
+                
+                
+                if let dataReq = jobRequest as? DataRequest {
+                    dataReq.responseJSON(completionHandler: { (dataResponse) in
+                        completionWrapper(json: dataResponse.value, data: dataResponse.data, error: dataResponse.error)
+                    })
+                } else if let downloadReq = jobRequest as? DownloadRequest {
+                    downloadReq.responseJSON(completionHandler: { (downloadResponse) in
+                        if let url = downloadResponse.destinationURL {
+                            do {
+                                let data = try Data(contentsOf: url)
+                                completionWrapper(json: downloadResponse.value, data: data, error: downloadResponse.error)
+                            } catch {
+                                completionWrapper(json: downloadResponse.value, data: nil, error: downloadResponse.error)
+                            }
+                        } else {
+                            completionWrapper(json: downloadResponse.value, data: nil, error: downloadResponse.error)
+                        }
+                        
+                    })
+                }
             }
         }
 
         return self
     }
     
-    public func responseData(_ completion: @escaping (Data?, NSError?) -> Void ) -> Self {
+    public func responseData(_ completion: @escaping (Data?, Error?) -> Void ) -> Self {
         reqResponse { () -> () in
             if let data = self.loadedCacheData, self.jobRequest == nil {
                 DispatchQueue.main.async(execute: { () -> Void in
@@ -249,23 +286,33 @@ public extension ETRequest {
                 })
 
             } else {
-                guard let jobRequest = self.jobRequest as? DataRequest else {
+                guard let jobRequest = self.jobRequest else {
                     DispatchQueue.main.async(execute: { () -> Void in
-                        completion(nil, self.noJobRequestError)
+                        completion(nil, ETError.noJobRequest)
                     })
 
                     return
                 }
-
-                jobRequest.responseData(completionHandler:{ response -> Void in
-                    if response.result.error != nil {
-                        self.saveResponseToCacheFile(response.data)
-                        self.manager?.cancelRequest(self)
+                
+                func completionWrapper(data: Data?, error: Error?) {
+                    if error == nil {
+                        if let data = data {
+                            self.saveResponseToCacheFile(data)
+                        }
                     }
-                    //TODO: &&  AS NSERROR
-                    completion(response.result.value, response.result.error as NSError?)
-                })
-
+                    self.manager?.removeFromManager(self)
+                    completion(data, error)
+                }
+                
+                if let dataReq = jobRequest as? DataRequest {
+                    dataReq.response(responseSerializer: DataRequest.dataResponseSerializer(), completionHandler: { (dataResponse) in
+                        completionWrapper(data: dataResponse.data, error: dataResponse.error)
+                    })
+                } else if let downloadReq = jobRequest as? DownloadRequest {
+                    downloadReq.response(responseSerializer: DownloadRequest.dataResponseSerializer(), completionHandler: { (downloadResponse) in
+                        completionWrapper(data: downloadResponse.value, error: downloadResponse.error)
+                    })
+                }
             }
         }
 
@@ -273,23 +320,30 @@ public extension ETRequest {
         return self
     }
     
-    public func httpResponse(_ completion: @escaping (HTTPURLResponse?, NSError?) -> Void) -> Self {
+    public func httpResponse(_ completion: @escaping (HTTPURLResponse?, Error?) -> Void) -> Self {
         reqResponse { () -> () in
             if let _ = self.loadedCacheData, self.jobRequest == nil {
                 DispatchQueue.main.async(execute: { () -> Void in
                     completion(nil, nil)
                 })
             } else {
-                guard let jobRequest = self.jobRequest as? DataRequest else {
+                guard let jobRequest = self.jobRequest else {
                     DispatchQueue.main.async(execute: { () -> Void in
-                        completion(nil, self.noJobRequestError)
+                        completion(nil, ETError.noJobRequest)
                     })
                     return
                 }
-                jobRequest.response(completionHandler: { response -> Void in
-                    //TODO: &&  AS NSERROR
-                    completion(response.response, response.error as NSError?)
-                })
+                
+                
+                if let dataReq = jobRequest as? DataRequest {
+                    dataReq.response(responseSerializer: DataRequest.dataResponseSerializer(), completionHandler: { (dataResponse) in
+                        completion(dataResponse.response, dataResponse.error)
+                    })
+                } else if let downloadReq = jobRequest as? DownloadRequest {
+                    downloadReq.response(responseSerializer: DownloadRequest.dataResponseSerializer(), completionHandler: { (downloadResponse) in
+                        completion(downloadResponse.response, downloadResponse.error)
+                    })
+                }
             }
         }
 
@@ -327,7 +381,7 @@ public extension ETRequest {
         
         var jsonOption: JSONSerialization.ReadingOptions = .allowFragments
         if let requestProtocol = self as? ETRequestProtocol {
-            jsonOption = requestProtocol.responseJsonReadingOption
+            jsonOption = requestProtocol.responseJSONReadingOption
         }
      
         
@@ -546,10 +600,15 @@ extension ETRequest: CustomDebugStringConvertible {
         str.append("      headers: \(requestProtocol.headers)\n")
         str.append("      parameterEncoding: \(requestProtocol.parameterEncoding)\n")
         str.append("      responseStringEncoding: \(requestProtocol.responseStringEncoding)\n")
-        str.append("      responseJsonReadingOption: \(requestProtocol.responseJsonReadingOption)\n")
+        str.append("      responseJSONReadingOption: \(requestProtocol.responseJSONReadingOption)\n")
         str.append("      responseSerializer: \(requestProtocol.responseSerializer)\n")
         if let cacheProtocol = self as? ETRequestCacheProtocol {
-            str.append("      cache seconds: \(cacheProtocol.cacheSeconds), cache version: \(cacheProtocol.cacheVersion)\n")
+            if (ignoreCache) {
+                str.append("      without using cache\n")
+            } else {
+                str.append("      cache seconds: \(cacheProtocol.cacheSeconds), cache version: \(cacheProtocol.cacheVersion)\n")
+            }
+            
         } else {
             str.append("      without using cache\n")
         }
