@@ -19,6 +19,7 @@ class UploadTableViewController: UITableViewController {
     
     deinit {
         uploadApi?.cancel()
+        print("\(type(of: self))  deinit")
     }
 
     override func viewDidLoad() {

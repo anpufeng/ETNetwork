@@ -118,7 +118,6 @@ open class ETRequest {
 
 //MARK: response
 public extension ETRequest {
-///TODO change 6008 error
     public var responseAllHeaders: [AnyHashable: Any]? {
         return jobRequest?.response?.allHeaderFields
     }
@@ -136,20 +135,32 @@ public extension ETRequest {
             }
             
             if let uploadReq = jobRequest as? UploadRequest {
-                uploadReq.uploadProgress(closure: { (progress) in
+                uploadReq.uploadProgress(closure: { [weak self] (progress) in
+                    guard let strongSelf = self else { return }
+                    if progress.completedUnitCount == progress.totalUnitCount {
+                        strongSelf.manager?.removeFromManager(strongSelf)
+                    }
                     if let closure = closure {
                         closure(progress.completedUnitCount, progress.totalUnitCount)
                     }
                 })
             } else if let dataReq = jobRequest as? DataRequest {
-                dataReq.downloadProgress(closure: { (progress) in
+                dataReq.downloadProgress(closure: { [weak self] (progress) in
+                    guard let strongSelf = self else { return }
+                    if progress.completedUnitCount == progress.totalUnitCount {
+                        strongSelf.manager?.removeFromManager(strongSelf)
+                    }
                     if let closure = closure {
                         closure(progress.completedUnitCount, progress.totalUnitCount)
                     }
                 })
                 
             } else if let downloadReq = jobRequest as? DownloadRequest {
-                downloadReq.downloadProgress(closure: { (progress) in
+                downloadReq.downloadProgress(closure: { [weak self] (progress) in
+                    guard let strongSelf = self else { return }
+                    if progress.completedUnitCount == progress.totalUnitCount {
+                        strongSelf.manager?.removeFromManager(strongSelf)
+                    }
                     if let closure = closure {
                         closure(progress.completedUnitCount, progress.totalUnitCount)
                     }
@@ -192,6 +203,8 @@ public extension ETRequest {
                     completion(string, error)
                 }
                 
+                
+                //FIXME:  retain cycle??
                 if let dataReq = jobRequest as? DataRequest {
                     dataReq.responseString(completionHandler: { (dataResponse) in
                        completionWrapper(string: dataResponse.value, data: dataResponse.data, error: dataResponse.error)
