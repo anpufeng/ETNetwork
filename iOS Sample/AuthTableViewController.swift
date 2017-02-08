@@ -25,7 +25,7 @@ class AuthTableViewController: UITableViewController {
         
         guard let authRows = authRows else { fatalError("not set rows") }
         switch authRows {
-        case .HttpBasic:
+        case .httpBasic:
             authApi = HttpBasicAuthApi(bar: "HttpBasicAuthApi")
         }
         
@@ -35,7 +35,7 @@ class AuthTableViewController: UITableViewController {
         guard let authApi = authApi else { fatalError("request nil") }
         
         authApi.start()
-        authApi.responseJson({ (json, error) -> Void in
+        authApi.responseJSON({ (json, error) -> Void in
             if (error != nil) {
                 print("==========error: \(error)")
             } else {
@@ -52,12 +52,12 @@ class AuthTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 0
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return 0
     }

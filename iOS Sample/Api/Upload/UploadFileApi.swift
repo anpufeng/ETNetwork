@@ -11,25 +11,25 @@ import ETNetwork
 
 class UploadFileApi: ETRequest {
 
-    var ImgURL: NSURL
-    init(fileURL: NSURL) {
+    var ImgURL: URL
+    init(fileURL: URL) {
         self.ImgURL = fileURL
         super.init()
     }
 }
 
 extension UploadFileApi: ETRequestProtocol {
-    var method: ETRequestMethod { return .Post }
-    var taskType: ETTaskType { return .UploadFileURL }
+    var method: ETRequestMethod { return .post }
+    var taskType: ETTaskType { return .uploadFileURL }
     var requestUrl: String { return "/post" }
     var parameters:  [String: AnyObject]? {
-        return ["upload": "UploadFileApi"]
+        return ["upload": "UploadFileApi" as AnyObject]
     }
 
     var headers: [String: String]? { return ["UploadFileApi": "UploadFileApiHeader"]  }
 }
 
 extension UploadFileApi: ETRequestUploadProtocol {
-    var fileURL: NSURL? { return self.ImgURL }
+    var fileURL: URL? { return self.ImgURL }
 }
 

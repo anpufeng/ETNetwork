@@ -10,47 +10,47 @@
 import Foundation
 
 
-public class ETChainRequest {
-    private var requests: [ETRequest] = []
-    private var finishedTask = 0
-    lazy var operationQueue: NSOperationQueue = {
-        let operationQueue = NSOperationQueue()
+open class ETChainRequest {
+    fileprivate var requests: [ETRequest] = []
+    fileprivate var finishedTask = 0
+    lazy var operationQueue: OperationQueue = {
+        let operationQueue = OperationQueue()
         operationQueue.maxConcurrentOperationCount = 1
-        operationQueue.suspended = true
+        operationQueue.isSuspended = true
         return operationQueue
     }()
 
     //FIXME: completion not right
-    public var completion: ((error: NSError?) -> Void)?
+    open var completion: ((_ error: Error?) -> Void)?
 
     deinit {
         operationQueue.cancelAllOperations()
-        operationQueue.suspended = false
-        log("\(self.dynamicType)  deinit")
+        operationQueue.isSuspended = false
+        log("\(type(of: self))  deinit")
     }
 
     public init() {
 
     }
 
-    public func addRequest(req: ETRequest, completion: (AnyObject?, NSError?) -> Void) {
+    open func addRequest(_ req: ETRequest, completion: @escaping (Any?, Error?) -> Void) {
         requests.append(req)
-        operationQueue.addOperationWithBlock { () -> Void in
+        operationQueue.addOperation { () -> Void in
             req.start()
-            req.responseJson({ (json, error) -> Void in
+            req.responseJSON({ (json, error) -> Void in
                 if error == nil {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    DispatchQueue.main.async(execute: { () -> Void in
                         completion(json, error)
                         self.finishedTask += 1
                         if self.finishedTask == self.requests.count {
-                            self.completion?(error: nil)
+                            self.completion?(nil)
                         }
                     })
 
                 } else {
                     self.stop()
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        self.completion?(error: error)
+                    DispatchQueue.main.async(execute: { () -> Void in
+                        self.completion?(error)
                     })
 
                 }
@@ -58,11 +58,11 @@ public class ETChainRequest {
         }
     }
 
-    public func start() {
-        operationQueue.suspended = false
+    open func start() {
+        operationQueue.isSuspended = false
     }
 
-    public func stop() {
+    open func stop() {
         operationQueue.cancelAllOperations()
         for req in self.requests {
             req.cancel()

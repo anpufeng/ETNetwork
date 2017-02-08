@@ -10,48 +10,66 @@ import Foundation
 import CryptoSwift
 import Alamofire
 
+
+public enum ETError: Error {
+    case noJobRequest
+}
+
+extension ETError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .noJobRequest:
+            return "no request instance yet"
+        }
+    }
+}
+
+
 ///the request class
-public class ETRequest {
+open class ETRequest {
     var jobRequest: JobRequest?
         
     weak var manager: ETManager?
     
-    public var ignoreCache: Bool = false
-    public private (set)var dataFromCache: Bool = false
-    private var noJobRequestError: NSError {
-        let userInfo = [NSLocalizedFailureReasonErrorKey: "no request, please call start first"]
-        return NSError(domain: "ETNetwork", code: -8000, userInfo: userInfo)
+    open var ignoreCache: Bool = false
+    open fileprivate (set)var dataFromCache: Bool = false
+    
+    /*
+    fileprivate var noJobRequestError: NSError {
+        return NSError(domain: "etrequest", code: -8000, userInfo: nil)
+//        return Alamofire.Error.errorWithCode(-8000, failureReason: "no request, please call start first")
     }
+ */
     var dataCached: Bool = false
-    var loadedCacheData: NSData?
-    lazy var serialQueue: dispatch_queue_t = {
-        return dispatch_queue_create("ETNetwork_Save_Cache", DISPATCH_QUEUE_SERIAL)
+    var loadedCacheData: Data?
+    lazy var serialQueue: DispatchQueue = {
+        return DispatchQueue(label: "etrequest_save_cache", attributes: [])
     }()
     
     var needInOperationQueue = false
-    lazy var operationQueue: NSOperationQueue = {
-        let operationQueue = NSOperationQueue()
+    lazy var operationQueue: OperationQueue = {
+        let operationQueue = OperationQueue()
         operationQueue.maxConcurrentOperationCount = 1
-        operationQueue.suspended = true
+        operationQueue.isSuspended = true
         return operationQueue
     }()
 
-    var formDataEncodingErrorCompletion: ((ErrorType) -> Void)?
+    var formDataEncodingErrorCompletion: ((Error) -> Void)?
     
     deinit {
-        log("\(self.dynamicType ) deinit")
+        log("\(type(of: self) ) deinit")
         jobRequest?.cancel()
     }
     
-    public func start(ignoreCache ignoreCache: Bool = false) {
+    open func start(ignoreCache: Bool = false) {
         start(ETManager.sharedInstance, ignoreCache: ignoreCache)
     }
     
-    public func start(manager: ETManager, ignoreCache: Bool) -> Void {
+    open func start(_ manager: ETManager, ignoreCache: Bool) -> Void {
         self.ignoreCache = ignoreCache
         if shouldUseCache() {
             if needInOperationQueue {
-                self.operationQueue.suspended = false
+                self.operationQueue.isSuspended = false
             }
             return
         }
@@ -59,30 +77,35 @@ public class ETRequest {
         manager.addRequest(self)
     }
     
-    public func cancel() -> Void {
+    open func cancel() -> Void {
         manager?.cancelRequest(self)
     }
     
-    public func suspend() {
-        jobRequest?.task.suspend()
+    open func suspend() {
+        jobRequest?.task?.suspend()
     }
     
-    public func resume() {
-        jobRequest?.task.resume()
+    open func resume() {
+        jobRequest?.task?.resume()
     }
     
     public init() {
 
     }
 
-    func reqResponse(closure:() -> ()) {
-        if let _ = self as? ETRequestUploadProtocol {
-            operationQueue.addOperationWithBlock({ () -> Void in
+    func reqResponse(_ closure:@escaping () -> ()) {
+        if let uploadProtocol = self as? ETRequestUploadProtocol {
+            //only suspend in formdata, will resume in manager when formData encoded success
+            if uploadProtocol.formData != nil {
+                operationQueue.addOperation({ () -> Void in
+                    closure()
+                })
+            } else {
                 closure()
-            })
+            }
         } else {
             if needInOperationQueue {
-                operationQueue.addOperationWithBlock({ () -> Void in
+                operationQueue.addOperation({ () -> Void in
                     closure()
                 })
             } else {
@@ -95,90 +118,112 @@ public class ETRequest {
 
 //MARK: response
 public extension ETRequest {
-///TODO change 6008 error
-    public var responseAllHeaders: [NSObject : AnyObject]? {
+    public var responseAllHeaders: [AnyHashable: Any]? {
         return jobRequest?.response?.allHeaderFields
     }
 
-    public func formDataencodingError(completion: ((ErrorType) -> Void)) -> Self {
+    public func formDataencodingError(_ completion: @escaping ((Error) -> Void)) -> Self {
         formDataEncodingErrorCompletion = completion
         
         return self
     }
     
-    public func progress(closure: ((Int64, Int64, Int64) -> Void)? = nil) -> Self {
+    public func progress(_ closure: ((Int64, Int64) -> Void)? = nil) -> Self {
         reqResponse { () -> () in
-            self.jobRequest?.progress({ (readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite) -> Void in
-                if let closure = closure {
-                    closure(readOrWriteBytes, totalBytesReadOrWrite, totalBytesExpectedToReadOrWrite)
-                }
-
-            })
-        }
-
-        return self
-    }
-
-    public func response(completion: (NSData?, NSError?) -> Void ) -> Self {
-        reqResponse { () -> () in
-            if let data = self.loadedCacheData  where self.jobRequest == nil {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    completion(data, nil)
-                })
-
-            } else {
-                guard let jobRequest = self.jobRequest else {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completion(nil, self.noJobRequestError)
-                    })
-
-                    return
-                }
-
-                jobRequest.response(completionHandler: { response -> Void in
-                    if response.3 == nil {
-                        self.saveResponseToCacheFile(response.2)
+            guard let jobRequest = self.jobRequest else {
+                return
+            }
+            
+            if let uploadReq = jobRequest as? UploadRequest {
+                uploadReq.uploadProgress(closure: { [weak self] (progress) in
+                    guard let strongSelf = self else { return }
+                    if progress.completedUnitCount == progress.totalUnitCount {
+                        strongSelf.manager?.removeFromManager(strongSelf)
                     }
-                     self.manager?.removeFromManager(self)
-                    
-                    completion(response.2, response.3)
+                    if let closure = closure {
+                        closure(progress.completedUnitCount, progress.totalUnitCount)
+                    }
+                })
+            } else if let dataReq = jobRequest as? DataRequest {
+                dataReq.downloadProgress(closure: { [weak self] (progress) in
+                    guard let strongSelf = self else { return }
+                    if progress.completedUnitCount == progress.totalUnitCount {
+                        strongSelf.manager?.removeFromManager(strongSelf)
+                    }
+                    if let closure = closure {
+                        closure(progress.completedUnitCount, progress.totalUnitCount)
+                    }
+                })
+                
+            } else if let downloadReq = jobRequest as? DownloadRequest {
+                downloadReq.downloadProgress(closure: { [weak self] (progress) in
+                    guard let strongSelf = self else { return }
+                    if progress.completedUnitCount == progress.totalUnitCount {
+                        strongSelf.manager?.removeFromManager(strongSelf)
+                    }
+                    if let closure = closure {
+                        closure(progress.completedUnitCount, progress.totalUnitCount)
+                    }
                 })
             }
-
         }
 
         return self
     }
-    public func responseStr(completion: (String?, NSError?) -> Void ) -> Self {
+
+    public func responseStr(_ completion: @escaping (String?, Error?) -> Void ) -> Self {
         reqResponse { () -> () in
-            if let data = self.loadedCacheData  where self.jobRequest == nil {
-                let responseSerializer = Request.stringResponseSerializer(encoding: NSUTF8StringEncoding)
+            if let data = self.loadedCacheData, self.jobRequest == nil {
+                let responseSerializer = DataRequest.stringResponseSerializer(encoding: String.Encoding.utf8)
                 let result = responseSerializer.serializeResponse(
                     self.jobRequest?.request,
                     self.jobRequest?.response,
                     data,
                     nil
                 )
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    completion(result.value, result.error)
+                DispatchQueue.main.async(execute: { () -> Void in
+                    completion(result.value, result.error as NSError?)
                 })
 
             } else {
                 guard let jobRequest = self.jobRequest else {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completion(nil, self.noJobRequestError)
+                    DispatchQueue.main.async(execute: { () -> Void in
+                        completion(nil, ETError.noJobRequest)
                     })
                     return
                 }
-
-                jobRequest.responseString(completionHandler: { response -> Void in
-                    if response.result.error == nil {
-                        self.saveResponseToCacheFile(response.data)
+                
+                func completionWrapper(string: String?, data: Data?, error: Error?) {
+                    if error == nil {
+                        if let data = data {
+                           self.saveResponseToCacheFile(data)
+                        }
                     }
-                     self.manager?.removeFromManager(self)
+                    self.manager?.removeFromManager(self)
+                    completion(string, error)
+                }
+                
+                
+                //FIXME:  retain cycle??
+                if let dataReq = jobRequest as? DataRequest {
+                    dataReq.responseString(completionHandler: { (dataResponse) in
+                       completionWrapper(string: dataResponse.value, data: dataResponse.data, error: dataResponse.error)
+                    })
                     
-                    completion(response.result.value, response.result.error)
-                })
+                } else if let downloadReq = jobRequest as? DownloadRequest {
+                    downloadReq.responseString(completionHandler: { (downloadResponse) in
+                        if let url = downloadResponse.destinationURL {
+                            do {
+                                let data = try Data(contentsOf: url)
+                                completionWrapper(string: downloadResponse.value, data: data, error: downloadResponse.error)
+                            } catch {
+                                completionWrapper(string: downloadResponse.value, data: nil, error: downloadResponse.error)
+                            }
+                        } else {
+                            completionWrapper(string: downloadResponse.value, data: nil, error: downloadResponse.error)
+                        }
+                    })
+                }
             }
         }
 
@@ -187,71 +232,105 @@ public extension ETRequest {
     }
     
 
-    public func responseJson(completion: (AnyObject?, NSError?) -> Void ) -> Self {
+    public func responseJSON(_ completion: @escaping (Any?, Error?) -> Void ) -> Self {
         reqResponse { () -> () in
-            var jsonOption: NSJSONReadingOptions = .AllowFragments
+            var jsonOption: JSONSerialization.ReadingOptions = .allowFragments
             if let requestProtocol = self as? ETRequestProtocol {
-                jsonOption = requestProtocol.responseJsonReadingOption
+                jsonOption = requestProtocol.responseJSONReadingOption
             }
-            if let data = self.loadedCacheData where self.jobRequest == nil {
-                let responseSerializer = Request.JSONResponseSerializer(options: jsonOption)
+            if let data = self.loadedCacheData, self.jobRequest == nil {
+                let responseSerializer = DataRequest.jsonResponseSerializer(options: jsonOption)
                 let result = responseSerializer.serializeResponse(
                     self.jobRequest?.request,
                     self.jobRequest?.response,
                     data,
                     nil
                 )
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                DispatchQueue.main.async(execute: { () -> Void in
                     completion(result.value, result.error)
                 })
                 
             } else {
                 guard let jobRequest = self.jobRequest else {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completion(nil, self.noJobRequestError)
+                    DispatchQueue.main.async(execute: { () -> Void in
+                        completion(nil, ETError.noJobRequest)
                     })
 
                     return
                 }
-
-                jobRequest.responseJSON(options: jsonOption, completionHandler: { response -> Void in
-                    if response.result.error == nil {
-                        self.saveResponseToCacheFile(response.data)
+                
+                func completionWrapper(json: Any?, data: Data?, error: Error?) {
+                    if error == nil {
+                        if let data = data {
+                            self.saveResponseToCacheFile(data)
+                        }
                     }
                     self.manager?.removeFromManager(self)
-                    
-                    completion(response.result.value, response.result.error)
-                })
+                    completion(json, error)
+                }
+                
+                
+                
+                if let dataReq = jobRequest as? DataRequest {
+                    dataReq.responseJSON(completionHandler: { (dataResponse) in
+                        completionWrapper(json: dataResponse.value, data: dataResponse.data, error: dataResponse.error)
+                    })
+                } else if let downloadReq = jobRequest as? DownloadRequest {
+                    downloadReq.responseJSON(completionHandler: { (downloadResponse) in
+                        if let url = downloadResponse.destinationURL {
+                            do {
+                                let data = try Data(contentsOf: url)
+                                completionWrapper(json: downloadResponse.value, data: data, error: downloadResponse.error)
+                            } catch {
+                                completionWrapper(json: downloadResponse.value, data: nil, error: downloadResponse.error)
+                            }
+                        } else {
+                            completionWrapper(json: downloadResponse.value, data: nil, error: downloadResponse.error)
+                        }
+                        
+                    })
+                }
             }
         }
 
         return self
     }
     
-    public func responseData(completion: (NSData?, NSError?) -> Void ) -> Self {
+    public func responseData(_ completion: @escaping (Data?, Error?) -> Void ) -> Self {
         reqResponse { () -> () in
-            if let data = self.loadedCacheData  where self.jobRequest == nil {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            if let data = self.loadedCacheData, self.jobRequest == nil {
+                DispatchQueue.main.async(execute: { () -> Void in
                     completion(data, nil)
                 })
 
             } else {
                 guard let jobRequest = self.jobRequest else {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completion(nil, self.noJobRequestError)
+                    DispatchQueue.main.async(execute: { () -> Void in
+                        completion(nil, ETError.noJobRequest)
                     })
 
                     return
                 }
-
-                jobRequest.responseData(completionHandler:{ response -> Void in
-                    if response.result.error != nil {
-                        self.saveResponseToCacheFile(response.data)
-                        self.manager?.cancelRequest(self)
+                
+                func completionWrapper(data: Data?, error: Error?) {
+                    if error == nil {
+                        if let data = data {
+                            self.saveResponseToCacheFile(data)
+                        }
                     }
-                    completion(response.result.value, response.result.error)
-                })
-
+                    self.manager?.removeFromManager(self)
+                    completion(data, error)
+                }
+                
+                if let dataReq = jobRequest as? DataRequest {
+                    dataReq.response(responseSerializer: DataRequest.dataResponseSerializer(), completionHandler: { (dataResponse) in
+                        completionWrapper(data: dataResponse.data, error: dataResponse.error)
+                    })
+                } else if let downloadReq = jobRequest as? DownloadRequest {
+                    downloadReq.response(responseSerializer: DownloadRequest.dataResponseSerializer(), completionHandler: { (downloadResponse) in
+                        completionWrapper(data: downloadResponse.value, error: downloadResponse.error)
+                    })
+                }
             }
         }
 
@@ -259,23 +338,30 @@ public extension ETRequest {
         return self
     }
     
-    public func httpResponse(completion: (NSHTTPURLResponse?, NSError?) -> Void) -> Self {
+    public func httpResponse(_ completion: @escaping (HTTPURLResponse?, Error?) -> Void) -> Self {
         reqResponse { () -> () in
-            if let _ = self.loadedCacheData where self.jobRequest == nil {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            if let _ = self.loadedCacheData, self.jobRequest == nil {
+                DispatchQueue.main.async(execute: { () -> Void in
                     completion(nil, nil)
                 })
             } else {
                 guard let jobRequest = self.jobRequest else {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completion(nil, self.noJobRequestError)
+                    DispatchQueue.main.async(execute: { () -> Void in
+                        completion(nil, ETError.noJobRequest)
                     })
                     return
                 }
-
-                jobRequest.response(completionHandler: { response -> Void in
-                    completion(response.1, response.3)
-                })
+                
+                
+                if let dataReq = jobRequest as? DataRequest {
+                    dataReq.response(responseSerializer: DataRequest.dataResponseSerializer(), completionHandler: { (dataResponse) in
+                        completion(dataResponse.response, dataResponse.error)
+                    })
+                } else if let downloadReq = jobRequest as? DownloadRequest {
+                    downloadReq.response(responseSerializer: DownloadRequest.dataResponseSerializer(), completionHandler: { (downloadResponse) in
+                        completion(downloadResponse.response, downloadResponse.error)
+                    })
+                }
             }
         }
 
@@ -290,13 +376,12 @@ public extension ETRequest {
     public var cachedString: String? {
         guard let data = cachedData else { return nil }
         
-        var encoding = NSUTF8StringEncoding
+        var encoding = String.Encoding.utf8
         if let requestProtocol = self as? ETRequestProtocol {
             encoding = requestProtocol.responseStringEncoding
         }
 
-        
-        let responseSerializer = Request.stringResponseSerializer(encoding: encoding)
+        let responseSerializer = DataRequest.stringResponseSerializer(encoding: encoding)
         let result = responseSerializer.serializeResponse(
             jobRequest?.request,
             jobRequest?.response,
@@ -312,13 +397,13 @@ public extension ETRequest {
     public var cachedJson: AnyObject? {
         guard let data = cachedData else { return nil }
         
-        var jsonOption: NSJSONReadingOptions = .AllowFragments
+        var jsonOption: JSONSerialization.ReadingOptions = .allowFragments
         if let requestProtocol = self as? ETRequestProtocol {
-            jsonOption = requestProtocol.responseJsonReadingOption
+            jsonOption = requestProtocol.responseJSONReadingOption
         }
      
         
-        let responseSerializer = Request.JSONResponseSerializer(options: jsonOption)
+        let responseSerializer = DataRequest.jsonResponseSerializer(options: jsonOption)
         let result = responseSerializer.serializeResponse(
             jobRequest?.request,
             jobRequest?.response,
@@ -326,16 +411,16 @@ public extension ETRequest {
             nil
         )
 
-        return result.value
+        return result.value as AnyObject?
     }
     
     /// the cached data (maybe out of date)
-    public var cachedData: NSData? {
+    public var cachedData: Data? {
         if (loadedCacheData != nil && dataFromCache) {
             return self.loadedCacheData
         }
         let path = cacheFilePath()
-        if !NSFileManager.defaultManager().fileExistsAtPath(path) {
+        if !FileManager.default.fileExists(atPath: path) {
             return nil
         }
         
@@ -344,11 +429,11 @@ public extension ETRequest {
             //FIXME: remove cache file?
             return nil
         }
-        let data = NSData(contentsOfFile: path)
+        let data = try? Data(contentsOf: URL(fileURLWithPath: path))
         return data
     }
 
-    private func shouldUseCache() -> Bool {
+    fileprivate func shouldUseCache() -> Bool {
         if ignoreCache {
             return false
         }
@@ -369,7 +454,7 @@ public extension ETRequest {
 //        guard let cacheFilePath = cacheFilePath() else { return false }
         //check cache file
         let path = cacheFilePath()
-        if !NSFileManager.defaultManager().fileExistsAtPath(path) {
+        if !FileManager.default.fileExists(atPath: path) {
             return false
         }
         
@@ -380,7 +465,7 @@ public extension ETRequest {
         }
         
         //cache data
-        loadedCacheData = NSData(contentsOfFile: path)
+        loadedCacheData = try? Data(contentsOf: URL(fileURLWithPath: path))
         guard let _ = loadedCacheData else { return false }
         
         dataFromCache = true
@@ -388,7 +473,7 @@ public extension ETRequest {
         return true
     }
     
-    private func shouldStoreCache() -> Bool {
+    fileprivate func shouldStoreCache() -> Bool {
         if dataFromCache {
             return false
         }
@@ -406,7 +491,7 @@ public extension ETRequest {
         return true
     }
     
-    func saveResponseToCacheFile(data: NSData?) -> Void {
+    func saveResponseToCacheFile(_ data: Data?) -> Void {
         if shouldStoreCache() {
             //only cache data
             guard let data = data else {
@@ -416,37 +501,37 @@ public extension ETRequest {
                 return
             }
             
-            dispatch_async(serialQueue) { () -> Void in
-                let result = data.writeToFile(self.cacheFilePath(), atomically: true)
-                NSKeyedArchiver.archiveRootObject(NSNumber(unsignedLongLong: cacheProtocol.cacheVersion), toFile: self.cacheVersionFilePath())
+            serialQueue.async { () -> Void in
+                let result = (try? data.write(to: URL(fileURLWithPath: self.cacheFilePath()), options: [.atomic])) != nil
+                NSKeyedArchiver.archiveRootObject(NSNumber(value: cacheProtocol.cacheVersion as UInt64), toFile: self.cacheVersionFilePath())
                 self.dataCached = true
                 log("write to file: \(self.cacheFilePath()) result: \(result)")
             }
         }
     }
-    private func cacheFilePath() -> String {
+    fileprivate func cacheFilePath() -> String {
         let fullPath = "\(cacheBasePath())/\(cacheFileName())"
         return fullPath
     }
     
-    private func cacheVersionFilePath() -> String {
+    fileprivate func cacheVersionFilePath() -> String {
         let cacheVersionFileName = "\(cacheFileName()).version"
         let fullPath = "\(cacheBasePath())/\(cacheVersionFileName)"
         return fullPath
         
     }
     
-    private func cacheVersionFileContent() -> UInt64 {
+    fileprivate func cacheVersionFileContent() -> UInt64 {
         let path = cacheVersionFilePath()
-        if NSFileManager.defaultManager().fileExistsAtPath(path) {
-            guard let number = NSKeyedUnarchiver.unarchiveObjectWithFile(path) else { return 0}
-            return number.unsignedLongLongValue
+        if FileManager.default.fileExists(atPath: path) {
+            guard let number = NSKeyedUnarchiver.unarchiveObject(withFile: path) else { return 0}
+            return (number as AnyObject).uint64Value
         }
         
         return 0
     }
     
-    private func cacheFileName() -> String {
+    fileprivate func cacheFileName() -> String {
         guard let requestProtocol = self as? ETRequestProtocol else { fatalError("must implement ETRequestProtocol")}
         let requestUrl = requestProtocol.requestUrl
         let baseUrl = requestProtocol.baseUrl
@@ -464,17 +549,17 @@ public extension ETRequest {
     }
     
     
-    private func cacheBasePath() -> String {
-        let libraryPaths = NSSearchPathForDirectoriesInDomains(.LibraryDirectory, .UserDomainMask, true)
+    fileprivate func cacheBasePath() -> String {
+        let libraryPaths = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true)
         let basePath = "\(libraryPaths[0])/RequestCache"
         checkDirectory(basePath)
         return basePath
     }
     
-    private func cacheFileDuration(path: String) -> Int {
+    fileprivate func cacheFileDuration(_ path: String) -> Int {
         do {
-            let attribute = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
-            let modifyDate = attribute[NSFileModificationDate] as! NSDate
+            let attribute = try FileManager.default.attributesOfItem(atPath: path)
+            let modifyDate = attribute[FileAttributeKey.modificationDate] as! Date
             let seconds = Int(-modifyDate.timeIntervalSinceNow ?? -1)
             return seconds
         } catch {
@@ -482,14 +567,14 @@ public extension ETRequest {
         }
     }
     
-    private func checkDirectory(path: String) {
+    fileprivate func checkDirectory(_ path: String) {
         var isDir = ObjCBool(false)
-        if !NSFileManager.defaultManager().fileExistsAtPath(path, isDirectory: &isDir) {
+        if !FileManager.default.fileExists(atPath: path, isDirectory: &isDir) {
             createDirectoryAtPath(path)
         } else {
-            if !isDir {
+            if !isDir.boolValue {
                 do {
-                    try NSFileManager.defaultManager().removeItemAtPath(path)
+                    try FileManager.default.removeItem(atPath: path)
                     createDirectoryAtPath(path)
                 } catch {
                     
@@ -499,9 +584,9 @@ public extension ETRequest {
        
     }
     
-    private func createDirectoryAtPath(path: String) {
+    fileprivate func createDirectoryAtPath(_ path: String) {
         do {
-            try NSFileManager.defaultManager().createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
             //TODO addDoNotBackupAttribute
         } catch {
             log("creat path:\(path) error")
@@ -510,35 +595,40 @@ public extension ETRequest {
     
     
     public static var appVersion: String {
-        let nsObject: AnyObject? = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"]
+        let nsObject: AnyObject? = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as AnyObject?
         let version = nsObject as! String
         return version
     }
     
-    public static func suggestedDownloadDestination() -> (NSURL, NSHTTPURLResponse) -> NSURL {
-        return JobRequest.suggestedDownloadDestination()
+    public static func suggestedDownloadDestination() -> (URL, HTTPURLResponse) -> (destinationURL: URL, options: Alamofire.DownloadRequest.DownloadOptions) {
+        return DownloadRequest.suggestedDownloadDestination()
     }
 }
 
 extension ETRequest: CustomDebugStringConvertible {
     public var debugDescription: String {
-        var str = "      \(self.dynamicType)\n"
+        var str = "      \(type(of: self))\n"
         guard let requestProtocol = self as? ETRequestProtocol else { fatalError("must implement ETRequestProtocol") }
         if  let authProtocol = self as? ETRequestAuthProtocol {
-            str.appendContentsOf("      authenticate: \(authProtocol.credential)\n")
+            str.append("      authenticate: \(authProtocol.credential)\n")
         }
-        str.appendContentsOf("      url: \(requestProtocol.baseUrl + requestProtocol.requestUrl)\n")
-        str.appendContentsOf("      method: \(requestProtocol.method.method.rawValue)\n")
-        str.appendContentsOf("      paramters: \(requestProtocol.parameters)\n")
-        str.appendContentsOf("      headers: \(requestProtocol.headers)\n")
-        str.appendContentsOf("      parameterEncoding: \(requestProtocol.parameterEncoding)\n")
-        str.appendContentsOf("      responseStringEncoding: \(requestProtocol.responseStringEncoding)\n")
-        str.appendContentsOf("      responseJsonReadingOption: \(requestProtocol.responseJsonReadingOption)\n")
-        str.appendContentsOf("      responseSerializer: \(requestProtocol.responseSerializer)\n")
+        str.append("      url: \(requestProtocol.baseUrl + requestProtocol.requestUrl)\n")
+        str.append("      method: \(requestProtocol.method.method.rawValue)\n")
+        str.append("      paramters: \(requestProtocol.parameters)\n")
+        str.append("      headers: \(requestProtocol.headers)\n")
+        str.append("      parameterEncoding: \(requestProtocol.parameterEncoding)\n")
+        str.append("      responseStringEncoding: \(requestProtocol.responseStringEncoding)\n")
+        str.append("      responseJSONReadingOption: \(requestProtocol.responseJSONReadingOption)\n")
+        str.append("      responseSerializer: \(requestProtocol.responseSerializer)\n")
         if let cacheProtocol = self as? ETRequestCacheProtocol {
-            str.appendContentsOf("      cache seconds: \(cacheProtocol.cacheSeconds), cache version: \(cacheProtocol.cacheVersion)\n")
+            if (ignoreCache) {
+                str.append("      without using cache\n")
+            } else {
+                str.append("      cache seconds: \(cacheProtocol.cacheSeconds), cache version: \(cacheProtocol.cacheVersion)\n")
+            }
+            
         } else {
-            str.appendContentsOf("      without using cache\n")
+            str.append("      without using cache\n")
         }
         return str
     }

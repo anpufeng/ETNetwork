@@ -17,7 +17,7 @@ class DataTableViewController: UITableViewController {
     var dataApi: ETRequest?
 
     deinit {
-        print("\(self.dynamicType)  deinit")
+        print("\(type(of: self))  deinit")
 
     }
     override func awakeFromNib() {
@@ -43,28 +43,28 @@ class DataTableViewController: UITableViewController {
         dataRequest()
 
         refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: #selector(DataTableViewController.refresh), forControlEvents: .ValueChanged)
+        refreshControl?.addTarget(self, action: #selector(DataTableViewController.refresh), for: .valueChanged)
     }
 
     func dataRequest() {
         guard let dataRows = dataRows else { fatalError("not set rows") }
         dataApi?.cancel()
         switch dataRows {
-        case .Get:
+        case .get:
             dataApi = GetApi(bar: "GetApi")
-        case .Post:
+        case .post:
             dataApi = PostApi(bar: "PostApi")
-        case .Put:
+        case .put:
             dataApi = PutApi(bar: "PutApi")
-        case .Delete:
+        case .delete:
             dataApi = DeleteApi(bar: "DeleteApi")
 
         }
 
         title = "\(dataRows.description)"
 
-        dataApi?.start(ignoreCache: cacheSwitch.on)
-        dataApi?.responseJson({ [weak self] (json, error) -> Void in
+        dataApi?.start(ignoreCache: cacheSwitch.isOn)
+        dataApi?.responseJSON({ [weak self] (json, error) -> Void in
             
             guard let strongSelf = self else {
                 return

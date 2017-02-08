@@ -28,6 +28,15 @@
 		<false/>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>ftp-apk.pconline.com.cn</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSThirdPartyExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
 			<key>dldir1.qq.com</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>

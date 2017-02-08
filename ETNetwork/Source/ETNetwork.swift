@@ -11,28 +11,28 @@ import Alamofire
 
 ///wrap the alamofire method
 public enum ETRequestMethod {
-    case Options, Get, Head, Post, Put, Patch, Delete, Trace, Connect
+    case options, get, head, post, put, patch, delete, trace, connect
     
-    var method: Alamofire.Method {
+    var method: Alamofire.HTTPMethod {
         switch self {
-        case .Options:
-            return Method.OPTIONS
-        case .Get:
-            return Method.GET
-        case .Head:
-            return Method.HEAD
-        case .Post:
-            return Method.POST
-        case .Put:
-            return Method.PUT
-        case .Patch:
-            return Method.PATCH
-        case .Delete:
-            return Method.DELETE
-        case .Trace:
-            return Method.TRACE
-        case .Connect:
-            return Method.CONNECT
+        case .options:
+            return .options
+        case .get:
+            return .get
+        case .head:
+            return .head
+        case .post:
+            return .post
+        case .put:
+            return .put
+        case .patch:
+            return .patch
+        case .delete:
+            return .delete
+        case .trace:
+            return .trace
+        case .connect:
+            return .connect
             
         }
     }
@@ -40,21 +40,18 @@ public enum ETRequestMethod {
 
 ///wrap the alamofire ParameterEncoding
 public enum ETRequestParameterEncoding {
-    case Url
-    case UrlEncodedInURL
-    case Json
-    case PropertyList(NSPropertyListFormat, NSPropertyListWriteOptions)
+    case url
+    case json
+    case propertyList(PropertyListSerialization.PropertyListFormat, PropertyListSerialization.WriteOptions)
     
     var encode: ParameterEncoding {
         switch self {
-        case .Url:
-            return ParameterEncoding.URL
-        case .UrlEncodedInURL:
-            return ParameterEncoding.URLEncodedInURL
-        case .Json:
-            return ParameterEncoding.JSON
-        case .PropertyList(let format, let options):
-            return ParameterEncoding.PropertyList(format, options)
+        case .url:
+            return URLEncoding.default
+        case .json:
+            return JSONEncoding.default
+        case .propertyList(let format, let options):
+            return PropertyListEncoding(format: format, options: options)
         }
     }
 }
@@ -62,11 +59,11 @@ public enum ETRequestParameterEncoding {
 
 
 public enum ETTaskType {
-    case Data, Download, UploadFileData, UploadFileURL, UploadFormData
+    case data, download, uploadFileData, uploadFileURL, uploadFormData
 }
 
 public enum ETResponseSerializer {
-    case Data, String, Json, PropertyList
+    case data, string, json, propertyList
 }
 
 
@@ -75,7 +72,7 @@ public enum ETResponseSerializer {
  if you conform to this protocol, the ETRequestProtocol will be ignored
  */
 public protocol ETRequestCustom {
-    var customUrlRequest: NSURLRequest { get }
+    var customUrlRequest: URLRequest { get }
 }
 
 /**
@@ -104,8 +101,8 @@ public protocol ETRequestProtocol : class {
     
     var headers: [String: String]? { get }
     var parameterEncoding: ETRequestParameterEncoding { get }
-    var responseStringEncoding: NSStringEncoding { get }
-    var responseJsonReadingOption: NSJSONReadingOptions { get }
+    var responseStringEncoding: String.Encoding { get }
+    var responseJSONReadingOption: JSONSerialization.ReadingOptions { get }
     var responseSerializer: ETResponseSerializer { get }
 }
 
@@ -117,47 +114,48 @@ public extension ETRequestProtocol {
     
     var parameters: [String: AnyObject]? { return nil }
     var headers: [String: String]? { return nil }
-    var parameterEncoding: ETRequestParameterEncoding { return  .Json }
-    var responseStringEncoding: NSStringEncoding { return NSUTF8StringEncoding }
-    var responseJsonReadingOption: NSJSONReadingOptions { return .AllowFragments }
-    var responseSerializer: ETResponseSerializer { return .Json }
+    var parameterEncoding: ETRequestParameterEncoding { return  .json }
+    var responseStringEncoding: String.Encoding { return String.Encoding.utf8 }
+    var responseJSONReadingOption: JSONSerialization.ReadingOptions { return .allowFragments }
+    var responseSerializer: ETResponseSerializer { return .json }
 }
 
 
 public protocol ETRequestDownloadProtocol: class {
     ///DownloadTaskDelegate data is resumeData
-    var resumeData: NSData? { get }
+    var resumeData: Data? { get }
     ///the url that you want to save the file
-    func downloadDestination() -> (NSURL, NSHTTPURLResponse) -> NSURL
+    
+    func downloadDestination() -> (URL, HTTPURLResponse) -> (destinationURL: URL, options: Alamofire.DownloadRequest.DownloadOptions)
 }
 
 public extension ETRequestDownloadProtocol {
-    var resumeData: NSData? { return nil }
-    func downloadDestination() -> (NSURL, NSHTTPURLResponse) -> NSURL {
+    var resumeData: Data? { return nil }
+    func downloadDestination() -> (URL, HTTPURLResponse) -> (destinationURL: URL, options: Alamofire.DownloadRequest.DownloadOptions) {
         return ETRequest.suggestedDownloadDestination()
     }
 }
 
 public protocol ETRequestUploadProtocol: class {
-    var fileURL: NSURL? { get }
-    var fileData: NSData? { get }
+    var fileURL: URL? { get }
+    var fileData: Data? { get }
     var formData: [UploadFormProtocol]? { get }
 }
 
 
 public extension ETRequestUploadProtocol {
-    var fileURL: NSURL? { return nil }
-    var fileData: NSData? { return nil }
+    var fileURL: URL? { return nil }
+    var fileData: Data? { return nil }
     var formData: [UploadFormProtocol]? { return nil }
 }
 
 
 public protocol ETRequestAuthProtocol : class {
-    var credential: NSURLCredential? { get }
+    var credential: URLCredential? { get }
 }
 
 extension ETRequestAuthProtocol {
-    var credential: NSURLCredential? {
+    var credential: URLCredential? {
         return nil
     }
 }
@@ -169,11 +167,11 @@ public protocol UploadFormProtocol : class {
 
 public final class UploadFormData: UploadFormProtocol {
     var name: String
-    var data: NSData
+    var data: Data
     var fileName: String?
     var mimeType: String?
     
-    public init(name: String, data: NSData, fileName: String? = nil, mimeType: String? = nil) {
+    public init(name: String, data: Data, fileName: String? = nil, mimeType: String? = nil) {
         self.name = name
         self.data = data
         self.fileName = fileName
@@ -184,11 +182,11 @@ public final class UploadFormData: UploadFormProtocol {
 
 public final class UploadFormFileURL: UploadFormProtocol {
     var name: String
-    var fileURL: NSURL
+    var fileURL: URL
     var fileName: String?
     var mimeType: String?
     
-    public init(name: String,  fileURL: NSURL, fileName: String? = nil, mimeType: String? = nil) {
+    public init(name: String,  fileURL: URL, fileName: String? = nil, mimeType: String? = nil) {
         self.name = name
         self.fileURL = fileURL
         self.fileName = fileName
@@ -199,12 +197,12 @@ public final class UploadFormFileURL: UploadFormProtocol {
 
 public final class UploadFormStream: UploadFormProtocol {
     var name: String
-    var stream: NSInputStream
+    var stream: InputStream
     var length: UInt64
     var fileName: String?
     var mimeType: String?
  
-    public init(name: String, stream: NSInputStream, length: UInt64, fileName: String? = nil, mimeType: String? = nil) {
+    public init(name: String, stream: InputStream, length: UInt64, fileName: String? = nil, mimeType: String? = nil) {
         self.name = name
         self.stream = stream
         self.length = length
@@ -216,4 +214,4 @@ public final class UploadFormStream: UploadFormProtocol {
 
 //name easily
 typealias JobRequest = Alamofire.Request
-typealias JobManager = Alamofire.Manager
+typealias JobManager = Alamofire.SessionManager
