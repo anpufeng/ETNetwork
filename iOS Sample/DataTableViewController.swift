@@ -81,7 +81,7 @@ class DataTableViewController: UITableViewController {
             }
             
             strongSelf.tableView.reloadData()
-            })
+        })
         
     }
 

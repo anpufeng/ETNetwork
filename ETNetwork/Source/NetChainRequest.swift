@@ -34,7 +34,6 @@ open class NetChainRequest {
 
     }
 
-    //FIXME: thread safe
     open func addRequest(_ req: NetRequest, completion: @escaping (Any?, Error?) -> Void) {
         seriQueue.sync {
             requests.append(req)
