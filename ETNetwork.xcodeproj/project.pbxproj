@@ -17,7 +17,7 @@
 		AA579BF61BE9F6310018DBCB /* NetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF11BE9F6310018DBCB /* NetManager.swift */; };
 		AA88ADA31D3724B2004E84DE /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA88ADA21D3724B2004E84DE /* CryptoSwift.framework */; };
 		AA94C4A81C0BDEAB00BD071C /* ETNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */; };
-		AAD212501BEB389A00C870C5 /* NetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2124F1BEB389A00C870C5 /* NetworkConfig.swift */; };
+		AAD212501BEB389A00C870C5 /* NetConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2124F1BEB389A00C870C5 /* NetConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,7 +56,7 @@
 		AA579BF11BE9F6310018DBCB /* NetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		AA88ADA21D3724B2004E84DE /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
 		AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ETNetwork.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		AAD2124F1BEB389A00C870C5 /* NetworkConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetworkConfig.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		AAD2124F1BEB389A00C870C5 /* NetConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetConfig.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,7 +126,7 @@
 				AA579BEF1BE9F6310018DBCB /* NetChainRequest.swift */,
 				AA579BF01BE9F6310018DBCB /* NetRequest.swift */,
 				AA579BF11BE9F6310018DBCB /* NetManager.swift */,
-				AAD2124F1BEB389A00C870C5 /* NetworkConfig.swift */,
+				AAD2124F1BEB389A00C870C5 /* NetConfig.swift */,
 				AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */,
 			);
 			name = Source;
@@ -247,7 +247,7 @@
 				AA579BF61BE9F6310018DBCB /* NetManager.swift in Sources */,
 				AA579BF51BE9F6310018DBCB /* NetRequest.swift in Sources */,
 				AA579BF31BE9F6310018DBCB /* NetBatchRequest.swift in Sources */,
-				AAD212501BEB389A00C870C5 /* NetworkConfig.swift in Sources */,
+				AAD212501BEB389A00C870C5 /* NetConfig.swift in Sources */,
 				AA94C4A81C0BDEAB00BD071C /* ETNetwork.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
