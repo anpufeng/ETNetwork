@@ -9,8 +9,7 @@
 import Foundation
 import Alamofire
 
-
-public func log<T>(_ object: T, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+func log<T>(_ object: T, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
     if NetManager.logEnable {
         let path = file as NSString
         let fileNameWithoutPath = path.lastPathComponent
@@ -26,9 +25,9 @@ open class NetManager {
         return NetManager()
     }()
     
-    fileprivate let jobManager: JobManager
+    fileprivate let jobManager: AlamofireManager
     fileprivate var subRequests: [String: NetRequest] = [:]
-    fileprivate let concurrentQueue = DispatchQueue(label: "concurrent_etmanager", attributes: DispatchQueue.Attributes.concurrent)
+    fileprivate let serialQueue = DispatchQueue(label: "NetManagerSerialQueue")
     
     fileprivate struct AssociatedKey {
         static var inneKey = "etrequest"
@@ -37,7 +36,7 @@ open class NetManager {
     subscript(request: NetRequest) -> NetRequest? {
         get {
             var req: NetRequest?
-            concurrentQueue.sync {
+            serialQueue.sync {
                 req = self.subRequests[request.identifier()]
             }
             
@@ -45,28 +44,28 @@ open class NetManager {
         }
         
         set {
-            concurrentQueue.async(flags: .barrier, execute: {
+            serialQueue.sync {
                 self.subRequests[request.identifier()] = newValue
-            }) 
+            }
         }
     }
     public convenience init() {
         let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = JobManager.defaultHTTPHeaders
+        configuration.httpAdditionalHeaders = AlamofireManager.defaultHTTPHeaders
         configuration.timeoutIntervalForRequest = 15
         self.init(configuration: configuration)
     }
 
     public convenience init(timeoutForRequest: TimeInterval, timeoutForResource: TimeInterval = 7 * 24 * 3600) {
         let configuration = URLSessionConfiguration.default
-        configuration.httpAdditionalHeaders = JobManager.defaultHTTPHeaders
+        configuration.httpAdditionalHeaders = AlamofireManager.defaultHTTPHeaders
         configuration.timeoutIntervalForRequest = timeoutForRequest
         configuration.timeoutIntervalForResource = timeoutForResource
         self.init(configuration: configuration)
     }
 
     public init(configuration: URLSessionConfiguration) {
-        jobManager = JobManager(configuration: configuration)
+        jobManager = AlamofireManager(configuration: configuration)
     }
 
     deinit {

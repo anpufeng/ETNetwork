@@ -18,7 +18,7 @@ open class NetBatchRequest {
         return operationQueue
     }()
 
-    fileprivate let seriQueue = DispatchQueue(label: "batch_queue", attributes: [])
+    fileprivate let seriQueue = DispatchQueue(label: "NetBatchRequest")
     open var completion: ((_ error: Error?) -> Void)?
     
     deinit {

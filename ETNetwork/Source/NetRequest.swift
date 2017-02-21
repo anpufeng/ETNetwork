@@ -27,7 +27,7 @@ extension ETError: LocalizedError {
 
 ///the request class
 open class NetRequest {
-    var jobRequest: JobRequest?
+    var jobRequest: AlamofireRequest?
         
     weak var manager: NetManager?
     
@@ -38,7 +38,7 @@ open class NetRequest {
     var dataCached: Bool = false
     var loadedCacheData: Data?
     lazy var serialQueue: DispatchQueue = {
-        return DispatchQueue(label: "etrequest_save_cache", attributes: [])
+        return DispatchQueue(label: "NetRequestSaveCache")
     }()
     
     var needInOperationQueue = false
@@ -502,10 +502,15 @@ public extension NetRequest {
             }
             
             serialQueue.async { () -> Void in
-                let result = (try? data.write(to: URL(fileURLWithPath: self.cacheFilePath()), options: [.atomic])) != nil
-                NSKeyedArchiver.archiveRootObject(NSNumber(value: cacheProtocol.cacheVersion as UInt64), toFile: self.cacheVersionFilePath())
-                self.dataCached = true
-                log("write to file: \(self.cacheFilePath()) result: \(result)")
+                do {
+                    try data.write(to: URL(fileURLWithPath: self.cacheFilePath()), options: [.atomic])
+                    NSKeyedArchiver.archiveRootObject(NSNumber(value: cacheProtocol.cacheVersion as UInt64), toFile: self.cacheVersionFilePath())
+                    self.dataCached = true
+                    log("write to file: \(self.cacheFilePath()) success")
+                } catch {
+                    log("write to file: \(self.cacheFilePath()) failed")
+                }
+                
             }
         }
     }

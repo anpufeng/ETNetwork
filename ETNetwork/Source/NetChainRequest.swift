@@ -13,6 +13,7 @@ import Foundation
 open class NetChainRequest {
     fileprivate var requests: [NetRequest] = []
     fileprivate var finishedTask = 0
+    fileprivate let seriQueue = DispatchQueue(label: "NetChainRequest")
     lazy var operationQueue: OperationQueue = {
         let operationQueue = OperationQueue()
         operationQueue.maxConcurrentOperationCount = 1
@@ -33,8 +34,12 @@ open class NetChainRequest {
 
     }
 
+    //FIXME: thread safe
     open func addRequest(_ req: NetRequest, completion: @escaping (Any?, Error?) -> Void) {
-        requests.append(req)
+        seriQueue.sync {
+            requests.append(req)
+        }
+        
         operationQueue.addOperation { () -> Void in
             req.start()
             req.responseJSON({ (json, error) -> Void in
@@ -67,7 +72,11 @@ open class NetChainRequest {
         for req in self.requests {
             req.cancel()
         }
-        requests.removeAll()
+        
+        seriQueue.sync {
+            requests.removeAll()
+        }
+        
     }
 }
 

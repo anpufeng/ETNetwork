@@ -212,6 +212,5 @@ public final class UploadFormStream: UploadFormProtocol {
 }
 
 
-//name easily
-typealias JobRequest = Alamofire.Request
-typealias JobManager = Alamofire.SessionManager
+typealias AlamofireRequest = Alamofire.Request
+typealias AlamofireManager = Alamofire.SessionManager
