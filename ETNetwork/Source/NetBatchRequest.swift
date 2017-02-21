@@ -1,5 +1,5 @@
 //
-//  ETBatchRequest.swift
+//  NetBatchRequest.swift
 //  ETNetwork
 //
 //  Created by ethan on 15/11/4.
@@ -8,8 +8,8 @@
 
 import Foundation
 
-open class ETBatchRequest {
-    fileprivate var requests: [ETRequest] = []
+open class NetBatchRequest {
+    fileprivate var requests: [NetRequest] = []
     fileprivate var finishedTask = 0
     lazy var operationQueue: OperationQueue = {
         let operationQueue = OperationQueue()
@@ -28,7 +28,7 @@ open class ETBatchRequest {
        log("\(type(of: self))  deinit")
     }
 
-    public init(requests: [ETRequest], maxConcurrent: Int = 3) {
+    public init(requests: [NetRequest], maxConcurrent: Int = 3) {
         self.requests = requests
         self.operationQueue.maxConcurrentOperationCount = maxConcurrent
 
@@ -38,7 +38,7 @@ open class ETBatchRequest {
         }
     }
 
-    fileprivate func _addRequest(_ req: ETRequest) {
+    fileprivate func _addRequest(_ req: NetRequest) {
         operationQueue.addOperation { () -> Void in
             req.start()
             req.responseData({ (data, error) -> Void in
@@ -61,7 +61,7 @@ open class ETBatchRequest {
         }
     }
 
-    open func addRequest(_ req: ETRequest) {
+    open func addRequest(_ req: NetRequest) {
         seriQueue.async {
             self.requests.append(req)
         }

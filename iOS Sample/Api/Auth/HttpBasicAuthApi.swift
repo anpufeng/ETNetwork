@@ -10,7 +10,7 @@ import UIKit
 import ETNetwork
 
 
-class HttpBasicAuthApi: ETRequest {
+class HttpBasicAuthApi: NetRequest {
     
     var bar: String
     init(bar: String) {
@@ -19,13 +19,13 @@ class HttpBasicAuthApi: ETRequest {
     }
 }
 
-extension HttpBasicAuthApi: ETRequestProtocol {
+extension HttpBasicAuthApi: RequestProtocol {
         var headers: [String: String]? {
         return ["token": "YourCustomToken"]
     }
-    var method: ETRequestMethod { return .get }
-    var taskType: ETTaskType { return .data }
-    var requestUrl: String { return "/basic-auth/user/passwd" }
+    var method: RequestMethod { return .get }
+    var taskType: TaskType { return .data }
+    var requestURL: String { return "/basic-auth/user/passwd" }
     var parameters:  [String: AnyObject]? {
         return ["foo": bar as AnyObject]
     }

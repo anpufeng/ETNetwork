@@ -9,7 +9,7 @@
 import UIKit
 import ETNetwork
 
-class PutApi: ETRequest {
+class PutApi: NetRequest {
     var bar: String
     init(bar: String) {
         self.bar = bar
@@ -17,17 +17,17 @@ class PutApi: ETRequest {
     }
 }
 
-extension PutApi: ETRequestProtocol {
-    var method: ETRequestMethod { return .put }
-    var taskType: ETTaskType { return .data }
-    var requestUrl: String { return "/put" }
+extension PutApi: RequestProtocol {
+    var method: RequestMethod { return .put }
+    var taskType: TaskType { return .data }
+    var requestURL: String { return "/put" }
     var parameters:  [String: AnyObject]? {
         return ["foo": bar as AnyObject]
     }
 }
 
 
-extension PutApi: ETRequestCacheProtocol {
+extension PutApi: RequestCacheProtocol {
     var cacheVersion: UInt64 { return 1 }
     var cacheSeconds: Int { return 60 }
 }

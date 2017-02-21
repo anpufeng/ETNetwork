@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 
 ///wrap the alamofire method
-public enum ETRequestMethod {
+public enum RequestMethod {
     case options, get, head, post, put, patch, delete, trace, connect
     
     var method: Alamofire.HTTPMethod {
@@ -39,7 +39,7 @@ public enum ETRequestMethod {
 }
 
 ///wrap the alamofire ParameterEncoding
-public enum ETRequestParameterEncoding {
+public enum RequestParameterEncoding {
     case url
     case json
     case propertyList(PropertyListSerialization.PropertyListFormat, PropertyListSerialization.WriteOptions)
@@ -58,32 +58,32 @@ public enum ETRequestParameterEncoding {
 
 
 
-public enum ETTaskType {
+public enum TaskType {
     case data, download, uploadFileData, uploadFileURL, uploadFormData
 }
 
-public enum ETResponseSerializer {
+public enum ResponseSerializer {
     case data, string, json, propertyList
 }
 
 
 /**
  conform to custom your own NSURLRequest
- if you conform to this protocol, the ETRequestProtocol will be ignored
+ if you conform to this protocol, the RequestProtocol will be ignored
  */
-public protocol ETRequestCustom {
-    var customUrlRequest: URLRequest { get }
+public protocol RequestCustom {
+    var customURLRequest: URLRequest { get }
 }
 
 /**
  conform to custom your own request cache
  */
-public protocol ETRequestCacheProtocol: class {
+public protocol RequestCacheProtocol: class {
     var cacheSeconds: Int { get }
     var cacheVersion: UInt64 { get }
 }
 
-public extension ETRequestCacheProtocol {
+public extension RequestCacheProtocol {
     ///default value 0
     var cacheVersion: UInt64 { return 0 }
 }
@@ -91,33 +91,33 @@ public extension ETRequestCacheProtocol {
 /**
  your subclass must conform this protocol
  */
-public protocol ETRequestProtocol : class {
-    var requestUrl: String { get }
+public protocol RequestProtocol : class {
+    var requestURL: String { get }
     
-    var taskType: ETTaskType { get }
-    var baseUrl: String { get }
-    var method: ETRequestMethod { get }
+    var taskType: TaskType { get }
+    var baseURL: String { get }
+    var method: RequestMethod { get }
     var parameters:  [String: AnyObject]? { get }
     
     var headers: [String: String]? { get }
-    var parameterEncoding: ETRequestParameterEncoding { get }
+    var parameterEncoding: RequestParameterEncoding { get }
     var responseStringEncoding: String.Encoding { get }
     var responseJSONReadingOption: JSONSerialization.ReadingOptions { get }
-    var responseSerializer: ETResponseSerializer { get }
+    var responseSerializer: ResponseSerializer { get }
 }
 
 /**
- make ETRequestProtocol some methed default and optional
+ make RequestProtocol some methed default and optional
  */
-public extension ETRequestProtocol {
-    var baseUrl: String { return ETNetworkConfig.sharedInstance.baseUrl }
+public extension RequestProtocol {
+    var baseURL: String { return NetConfig.sharedInstance.baseURL }
     
     var parameters: [String: AnyObject]? { return nil }
     var headers: [String: String]? { return nil }
-    var parameterEncoding: ETRequestParameterEncoding { return  .json }
+    var parameterEncoding: RequestParameterEncoding { return  .json }
     var responseStringEncoding: String.Encoding { return String.Encoding.utf8 }
     var responseJSONReadingOption: JSONSerialization.ReadingOptions { return .allowFragments }
-    var responseSerializer: ETResponseSerializer { return .json }
+    var responseSerializer: ResponseSerializer { return .json }
 }
 
 
@@ -132,7 +132,7 @@ public protocol ETRequestDownloadProtocol: class {
 public extension ETRequestDownloadProtocol {
     var resumeData: Data? { return nil }
     func downloadDestination() -> (URL, HTTPURLResponse) -> (destinationURL: URL, options: Alamofire.DownloadRequest.DownloadOptions) {
-        return ETRequest.suggestedDownloadDestination()
+        return NetRequest.suggestedDownloadDestination()
     }
 }
 

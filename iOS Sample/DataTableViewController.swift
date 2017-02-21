@@ -14,7 +14,7 @@ class DataTableViewController: UITableViewController {
     @IBOutlet weak var headerCell: UITableViewCell!
     @IBOutlet weak var cacheSwitch: UISwitch!
     var dataRows: DataRows?
-    var dataApi: ETRequest?
+    var dataApi: NetRequest?
 
     deinit {
         print("\(type(of: self))  deinit")
@@ -64,7 +64,7 @@ class DataTableViewController: UITableViewController {
         title = "\(dataRows.description)"
 
         dataApi?.start(ignoreCache: cacheSwitch.isOn)
-        dataApi?.responseJSON({ [weak self] (json, error) -> Void in
+        let _ = dataApi?.responseJSON({ [weak self] (json, error) -> Void in
             
             guard let strongSelf = self else {
                 return

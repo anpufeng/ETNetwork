@@ -15,7 +15,7 @@ class UploadTableViewController: UITableViewController {
     @IBOutlet weak var totalLabel: UILabel!
     @IBOutlet weak var processView: UIProgressView!
     var uploadRows: UploadRows?
-    var uploadApi: ETRequest?
+    var uploadApi: NetRequest?
     
     deinit {
         uploadApi?.cancel()

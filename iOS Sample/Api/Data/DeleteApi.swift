@@ -9,7 +9,7 @@
 import UIKit
 import ETNetwork
 
-class DeleteApi: ETRequest {
+class DeleteApi: NetRequest {
 
 
     var bar: String
@@ -19,17 +19,17 @@ class DeleteApi: ETRequest {
     }
 }
 
-extension DeleteApi: ETRequestProtocol {
-    var method: ETRequestMethod { return .delete }
-    var taskType: ETTaskType { return .data }
-    var requestUrl: String { return "/delete" }
+extension DeleteApi: RequestProtocol {
+    var method: RequestMethod { return .delete }
+    var taskType: TaskType { return .data }
+    var requestURL: String { return "/delete" }
     var parameters:  [String: AnyObject]? {
         return ["foo": bar as AnyObject]
     }
 }
 
 
-extension DeleteApi: ETRequestCacheProtocol {
+extension DeleteApi: RequestCacheProtocol {
     var cacheVersion: UInt64 { return 1 }
     var cacheSeconds: Int { return 60 }
 }

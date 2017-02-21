@@ -1,5 +1,5 @@
 //
-//  ETManager.swift
+//  NetManager.swift
 //  ETNetwork
 //
 //  Created by ethan on 15/11/4.
@@ -11,7 +11,7 @@ import Alamofire
 
 
 public func log<T>(_ object: T, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-    if ETManager.logEnable {
+    if NetManager.logEnable {
         let path = file as NSString
         let fileNameWithoutPath = path.lastPathComponent
         let info = "\(Date()): \(fileNameWithoutPath).\(function)[\(line)]: \(object)"
@@ -19,24 +19,24 @@ public func log<T>(_ object: T, _ file: String = #file, _ function: String = #fu
     }
 }
 
-open class ETManager {
+open class NetManager {
     open static var logEnable = true
     
-    open static let sharedInstance: ETManager = {
-        return ETManager()
+    open static let sharedInstance: NetManager = {
+        return NetManager()
     }()
     
     fileprivate let jobManager: JobManager
-    fileprivate var subRequests: [String: ETRequest] = [:]
+    fileprivate var subRequests: [String: NetRequest] = [:]
     fileprivate let concurrentQueue = DispatchQueue(label: "concurrent_etmanager", attributes: DispatchQueue.Attributes.concurrent)
     
     fileprivate struct AssociatedKey {
         static var inneKey = "etrequest"
     }
     
-    subscript(request: ETRequest) -> ETRequest? {
+    subscript(request: NetRequest) -> NetRequest? {
         get {
-            var req: ETRequest?
+            var req: NetRequest?
             concurrentQueue.sync {
                 req = self.subRequests[request.identifier()]
             }
@@ -73,18 +73,18 @@ open class ETManager {
         log("\(type(of: self) ) deinit")
     }
 
-    func addRequest(_ request: ETRequest) {
+    func addRequest(_ request: NetRequest) {
         if let req = self[request] {
             log("already in processing, nothing to do")
             return
         }
-        if let requestProtocol = request as? ETRequestProtocol {
+        if let requestProtocol = request as? RequestProtocol {
             let method = requestProtocol.method.method
             let headers = requestProtocol.headers
             let serializer = requestProtocol.responseSerializer
             let parameters = requestProtocol.parameters
             let encoding = requestProtocol.parameterEncoding.encode
-            let url = buildRequestUrl(request)
+            let url = buildRequestURL(request)
             
             var jobReq: Request?
             switch requestProtocol.taskType {
@@ -174,17 +174,17 @@ open class ETManager {
             self[request] = request
             request.manager = self
         } else {
-            fatalError("must implement ETRequestProtocol")
+            fatalError("must implement RequestProtocol")
         }
 
     }
     
-    func cancelRequest(_ request: ETRequest) {
+    func cancelRequest(_ request: NetRequest) {
         request.jobRequest?.cancel()
         self[request] = nil
     }
     
-    func removeFromManager(_ request: ETRequest) {
+    func removeFromManager(_ request: NetRequest) {
         self[request] = nil
     }
     open func cancelAllRequests() {
@@ -192,22 +192,22 @@ open class ETManager {
         let copyDic: NSMutableDictionary = dic.mutableCopy() as! NSMutableDictionary
         
         for (_, value) in copyDic {
-            let request = value as! ETRequest
+            let request = value as! NetRequest
             cancelRequest(request)
         }
     }
     
     //MARK: private
-      fileprivate func buildRequestUrl(_ request: ETRequest) -> String {
-        if let requestProtocol = request as? ETRequestProtocol  {
-            if requestProtocol.requestUrl.hasPrefix("http") {
-                return requestProtocol.requestUrl
+      fileprivate func buildRequestURL(_ request: NetRequest) -> String {
+        if let requestProtocol = request as? RequestProtocol  {
+            if requestProtocol.requestURL.hasPrefix("http") {
+                return requestProtocol.requestURL
             }
             
-            return "\(requestProtocol.baseUrl)\(requestProtocol.requestUrl)"
+            return "\(requestProtocol.baseURL)\(requestProtocol.requestURL)"
             
         } else {
-            fatalError("must implement ETRequestProtocol")
+            fatalError("must implement RequestProtocol")
         }
     }
 }

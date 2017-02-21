@@ -9,7 +9,7 @@
 import UIKit
 import ETNetwork
 
-class UploadDataApi: ETRequest {
+class UploadDataApi: NetRequest {
 
     var data: Data
     init(data : Data) {
@@ -18,10 +18,10 @@ class UploadDataApi: ETRequest {
     }
 }
 
-extension UploadDataApi: ETRequestProtocol {
-    var method: ETRequestMethod { return .post }
-    var taskType: ETTaskType { return .uploadFileData }
-    var requestUrl: String { return "/post" }
+extension UploadDataApi: RequestProtocol {
+    var method: RequestMethod { return .post }
+    var taskType: TaskType { return .uploadFileData }
+    var requestURL: String { return "/post" }
     var parameters:  [String: AnyObject]? {
         return ["upload": "UploadDataApi" as AnyObject]
     }

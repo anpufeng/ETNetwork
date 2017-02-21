@@ -11,13 +11,13 @@
 		AA4FE5B41BE9B42F00475BF7 /* ETNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = AA4FE5B31BE9B42F00475BF7 /* ETNetwork.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AA4FE5BB1BE9B42F00475BF7 /* ETNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4FE5B01BE9B42F00475BF7 /* ETNetwork.framework */; };
 		AA4FE5C01BE9B42F00475BF7 /* ETNetworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4FE5BF1BE9B42F00475BF7 /* ETNetworkTests.swift */; };
-		AA579BF31BE9F6310018DBCB /* ETBatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BEE1BE9F6310018DBCB /* ETBatchRequest.swift */; };
-		AA579BF41BE9F6310018DBCB /* ETChainRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BEF1BE9F6310018DBCB /* ETChainRequest.swift */; };
-		AA579BF51BE9F6310018DBCB /* ETRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF01BE9F6310018DBCB /* ETRequest.swift */; };
-		AA579BF61BE9F6310018DBCB /* ETManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF11BE9F6310018DBCB /* ETManager.swift */; };
+		AA579BF31BE9F6310018DBCB /* NetBatchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BEE1BE9F6310018DBCB /* NetBatchRequest.swift */; };
+		AA579BF41BE9F6310018DBCB /* NetChainRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BEF1BE9F6310018DBCB /* NetChainRequest.swift */; };
+		AA579BF51BE9F6310018DBCB /* NetRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF01BE9F6310018DBCB /* NetRequest.swift */; };
+		AA579BF61BE9F6310018DBCB /* NetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA579BF11BE9F6310018DBCB /* NetManager.swift */; };
 		AA88ADA31D3724B2004E84DE /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA88ADA21D3724B2004E84DE /* CryptoSwift.framework */; };
 		AA94C4A81C0BDEAB00BD071C /* ETNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */; };
-		AAD212501BEB389A00C870C5 /* ETNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */; };
+		AAD212501BEB389A00C870C5 /* NetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2124F1BEB389A00C870C5 /* NetworkConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,13 +50,13 @@
 		AA4FE5BA1BE9B42F00475BF7 /* ETNetworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ETNetworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA4FE5BF1BE9B42F00475BF7 /* ETNetworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ETNetworkTests.swift; sourceTree = "<group>"; };
 		AA4FE5C11BE9B42F00475BF7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AA579BEE1BE9F6310018DBCB /* ETBatchRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETBatchRequest.swift; sourceTree = "<group>"; };
-		AA579BEF1BE9F6310018DBCB /* ETChainRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETChainRequest.swift; sourceTree = "<group>"; };
-		AA579BF01BE9F6310018DBCB /* ETRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETRequest.swift; sourceTree = "<group>"; };
-		AA579BF11BE9F6310018DBCB /* ETManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETManager.swift; sourceTree = "<group>"; };
+		AA579BEE1BE9F6310018DBCB /* NetBatchRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetBatchRequest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		AA579BEF1BE9F6310018DBCB /* NetChainRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetChainRequest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		AA579BF01BE9F6310018DBCB /* NetRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetRequest.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		AA579BF11BE9F6310018DBCB /* NetManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		AA88ADA21D3724B2004E84DE /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = Carthage/Build/iOS/CryptoSwift.framework; sourceTree = "<group>"; };
-		AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETNetwork.swift; sourceTree = "<group>"; };
-		AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ETNetworkConfig.swift; sourceTree = "<group>"; };
+		AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ETNetwork.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		AAD2124F1BEB389A00C870C5 /* NetworkConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = NetworkConfig.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,11 +122,11 @@
 		AA579BED1BE9F6310018DBCB /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				AA579BEE1BE9F6310018DBCB /* ETBatchRequest.swift */,
-				AA579BEF1BE9F6310018DBCB /* ETChainRequest.swift */,
-				AA579BF01BE9F6310018DBCB /* ETRequest.swift */,
-				AA579BF11BE9F6310018DBCB /* ETManager.swift */,
-				AAD2124F1BEB389A00C870C5 /* ETNetworkConfig.swift */,
+				AA579BEE1BE9F6310018DBCB /* NetBatchRequest.swift */,
+				AA579BEF1BE9F6310018DBCB /* NetChainRequest.swift */,
+				AA579BF01BE9F6310018DBCB /* NetRequest.swift */,
+				AA579BF11BE9F6310018DBCB /* NetManager.swift */,
+				AAD2124F1BEB389A00C870C5 /* NetworkConfig.swift */,
 				AA94C4A71C0BDEAB00BD071C /* ETNetwork.swift */,
 			);
 			name = Source;
@@ -243,11 +243,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA579BF41BE9F6310018DBCB /* ETChainRequest.swift in Sources */,
-				AA579BF61BE9F6310018DBCB /* ETManager.swift in Sources */,
-				AA579BF51BE9F6310018DBCB /* ETRequest.swift in Sources */,
-				AA579BF31BE9F6310018DBCB /* ETBatchRequest.swift in Sources */,
-				AAD212501BEB389A00C870C5 /* ETNetworkConfig.swift in Sources */,
+				AA579BF41BE9F6310018DBCB /* NetChainRequest.swift in Sources */,
+				AA579BF61BE9F6310018DBCB /* NetManager.swift in Sources */,
+				AA579BF51BE9F6310018DBCB /* NetRequest.swift in Sources */,
+				AA579BF31BE9F6310018DBCB /* NetBatchRequest.swift in Sources */,
+				AAD212501BEB389A00C870C5 /* NetworkConfig.swift in Sources */,
 				AA94C4A81C0BDEAB00BD071C /* ETNetwork.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

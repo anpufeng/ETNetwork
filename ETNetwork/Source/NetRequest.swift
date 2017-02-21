@@ -1,5 +1,5 @@
 //
-//  ETRequest.swift
+//  NetRequest.swift
 //  ETNetwork
 //
 //  Created by ethan on 15/11/4.
@@ -26,10 +26,10 @@ extension ETError: LocalizedError {
 
 
 ///the request class
-open class ETRequest {
+open class NetRequest {
     var jobRequest: JobRequest?
         
-    weak var manager: ETManager?
+    weak var manager: NetManager?
     
     open var ignoreCache: Bool = false
     open fileprivate (set)var dataFromCache: Bool = false
@@ -62,10 +62,10 @@ open class ETRequest {
     }
     
     open func start(ignoreCache: Bool = false) {
-        start(ETManager.sharedInstance, ignoreCache: ignoreCache)
+        start(NetManager.sharedInstance, ignoreCache: ignoreCache)
     }
     
-    open func start(_ manager: ETManager, ignoreCache: Bool) -> Void {
+    open func start(_ manager: NetManager, ignoreCache: Bool) -> Void {
         self.ignoreCache = ignoreCache
         if shouldUseCache() {
             if needInOperationQueue {
@@ -117,12 +117,12 @@ open class ETRequest {
 }
 
 //MARK: response
-public extension ETRequest {
+public extension NetRequest {
     public var responseAllHeaders: [AnyHashable: Any]? {
         return jobRequest?.response?.allHeaderFields
     }
 
-    public func formDataencodingError(_ completion: @escaping ((Error) -> Void)) -> Self {
+    public func formDataEncodingError(_ completion: @escaping ((Error) -> Void)) -> Self {
         formDataEncodingErrorCompletion = completion
         
         return self
@@ -235,7 +235,7 @@ public extension ETRequest {
     public func responseJSON(_ completion: @escaping (Any?, Error?) -> Void ) -> Self {
         reqResponse { () -> () in
             var jsonOption: JSONSerialization.ReadingOptions = .allowFragments
-            if let requestProtocol = self as? ETRequestProtocol {
+            if let requestProtocol = self as? RequestProtocol {
                 jsonOption = requestProtocol.responseJSONReadingOption
             }
             if let data = self.loadedCacheData, self.jobRequest == nil {
@@ -371,13 +371,13 @@ public extension ETRequest {
 }
 
 //MARK: cache
-public extension ETRequest {
+public extension NetRequest {
     /// the cached string (maybe out of date)
     public var cachedString: String? {
         guard let data = cachedData else { return nil }
         
         var encoding = String.Encoding.utf8
-        if let requestProtocol = self as? ETRequestProtocol {
+        if let requestProtocol = self as? RequestProtocol {
             encoding = requestProtocol.responseStringEncoding
         }
 
@@ -398,7 +398,7 @@ public extension ETRequest {
         guard let data = cachedData else { return nil }
         
         var jsonOption: JSONSerialization.ReadingOptions = .allowFragments
-        if let requestProtocol = self as? ETRequestProtocol {
+        if let requestProtocol = self as? RequestProtocol {
             jsonOption = requestProtocol.responseJSONReadingOption
         }
      
@@ -424,7 +424,7 @@ public extension ETRequest {
             return nil
         }
         
-        guard let cacheProtocol = self as? ETRequestCacheProtocol else { return nil }
+        guard let cacheProtocol = self as? RequestCacheProtocol else { return nil }
         if cacheProtocol.cacheVersion != cacheVersionFileContent() {
             //FIXME: remove cache file?
             return nil
@@ -438,7 +438,7 @@ public extension ETRequest {
             return false
         }
         
-        guard let cacheProtocol = self as? ETRequestCacheProtocol else { return false }
+        guard let cacheProtocol = self as? RequestCacheProtocol else { return false }
         
         let seconds = cacheProtocol.cacheSeconds
         if seconds < 0 {
@@ -482,7 +482,7 @@ public extension ETRequest {
             return false
         }
         
-        guard let cacheProtocol = self as? ETRequestCacheProtocol else { return false }
+        guard let cacheProtocol = self as? RequestCacheProtocol else { return false }
         if cacheProtocol.cacheSeconds < 0 {
             return false
         }
@@ -497,7 +497,7 @@ public extension ETRequest {
             guard let data = data else {
                 return
             }
-            guard let cacheProtocol = self as? ETRequestCacheProtocol else {
+            guard let cacheProtocol = self as? RequestCacheProtocol else {
                 return
             }
             
@@ -532,12 +532,13 @@ public extension ETRequest {
     }
     
     fileprivate func cacheFileName() -> String {
-        guard let requestProtocol = self as? ETRequestProtocol else { fatalError("must implement ETRequestProtocol")}
-        let requestUrl = requestProtocol.requestUrl
-        let baseUrl = requestProtocol.baseUrl
+        guard let requestProtocol = self as? RequestProtocol else { fatalError("must implement RequestProtocol")}
+        let requestURL = requestProtocol.requestURL
+        let baseURL = requestProtocol.baseURL
         let parameters = requestProtocol.parameters
+        let headers = requestProtocol.headers
         
-        let requestInfo = "Method:\(requestProtocol.method) Host:\(baseUrl) Url:\(requestUrl) Parameters:\(parameters), AppVersion\(ETRequest.appVersion)"
+        let requestInfo = "Method:\(requestProtocol.method) Host:\(baseURL) URL:\(requestURL) Headers: \(headers) Parameters:\(parameters), AppVersion\(NetRequest.appVersion)"
         let md5 = requestInfo.md5()
 //        log("filename md5: \(md5)")
         
@@ -605,14 +606,14 @@ public extension ETRequest {
     }
 }
 
-extension ETRequest: CustomDebugStringConvertible {
+extension NetRequest: CustomDebugStringConvertible {
     public var debugDescription: String {
         var str = "      \(type(of: self))\n"
-        guard let requestProtocol = self as? ETRequestProtocol else { fatalError("must implement ETRequestProtocol") }
+        guard let requestProtocol = self as? RequestProtocol else { fatalError("must implement RequestProtocol") }
         if  let authProtocol = self as? ETRequestAuthProtocol {
             str.append("      authenticate: \(authProtocol.credential)\n")
         }
-        str.append("      url: \(requestProtocol.baseUrl + requestProtocol.requestUrl)\n")
+        str.append("      url: \(requestProtocol.baseURL + requestProtocol.requestURL)\n")
         str.append("      method: \(requestProtocol.method.method.rawValue)\n")
         str.append("      paramters: \(requestProtocol.parameters)\n")
         str.append("      headers: \(requestProtocol.headers)\n")
@@ -620,7 +621,7 @@ extension ETRequest: CustomDebugStringConvertible {
         str.append("      responseStringEncoding: \(requestProtocol.responseStringEncoding)\n")
         str.append("      responseJSONReadingOption: \(requestProtocol.responseJSONReadingOption)\n")
         str.append("      responseSerializer: \(requestProtocol.responseSerializer)\n")
-        if let cacheProtocol = self as? ETRequestCacheProtocol {
+        if let cacheProtocol = self as? RequestCacheProtocol {
             if (ignoreCache) {
                 str.append("      without using cache\n")
             } else {

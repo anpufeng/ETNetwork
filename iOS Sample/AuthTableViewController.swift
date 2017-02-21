@@ -12,7 +12,7 @@ import ETNetwork
 class AuthTableViewController: UITableViewController {
 
     var authRows: AuthRows?
-    var authApi: ETRequest?
+    var authApi: NetRequest?
 
     override func viewDidLoad() {
         super.viewDidLoad()

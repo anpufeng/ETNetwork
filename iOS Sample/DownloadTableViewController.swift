@@ -17,8 +17,8 @@ class DownloadTableViewController: UITableViewController {
     @IBOutlet weak var totalLabel: UILabel!
     @IBOutlet weak var processView: UIProgressView!
     var downloadRows: DownloadRows?
-    var downloadApi: ETRequest?
-    var manager: ETManager = ETManager(timeoutForRequest: 15)
+    var downloadApi: NetRequest?
+    var manager: NetManager = NetManager(timeoutForRequest: 15)
 
     @IBOutlet weak var resumeBtn: UIButton!
     deinit {

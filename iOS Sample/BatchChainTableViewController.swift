@@ -11,8 +11,8 @@ import ETNetwork
 
 class BatchChainTableViewController: UITableViewController {
     var bcRows: BatchChainRows?
-    var chainApi: ETChainRequest?
-    var batchApi: ETBatchRequest?
+    var chainApi: NetChainRequest?
+    var batchApi: NetBatchRequest?
     deinit {
         chainApi?.stop()
         batchApi?.stop()
@@ -49,7 +49,7 @@ class BatchChainTableViewController: UITableViewController {
             let three = PutApi(bar: "PutApi")
             let four = DeleteApi(bar: "DeleteApi")
 
-            chainApi = ETChainRequest()
+            chainApi = NetChainRequest()
             chainApi?.addRequest(one) { (json, error) -> Void in
                 print("++++++ 1 finished")
                 self.chainApi?.addRequest(two) { (json, error) -> Void in
@@ -80,7 +80,7 @@ class BatchChainTableViewController: UITableViewController {
             let five = GetDownloadApi(bar: "GetDownloadApi")
             
 
-            batchApi = ETBatchRequest(requests: [one, two, three, four, five])
+            batchApi = NetBatchRequest(requests: [one, two, three, four, five])
             batchApi?.start()
             one.responseJSON { (json, error) -> Void in
                 if (error != nil) {

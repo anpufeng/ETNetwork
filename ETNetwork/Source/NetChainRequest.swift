@@ -1,5 +1,5 @@
 //
-//  ETChainRequest.swift
+//  NetChainRequest.swift
 //  ETNetwork
 //
 //  Created by ethan on 15/11/4.
@@ -10,8 +10,8 @@
 import Foundation
 
 
-open class ETChainRequest {
-    fileprivate var requests: [ETRequest] = []
+open class NetChainRequest {
+    fileprivate var requests: [NetRequest] = []
     fileprivate var finishedTask = 0
     lazy var operationQueue: OperationQueue = {
         let operationQueue = OperationQueue()
@@ -33,7 +33,7 @@ open class ETChainRequest {
 
     }
 
-    open func addRequest(_ req: ETRequest, completion: @escaping (Any?, Error?) -> Void) {
+    open func addRequest(_ req: NetRequest, completion: @escaping (Any?, Error?) -> Void) {
         requests.append(req)
         operationQueue.addOperation { () -> Void in
             req.start()

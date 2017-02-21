@@ -11,7 +11,7 @@ import ETNetwork
 
 
 /// PostApi with custom headers
-class PostApi: ETRequest {
+class PostApi: NetRequest {
     
     var bar: String
     init(bar: String) {
@@ -20,19 +20,19 @@ class PostApi: ETRequest {
     }
 }
 
-extension PostApi: ETRequestProtocol {
+extension PostApi: RequestProtocol {
     var headers: [String: String]? {
         return ["token": "YourCustomToken"]
     }
-    var method: ETRequestMethod { return .post }
-    var taskType: ETTaskType { return .data }
-    var requestUrl: String { return "/post" }
+    var method: RequestMethod { return .post }
+    var taskType: TaskType { return .data }
+    var requestURL: String { return "/post" }
     var parameters:  [String: AnyObject]? {
         return ["foo": bar as AnyObject]
     }
 }
 
-extension PostApi: ETRequestCacheProtocol {
+extension PostApi: RequestCacheProtocol {
     var cacheVersion: UInt64 { return 1 }
     var cacheSeconds: Int { return 60 }
 }

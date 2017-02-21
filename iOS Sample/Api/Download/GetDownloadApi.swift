@@ -9,7 +9,7 @@
 import UIKit
 import ETNetwork
 
-class GetDownloadApi: ETRequest {
+class GetDownloadApi: NetRequest {
     
     var bar: String
     init(bar: String) {
@@ -18,19 +18,19 @@ class GetDownloadApi: ETRequest {
     }
 }
 
-extension GetDownloadApi: ETRequestProtocol {
-    var method: ETRequestMethod { return .get }
-    var taskType: ETTaskType { return .download }
+extension GetDownloadApi: RequestProtocol {
+    var method: RequestMethod { return .get }
+    var taskType: TaskType { return .download }
     //http://dldir1.qq.com/qqfile/QQforMac/QQ_V4.0.6.dmg
     //http://ftp-apk.pconline.com.cn/b5cb691afcce3906dc11602df610f212/pub/download/201010/freewifi_2232_0909.apk
-    var requestUrl: String { return "http://ftp-apk.pconline.com.cn/b5cb691afcce3906dc11602df610f212/pub/download/201010/freewifi_2232_0909.apk" }
+    var requestURL: String { return "http://ftp-apk.pconline.com.cn/b5cb691afcce3906dc11602df610f212/pub/download/201010/freewifi_2232_0909.apk" }
     var parameters:  [String: AnyObject]? {
         return nil
     }
 }
 
 
-extension GetDownloadApi: ETRequestCacheProtocol {
+extension GetDownloadApi: RequestCacheProtocol {
     
     //cache
     var cacheSeconds: Int { return -1 }

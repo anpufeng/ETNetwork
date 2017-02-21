@@ -9,7 +9,7 @@
 import UIKit
 import ETNetwork
 
-class UploadFileApi: ETRequest {
+class UploadFileApi: NetRequest {
 
     var ImgURL: URL
     init(fileURL: URL) {
@@ -18,10 +18,10 @@ class UploadFileApi: ETRequest {
     }
 }
 
-extension UploadFileApi: ETRequestProtocol {
-    var method: ETRequestMethod { return .post }
-    var taskType: ETTaskType { return .uploadFileURL }
-    var requestUrl: String { return "/post" }
+extension UploadFileApi: RequestProtocol {
+    var method: RequestMethod { return .post }
+    var taskType: TaskType { return .uploadFileURL }
+    var requestURL: String { return "/post" }
     var parameters:  [String: AnyObject]? {
         return ["upload": "UploadFileApi" as AnyObject]
     }

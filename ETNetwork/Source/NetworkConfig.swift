@@ -1,5 +1,5 @@
 //
-//  ETNetworkConfig.swift
+//  ETNetConfig.swift
 //  ETNetwork
 //
 //  Created by ethan on 15/11/5.
@@ -8,14 +8,14 @@
 
 import UIKit
 
-open class ETNetworkConfig {
-     open static let sharedInstance: ETNetworkConfig = {
+open class NetConfig {
+     open static let sharedInstance: NetConfig = {
         
-        return ETNetworkConfig()
+        return NetConfig()
     }()
     
     /*use you own base url*/
-    var baseUrl: String = "https://httpbin.org"
+    var baseURL: String = "https://httpbin.org"
     var urlFilters: Array<String> = []
     var cacheDirPathFilters: Array<String> = []
 }
