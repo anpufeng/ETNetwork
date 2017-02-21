@@ -29,7 +29,7 @@ extension UploadDataApi: RequestProtocol {
     var headers: [String: String]? { return ["UploadDataApi": "UploadDataApiHeader"]  }
 }
 
-extension UploadDataApi: ETRequestUploadProtocol {
+extension UploadDataApi: RequestUploadProtocol {
     var fileData: Data? { return data }
 }
 

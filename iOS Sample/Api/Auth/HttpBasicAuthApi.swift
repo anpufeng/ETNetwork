@@ -31,7 +31,7 @@ extension HttpBasicAuthApi: RequestProtocol {
     }
 }
 
-extension HttpBasicAuthApi: ETRequestAuthProtocol {
+extension HttpBasicAuthApi: RequestAuthProtocol {
     var credential: URLCredential? {
         let user = "user"
         let password = "passwd"

@@ -31,15 +31,10 @@ open class NetRequest {
         
     weak var manager: NetManager?
     
-    open var ignoreCache: Bool = false
-    open fileprivate (set)var dataFromCache: Bool = false
+    public var ignoreCache: Bool = false
+    public fileprivate (set)var dataFromCache: Bool = false
     
-    /*
-    fileprivate var noJobRequestError: NSError {
-        return NSError(domain: "etrequest", code: -8000, userInfo: nil)
-//        return Alamofire.Error.errorWithCode(-8000, failureReason: "no request, please call start first")
-    }
- */
+
     var dataCached: Bool = false
     var loadedCacheData: Data?
     lazy var serialQueue: DispatchQueue = {
@@ -61,11 +56,11 @@ open class NetRequest {
         jobRequest?.cancel()
     }
     
-    open func start(ignoreCache: Bool = false) {
+    public func start(ignoreCache: Bool = false) {
         start(NetManager.sharedInstance, ignoreCache: ignoreCache)
     }
     
-    open func start(_ manager: NetManager, ignoreCache: Bool) -> Void {
+    public func start(_ manager: NetManager, ignoreCache: Bool) -> Void {
         self.ignoreCache = ignoreCache
         if shouldUseCache() {
             if needInOperationQueue {
@@ -77,15 +72,15 @@ open class NetRequest {
         manager.addRequest(self)
     }
     
-    open func cancel() -> Void {
+    public func cancel() -> Void {
         manager?.cancelRequest(self)
     }
     
-    open func suspend() {
+    public func suspend() {
         jobRequest?.task?.suspend()
     }
     
-    open func resume() {
+    public func resume() {
         jobRequest?.task?.resume()
     }
     
@@ -94,7 +89,7 @@ open class NetRequest {
     }
 
     func reqResponse(_ closure:@escaping () -> ()) {
-        if let uploadProtocol = self as? ETRequestUploadProtocol {
+        if let uploadProtocol = self as? RequestUploadProtocol {
             //only suspend in formdata, will resume in manager when formData encoded success
             if uploadProtocol.formData != nil {
                 operationQueue.addOperation({ () -> Void in
@@ -122,12 +117,14 @@ public extension NetRequest {
         return jobRequest?.response?.allHeaderFields
     }
 
+    @discardableResult
     public func formDataEncodingError(_ completion: @escaping ((Error) -> Void)) -> Self {
         formDataEncodingErrorCompletion = completion
         
         return self
     }
     
+    @discardableResult
     public func progress(_ closure: ((Int64, Int64) -> Void)? = nil) -> Self {
         reqResponse { () -> () in
             guard let jobRequest = self.jobRequest else {
@@ -171,6 +168,7 @@ public extension NetRequest {
         return self
     }
 
+    @discardableResult
     public func responseStr(_ completion: @escaping (String?, Error?) -> Void ) -> Self {
         reqResponse { () -> () in
             if let data = self.loadedCacheData, self.jobRequest == nil {
@@ -231,7 +229,7 @@ public extension NetRequest {
         return self
     }
     
-
+    @discardableResult
     public func responseJSON(_ completion: @escaping (Any?, Error?) -> Void ) -> Self {
         reqResponse { () -> () in
             var jsonOption: JSONSerialization.ReadingOptions = .allowFragments
@@ -296,6 +294,7 @@ public extension NetRequest {
         return self
     }
     
+    @discardableResult
     public func responseData(_ completion: @escaping (Data?, Error?) -> Void ) -> Self {
         reqResponse { () -> () in
             if let data = self.loadedCacheData, self.jobRequest == nil {
@@ -338,6 +337,7 @@ public extension NetRequest {
         return self
     }
     
+    @discardableResult
     public func httpResponse(_ completion: @escaping (HTTPURLResponse?, Error?) -> Void) -> Self {
         reqResponse { () -> () in
             if let _ = self.loadedCacheData, self.jobRequest == nil {
@@ -610,7 +610,7 @@ extension NetRequest: CustomDebugStringConvertible {
     public var debugDescription: String {
         var str = "      \(type(of: self))\n"
         guard let requestProtocol = self as? RequestProtocol else { fatalError("must implement RequestProtocol") }
-        if  let authProtocol = self as? ETRequestAuthProtocol {
+        if  let authProtocol = self as? RequestAuthProtocol {
             str.append("      authenticate: \(authProtocol.credential)\n")
         }
         str.append("      url: \(requestProtocol.baseURL + requestProtocol.requestURL)\n")

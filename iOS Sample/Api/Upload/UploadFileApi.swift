@@ -29,7 +29,7 @@ extension UploadFileApi: RequestProtocol {
     var headers: [String: String]? { return ["UploadFileApi": "UploadFileApiHeader"]  }
 }
 
-extension UploadFileApi: ETRequestUploadProtocol {
+extension UploadFileApi: RequestUploadProtocol {
     var fileURL: URL? { return self.ImgURL }
 }
 

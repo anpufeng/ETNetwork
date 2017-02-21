@@ -62,7 +62,7 @@ open class NetBatchRequest {
     }
 
     open func addRequest(_ req: NetRequest) {
-        seriQueue.async {
+        seriQueue.sync {
             self.requests.append(req)
         }
         
@@ -78,7 +78,7 @@ open class NetBatchRequest {
         for req in self.requests {
             req.cancel()
         }
-        seriQueue.async { 
+        seriQueue.sync {
            self.requests.removeAll()
         }
     }

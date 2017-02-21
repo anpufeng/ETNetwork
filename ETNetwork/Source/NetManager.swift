@@ -91,7 +91,7 @@ open class NetManager {
             case .data:
                 jobReq = jobManager.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
             case .download:
-                guard let downloadProtocol = request as? ETRequestDownloadProtocol else { fatalError("not implement ETRequestDownloadProtocol") }
+                guard let downloadProtocol = request as? RequestDownloadProtocol else { fatalError("not implement RequestDownloadProtocol") }
                  let destination = downloadProtocol.downloadDestination()
                 if let resumeData = downloadProtocol.resumeData {
                     jobReq = jobManager.download(resumingWith: resumeData, to: destination)
@@ -100,15 +100,15 @@ open class NetManager {
                 }
 
             case .uploadFileURL:
-                guard let uploadProtocol = request as? ETRequestUploadProtocol else { fatalError("not implement ETREquestUploadProtocol") }
+                guard let uploadProtocol = request as? RequestUploadProtocol else { fatalError("not implement RequestUploadProtocol") }
                 guard let fileURL = uploadProtocol.fileURL else { fatalError("must return fileURL") }
                 jobReq = jobManager.upload(fileURL, to: url, method: method, headers: headers)
             case .uploadFileData:
-                guard let uploadProtocol = request as? ETRequestUploadProtocol else { fatalError("not implement ETREquestUploadProtocol") }
+                guard let uploadProtocol = request as? RequestUploadProtocol else { fatalError("not implement RequestUploadProtocol") }
                 guard let fileData = uploadProtocol.fileData else { fatalError("must return fileData") }
                 jobReq = jobManager.upload(fileData, to: url, method: method, headers: headers)
             case .uploadFormData:
-                guard let uploadProtocol = request as? ETRequestUploadProtocol else { fatalError("not implement ETREquestUploadProtocol") }
+                guard let uploadProtocol = request as? RequestUploadProtocol else { fatalError("not implement RequestUploadProtocol") }
                 guard let formData = uploadProtocol.formData else { fatalError("must return formdata") }
                 jobManager.upload(multipartFormData: { (multipart) in
                     for wrapped in formData {
@@ -140,7 +140,7 @@ open class NetManager {
                 }, to: url, encodingCompletion: { (encodingResult) in
                     switch encodingResult {
                     case .success(let upload, _, _):
-                        if let authProtocol = request as? ETRequestAuthProtocol {
+                        if let authProtocol = request as? RequestAuthProtocol {
                             if let credential = authProtocol.credential {
                                 upload.authenticate(usingCredential: credential)
                             }
@@ -159,7 +159,7 @@ open class NetManager {
 
             guard let req = jobReq else { return }
             
-            if let authProtocol = request as? ETRequestAuthProtocol {
+            if let authProtocol = request as? RequestAuthProtocol {
                 if let credential = authProtocol.credential {
                     req.authenticate(usingCredential: credential)
                 }

@@ -97,7 +97,7 @@ public protocol RequestProtocol : class {
     var taskType: TaskType { get }
     var baseURL: String { get }
     var method: RequestMethod { get }
-    var parameters:  [String: AnyObject]? { get }
+    var parameters:  [String: Any]? { get }
     
     var headers: [String: String]? { get }
     var parameterEncoding: RequestParameterEncoding { get }
@@ -112,7 +112,7 @@ public protocol RequestProtocol : class {
 public extension RequestProtocol {
     var baseURL: String { return NetConfig.sharedInstance.baseURL }
     
-    var parameters: [String: AnyObject]? { return nil }
+    var parameters: [String: Any]? { return nil }
     var headers: [String: String]? { return nil }
     var parameterEncoding: RequestParameterEncoding { return  .json }
     var responseStringEncoding: String.Encoding { return String.Encoding.utf8 }
@@ -121,7 +121,7 @@ public extension RequestProtocol {
 }
 
 
-public protocol ETRequestDownloadProtocol: class {
+public protocol RequestDownloadProtocol: class {
     ///DownloadTaskDelegate data is resumeData
     var resumeData: Data? { get }
     ///the url that you want to save the file
@@ -129,32 +129,32 @@ public protocol ETRequestDownloadProtocol: class {
     func downloadDestination() -> (URL, HTTPURLResponse) -> (destinationURL: URL, options: Alamofire.DownloadRequest.DownloadOptions)
 }
 
-public extension ETRequestDownloadProtocol {
+public extension RequestDownloadProtocol {
     var resumeData: Data? { return nil }
     func downloadDestination() -> (URL, HTTPURLResponse) -> (destinationURL: URL, options: Alamofire.DownloadRequest.DownloadOptions) {
         return NetRequest.suggestedDownloadDestination()
     }
 }
 
-public protocol ETRequestUploadProtocol: class {
+public protocol RequestUploadProtocol: class {
     var fileURL: URL? { get }
     var fileData: Data? { get }
     var formData: [UploadFormProtocol]? { get }
 }
 
 
-public extension ETRequestUploadProtocol {
+public extension RequestUploadProtocol {
     var fileURL: URL? { return nil }
     var fileData: Data? { return nil }
     var formData: [UploadFormProtocol]? { return nil }
 }
 
 
-public protocol ETRequestAuthProtocol : class {
+public protocol RequestAuthProtocol : class {
     var credential: URLCredential? { get }
 }
 
-extension ETRequestAuthProtocol {
+extension RequestAuthProtocol {
     var credential: URLCredential? {
         return nil
     }

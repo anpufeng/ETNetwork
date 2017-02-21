@@ -36,7 +36,7 @@ extension GetDownloadApi: RequestCacheProtocol {
     var cacheSeconds: Int { return -1 }
 }
 
-extension GetDownloadApi: ETRequestDownloadProtocol {
+extension GetDownloadApi: RequestDownloadProtocol {
     
 }
 

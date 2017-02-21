@@ -39,7 +39,7 @@ extension DownloadResumeDataApi: RequestCacheProtocol {
     var cacheSeconds: Int { return -1 }
 }
 
-extension DownloadResumeDataApi: ETRequestDownloadProtocol {
+extension DownloadResumeDataApi: RequestDownloadProtocol {
 //    func downloadDestination() -> (URL, HTTPURLResponse) -> URL {
 //        return { temporaryURL, response -> URL in
 //            let directoryURLs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)

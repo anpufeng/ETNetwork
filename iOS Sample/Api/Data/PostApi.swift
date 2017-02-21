@@ -27,8 +27,8 @@ extension PostApi: RequestProtocol {
     var method: RequestMethod { return .post }
     var taskType: TaskType { return .data }
     var requestURL: String { return "/post" }
-    var parameters:  [String: AnyObject]? {
-        return ["foo": bar as AnyObject]
+    var parameters:  [String: Any]? {
+        return ["foo": bar]
     }
 }
 

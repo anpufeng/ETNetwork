@@ -1,5 +1,5 @@
 //
-//  ETNetConfig.swift
+//  NetConfig.swift
 //  ETNetwork
 //
 //  Created by ethan on 15/11/5.

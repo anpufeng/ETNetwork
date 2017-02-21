@@ -31,7 +31,7 @@ extension UploadStreamApi: RequestProtocol {
     var headers: [String: String]? { return ["UploadDataApi": "UploadDataApiHeader"]  }
 }
 
-extension UploadStreamApi: ETRequestUploadProtocol {
+extension UploadStreamApi: RequestUploadProtocol {
     var formData: [UploadFormProtocol]? {
         var forms: [UploadFormProtocol] = []
         let jsonInputStream = InputStream(data: jsonData)
